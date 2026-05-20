@@ -1,2 +1,1 @@
-# praxis-proxy.github.io
-Website for Praxis
+Future home of the website for Praxis
