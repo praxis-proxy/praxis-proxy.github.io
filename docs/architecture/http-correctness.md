@@ -75,4 +75,4 @@ the framework level:
 
 - [Architecture Overview](overview.md)
 - [Connection Lifecycle](connection-lifecycle.md)
-- [RFC Conformance conventions](../developing/conventions.md#rfc-conformance)
+- [RFC Conformance conventions](../development/contributing.md#rfc-conformance)

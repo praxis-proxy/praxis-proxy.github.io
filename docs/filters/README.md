@@ -78,15 +78,15 @@ pattern. A few highlights:
 - **Conditional filters**: [conditional-filters.yaml]
 - **Production gateway**: [production-gateway.yaml]
 
-[`examples/configs/`]: ../../examples/configs/
-[hosts.yaml]: ../../examples/configs/traffic-management/hosts.yaml
-[path-based-routing.yaml]: ../../examples/configs/traffic-management/path-based-routing.yaml
-[guardrails.yaml]: ../../examples/configs/security/guardrails.yaml
-[ip-acl.yaml]: ../../examples/configs/security/ip-acl.yaml
-[rate-limiting.yaml]: ../../examples/configs/traffic-management/rate-limiting.yaml
-[composed-chains.yaml]: ../../examples/configs/pipeline/composed-chains.yaml
-[conditional-filters.yaml]: ../../examples/configs/pipeline/conditional-filters.yaml
-[production-gateway.yaml]: ../../examples/configs/operations/production-gateway.yaml
+[`examples/configs/`]: https://github.com/praxis-proxy/praxis/tree/main/examples/configs
+[hosts.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/traffic-management/hosts.yaml
+[path-based-routing.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/traffic-management/path-based-routing.yaml
+[guardrails.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/security/guardrails.yaml
+[ip-acl.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/security/ip-acl.yaml
+[rate-limiting.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/traffic-management/rate-limiting.yaml
+[composed-chains.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/pipeline/composed-chains.yaml
+[conditional-filters.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/pipeline/conditional-filters.yaml
+[production-gateway.yaml]: https://github.com/praxis-proxy/praxis/blob/main/examples/configs/operations/production-gateway.yaml
 
 ## Filter Chains
 
@@ -485,7 +485,7 @@ on the later filter to permit it.
 
 ## Related
 
-- [Filter Reference](../operating/filter-reference.md):
+- [Filter Reference](../configuration/overview.md#built-in-filters):
   configuration for all built-in filters
 - [Extensions](extensions.md): writing custom filters
 - [Payload Processing](../architecture/payload-processing.md):
