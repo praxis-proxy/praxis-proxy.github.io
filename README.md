@@ -1,17 +1,18 @@
 # Praxis Website
 
 Source for [praxis.fast](https://praxis.fast), the project website for
-[Praxis](https://github.com/praxis-proxy/praxis). Built with
-[Docusaurus 3](https://docusaurus.io/).
+[Praxis](https://github.com/praxis-proxy/praxis).
 
 ## Development
+
+Built with [Docusaurus 3](https://docusaurus.io/). Server can be started with:
 
 ```console
 npm ci
 npm start
 ```
 
-Opens a local dev server with hot reload.
+Server is started with hot reload, make your changes and watch them update live.
 
 ## Build
 
