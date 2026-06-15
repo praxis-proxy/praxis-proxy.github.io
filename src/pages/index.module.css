@@ -154,51 +154,6 @@
   transform: translateY(-1px);
 }
 
-/* Install snippet */
-.installSnippet {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--praxis-bg-surface);
-  border: 1px solid var(--praxis-border);
-  border-radius: 8px;
-  padding: 11px 18px;
-  font-family: var(--praxis-font-mono);
-  font-size: 0.825rem;
-  color: var(--praxis-text-secondary);
-  cursor: pointer;
-  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0;
-  animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
-}
-
-.installSnippet:hover {
-  border-color: var(--praxis-accent);
-  background: var(--praxis-bg-raised);
-}
-
-.installSnippet code {
-  color: var(--praxis-text-primary);
-  background: none;
-  padding: 0;
-  border: none;
-  font-family: var(--praxis-font-mono);
-}
-
-.installPrompt {
-  color: var(--praxis-text-muted);
-}
-
-.installCopyHint {
-  font-size: 0.85rem;
-  color: var(--praxis-text-muted);
-  transition: color 0.2s;
-}
-
-.installCopied {
-  color: var(--praxis-accent) !important;
-}
 
 /* ============================================
    Pipeline Visualization
@@ -608,7 +563,6 @@
   .heroTitle,
   .heroSubtitle,
   .heroCtas,
-  .installSnippet,
   .featureCard,
   .heroLine,
   .heroVisual {

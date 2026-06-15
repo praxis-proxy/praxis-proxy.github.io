@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
@@ -109,37 +109,6 @@ function Pipeline() {
   );
 }
 
-function InstallSnippet() {
-  const [copied, setCopied] = useState(false);
-  const command = 'cargo install praxis';
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(command);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback: select text for manual copy
-    }
-  };
-
-  return (
-    <div
-      className={styles.installSnippet}
-      onClick={handleCopy}
-      onKeyDown={(e) => e.key === 'Enter' && handleCopy()}
-      role="button"
-      tabIndex={0}
-      aria-label={`Copy install command: ${command}`}
-    >
-      <span className={styles.installPrompt}>$</span>
-      <code>{command}</code>
-      <span className={`${styles.installCopyHint} ${copied ? styles.installCopied : ''}`}>
-        {copied ? '✓' : '⧉'}
-      </span>
-    </div>
-  );
-}
 
 export default function Home(): React.JSX.Element {
   return (
@@ -173,7 +142,6 @@ export default function Home(): React.JSX.Element {
                 </a>
               </div>
 
-              <InstallSnippet />
             </div>
 
             <div className={styles.heroVisual}>
