@@ -30,6 +30,12 @@ compose a bespoke proxy server from the same primitives.
 - **AI Agents**: Proxy for AI agents
 - **Security Gateway**: Guardrails, Network Policy
 
+:::tip Interactive Diagram
+See the [interactive architecture diagram](pathname:///architecture/diagram.html)
+for a visual overview of crate dependencies, filter
+categories, and request flow.
+:::
+
 ## System Architecture
 
 ### Protocol Adapters
