@@ -1,0 +1,50 @@
+
+# `cors`
+
+Spec-compliant CORS filter implementing origin validation, preflight handling, and response header injection.
+
+## Configuration Notes
+
+Wildcard subdomain patterns (e.g. `https://*.example.com`) are supported in `allow_origins`.
+
+`allow_credentials: true` is incompatible with wildcard origins, methods, or headers per the Fetch spec.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `allow_origins` | string[] | yes | Allowed origins. Use `["*"]` for any origin. |
+| `allow_methods` | string[] | no | Allowed HTTP methods. Defaults to `["GET", "HEAD", "POST"]`. |
+| `allow_headers` | string[] | no | Allowed request headers. |
+| `expose_headers` | string[] | no | Response headers exposed to the client. |
+| `allow_credentials` | bool | no | Whether to include `Access-Control-Allow-Credentials: true`. |
+| `max_age` | integer | no | Preflight cache duration in seconds. |
+| `allow_private_network` | bool | no | Whether to support Private Network Access. |
+| `disallowed_origin_mode` | `omit` \| `reject` | no | Behavior when origin is not in the allow list. |
+| `allow_null_origin` | bool | no | Whether to allow `Origin: null`. |
+
+## Example
+
+```yaml
+filter: cors
+allow_origins:
+  - "https://app.example.com"
+  - "https://*.example.com"
+allow_methods:
+  - GET
+  - POST
+  - PUT
+allow_headers:
+  - Content-Type
+  - Authorization
+expose_headers:
+  - X-Request-ID
+max_age: 3600
+allow_credentials: false
+```
+
+## Related examples
+- `examples/configs/branching/conditional-skip-to.yaml`
+- `examples/configs/branching/cross-chain-flat.yaml`
+- `examples/configs/pipeline/branch-chains.yaml`
+- `examples/configs/security/cors.yaml`

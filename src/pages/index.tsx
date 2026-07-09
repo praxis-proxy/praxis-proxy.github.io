@@ -12,7 +12,7 @@ const features = [
   {
     title: 'Everything is a Filter',
     description:
-      '35+ built-in filters you compose into pipelines. Need something custom? Write it in Rust — it compiles into the binary.',
+      '50+ built-in filters across core and praxis-ai. Compose pipelines for routing, security, and AI inference — or write custom filters in Rust.',
     icon: '≡',
   },
   {
@@ -31,7 +31,8 @@ const features = [
 
 function Pipeline() {
   return (
-    <div className={styles.pipeline} aria-hidden="true">
+    <a className={styles.pipelineLink} href="/docs/ai/ai-inference" title="AI inference pipeline">
+    <div className={styles.pipeline}>
       <div className={styles.pipelineLabel}>Filter Pipeline</div>
 
       <div className={styles.pipelineEntry}>
@@ -106,6 +107,7 @@ function Pipeline() {
         </div>
       </div>
     </div>
+    </a>
   );
 }
 
@@ -129,8 +131,11 @@ export default function Home(): React.JSX.Element {
               </p>
 
               <div className={styles.heroCtas}>
-                <a className={styles.ctaPrimary} href="/docs/getting-started/introduction">
+                <a className={styles.ctaPrimary} href="/docs/getting-started/product-map">
                   Get Started
+                </a>
+                <a className={styles.ctaSecondary} href="/docs/getting-started/quickstart-ai">
+                  AI Quickstart
                 </a>
                 <a
                   className={styles.ctaSecondary}
@@ -179,18 +184,21 @@ export default function Home(): React.JSX.Element {
             </div>
             <div className={styles.ctaLinks}>
               <a className={styles.ctaPrimary} href="/docs/getting-started/quickstart">
-                Quick Start
+                Core Quickstart
+              </a>
+              <a className={styles.ctaSecondary} href="/docs/getting-started/quickstart-ai">
+                AI Quickstart
               </a>
               <a className={styles.ctaSecondary} href="/examples">
                 Examples
               </a>
               <a
                 className={styles.ctaSecondary}
-                href="https://github.com/praxis-proxy/praxis"
+                href="https://github.com/praxis-proxy/ai"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GitHub
+                praxis-ai
               </a>
             </div>
           </div>

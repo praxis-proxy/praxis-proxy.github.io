@@ -1,0 +1,28 @@
+
+# `anthropic_messages_protocol`
+
+Normalizes Anthropic Messages protocol headers for native backends.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `default_version` | string | no | Default `anthropic-version` header value when absent. |
+
+## Examples
+
+### Example 1
+
+```yaml
+filter: anthropic_messages_protocol
+```
+
+### Example 2
+
+```yaml
+filter: anthropic_messages_protocol
+default_version: "2023-06-01"
+```
+
+## Related examples
+- `examples/configs/anthropic/messages-protocol.yaml`

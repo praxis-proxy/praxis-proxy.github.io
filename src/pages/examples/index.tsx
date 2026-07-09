@@ -3,17 +3,38 @@ import Layout from '@theme/Layout';
 import { examples, categories, type Category, type Example } from '../../data/examples';
 import styles from './index.module.css';
 
+function repoBase(repo: Example['repo']): string {
+  return repo === 'ai'
+    ? 'https://raw.githubusercontent.com/praxis-proxy/ai/main/'
+    : 'https://raw.githubusercontent.com/praxis-proxy/praxis/main/';
+}
+
+function repoGithub(repo: Example['repo']): string {
+  return repo === 'ai'
+    ? 'https://github.com/praxis-proxy/ai'
+    : 'https://github.com/praxis-proxy/praxis';
+}
+
 function CodeOverlay({ example, onClose }: { example: Example; onClose: () => void }) {
   const [yaml, setYaml] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
-    const url = `https://raw.githubusercontent.com/praxis-proxy/praxis/main/${example.path}`;
+    const url = `${repoBase(example.repo)}${example.path}`;
+    setYaml(null);
+    setLoadFailed(false);
     fetch(url)
-      .then((res) => res.text())
+      .then((res) => {
+        if (!res.ok) throw new Error('fetch failed');
+        return res.text();
+      })
       .then(setYaml)
-      .catch(() => setYaml('# Could not load this example.\n# View it on GitHub instead.'));
-  }, [example.path]);
+      .catch(() => {
+        setLoadFailed(true);
+        setYaml('# Could not load this example.\n# View it on GitHub instead.');
+      });
+  }, [example.path, example.repo]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -26,13 +47,15 @@ function CodeOverlay({ example, onClose }: { example: Example; onClose: () => vo
   }, [onClose]);
 
   const handleCopy = async () => {
-    if (!yaml) return;
+    if (!yaml || loadFailed) return;
     try {
       await navigator.clipboard.writeText(yaml);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
   };
+
+  const githubUrl = `${repoGithub(example.repo)}/blob/main/${example.path}`;
 
   return (
     <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
@@ -41,17 +64,20 @@ function CodeOverlay({ example, onClose }: { example: Example; onClose: () => vo
           <div>
             <span className={styles.overlayName}>{example.name}</span>
             <span className={styles.overlayBadge}>{example.category}</span>
+            <span className={`${styles.repoBadge} ${example.repo === 'ai' ? styles.repoBadgeAi : styles.repoBadgeCore}`}>
+              {example.repo === 'ai' ? 'praxis-ai' : 'core'}
+            </span>
           </div>
           <div className={styles.overlayActions}>
             <a
               className={styles.overlayBtn}
-              href={`https://github.com/praxis-proxy/praxis/blob/main/${example.path}`}
+              href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
               GitHub
             </a>
-            <button className={styles.overlayBtn} onClick={handleCopy}>
+            <button className={styles.overlayBtn} onClick={handleCopy} disabled={loadFailed}>
               {copied ? '✓ copied' : '⧉ copy'}
             </button>
             <button className={styles.overlayClose} onClick={onClose} aria-label="Close">
@@ -111,6 +137,9 @@ export default function Examples(): React.JSX.Element {
             >
               <div className={styles.cardHeader}>
                 <span className={styles.cardName}>{example.name}</span>
+                <span className={`${styles.repoBadge} ${example.repo === 'ai' ? styles.repoBadgeAi : styles.repoBadgeCore}`}>
+                  {example.repo === 'ai' ? 'praxis-ai' : 'core'}
+                </span>
                 <span className={styles.badge}>{example.category}</span>
               </div>
               <p className={styles.cardDesc}>{example.description}</p>

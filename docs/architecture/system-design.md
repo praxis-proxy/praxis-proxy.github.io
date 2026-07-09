@@ -15,16 +15,16 @@ title: System Design
 balancing, rate limiting, AI model selection: all filters,
 all using the same traits, all assembled through chains.
 
-**Extensible.** Your filters implement the same [`HttpFilter`]
-and [`TcpFilter`] traits as built-in filters. Register with
+**Extensible.** Your filters implement the same `HttpFilter`
+and `TcpFilter` traits as built-in filters. Register with
 one macro.
 
 **Adaptive.** Praxis is a framework for building proxies,
 not just a proxy. Use a provided build out of the box, or
 compose a bespoke proxy server from the same primitives.
 
-[`HttpFilter`]:/docs/filters/filter-model
-[`TcpFilter`]:/docs/filters/filter-model
+`HttpFilter`:/docs/filters/filter-model
+`TcpFilter`:/docs/filters/filter-model
 
 ## Primary Use-Cases
 
@@ -93,7 +93,7 @@ processing options are available to do filtering, routing,
 caching and load-balancing based on request or response bodies.
 
 See [Filter Model](/docs/filters/filter-model) for more extensive documentation on the filter
-system, and [Custom Filters](/docs/filters/custom-filters) for how to write your own.
+system, and [Custom Filters](/docs/filters/extensions) for how to write your own.
 
 ### Listeners
 

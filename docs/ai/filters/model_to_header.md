@@ -1,0 +1,20 @@
+
+# `model_to_header`
+
+Promotes the JSON `"model"` field from the request body to a request header.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `header` | string | no | Header name for the promoted model value. |
+
+## Example
+
+```yaml
+filter: model_to_header
+header: X-Model   # optional, defaults to X-Model
+```
+
+## Related examples
+- `examples/configs/model-to-header-routing.yaml`

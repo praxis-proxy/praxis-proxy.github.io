@@ -1,0 +1,26 @@
+
+# `timeout`
+
+Enforces a maximum end-to-end latency from request receipt to response headers.
+
+## Configuration Notes
+
+This does not cancel the upstream connection; the upstream has already responded by the time this check runs. It is useful for enforcing SLAs.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `timeout_ms` | integer | yes | Maximum allowed elapsed time from request receipt to response headers, in milliseconds. Requests that exceed this limit receive a 504. |
+
+## Example
+
+```yaml
+filter: timeout
+timeout_ms: 5000   # 5 seconds
+```
+
+## Related examples
+- `examples/configs/operations/production-gateway.yaml`
+- `examples/configs/pipeline/conditional-filters.yaml`
+- `examples/configs/traffic-management/timeout.yaml`

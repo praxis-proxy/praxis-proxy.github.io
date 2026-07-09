@@ -3,7 +3,7 @@ sidebar_position: 1
 title: Contributing
 ---
 
-# Development Conventions
+# Contributing
 
 ## Coding Style
 
@@ -27,6 +27,7 @@ title: Contributing
 - **cargo-deny**: Enforce supply chain safety policies
 - **rustdoc**: Generate the API documentation
 - **cargo xtask**: Developer task runner for benchmarks, flamegraphs, and debug utilities
+- **Filter docs**: After changing filter config structs, run `cargo xtask generate-filter-docs`; CI runs `cargo xtask lint-filter-docs` via `make lint` in the source repos
 - **benchmarks**: Criterion microbenchmarks and scenario-based load tests ([Fortio](https://github.com/fortio/fortio), [Vegeta](https://github.com/tsenart/vegeta))
 
 ### Comments vs Tracing

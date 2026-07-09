@@ -107,6 +107,12 @@ const config: Config = {
           label: 'Docs',
         },
         {to: '/examples', label: 'Examples', position: 'left'},
+        {
+          type: 'doc',
+          docId: 'ai/overview',
+          position: 'left',
+          label: 'AI Gateway',
+        },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/praxis-proxy/praxis',
@@ -121,8 +127,9 @@ const config: Config = {
         {
           title: 'Getting Started',
           items: [
-            {label: 'Introduction', to: '/docs/getting-started/introduction'},
-            {label: 'Quick Start', to: '/docs/getting-started/quickstart'},
+            {label: 'Product Map', to: '/docs/getting-started/product-map'},
+            {label: 'Quick Start (Core)', to: '/docs/getting-started/quickstart'},
+            {label: 'Quick Start (AI)', to: '/docs/getting-started/quickstart-ai'},
             {label: 'Installation', to: '/docs/getting-started/installation'},
             {label: 'Examples', to: '/examples'},
           ],
@@ -130,6 +137,7 @@ const config: Config = {
         {
           title: 'Documentation',
           items: [
+            {label: 'AI Gateway', to: '/docs/ai/overview'},
             {label: 'Architecture', to: '/docs/architecture/system-design'},
             {label: 'Configuration', to: '/docs/configuration/overview'},
             {label: 'Filters', to: '/docs/filters/filter-model'},
@@ -140,7 +148,8 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            {label: 'GitHub', href: 'https://github.com/praxis-proxy/praxis'},
+            {label: 'Core (GitHub)', href: 'https://github.com/praxis-proxy/praxis'},
+            {label: 'AI Gateway (GitHub)', href: 'https://github.com/praxis-proxy/ai'},
             {label: 'Discussions', href: 'https://github.com/praxis-proxy/praxis/discussions'},
             {label: 'Issues', href: 'https://github.com/praxis-proxy/praxis/issues'},
             {label: 'Contributing', to: '/docs/development/contributing'},

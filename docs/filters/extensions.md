@@ -291,7 +291,7 @@ filter_chains:
 Custom filters participate identically to built-ins: same
 ordering, context access, and short-circuit capability.
 
-See the [filter system documentation](README.md) for the
+See the [filter system documentation](/docs/filters/filter-model) for the
 full API reference.
 
 ## Best Practices

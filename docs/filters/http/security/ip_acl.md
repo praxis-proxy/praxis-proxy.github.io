@@ -1,0 +1,30 @@
+
+# `ip_acl`
+
+IP-based access control filter.
+
+## Configuration Notes
+
+When `allow` is configured, only matching clients are permitted. When `deny` is configured, matching clients are rejected. When both are set, `allow` takes precedence: a client matching an allow entry is never denied.
+
+Denied requests receive a 403 Forbidden response.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `allow` | string[] | no | IPs/CIDRs to allow. If non-empty, only these are permitted. |
+| `deny` | string[] | no | IPs/CIDRs to deny. |
+
+## Example
+
+```yaml
+filter: ip_acl
+allow:
+  - "10.0.0.0/8"
+  - "192.168.0.0/16"
+```
+
+## Related examples
+- `examples/configs/pipeline/failure-mode.yaml`
+- `examples/configs/security/ip-acl.yaml`

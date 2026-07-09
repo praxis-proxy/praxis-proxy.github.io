@@ -496,18 +496,19 @@ A filter can have both `conditions` (request phase) and
 | `guardrails` | Security | HTTP | Reject requests matching header/body string or regex rules |
 | `ip_acl` | Security | HTTP | `allow` or `deny` (CIDR lists, mutually exclusive); 403 on denial |
 | `credential_injection` | Security | HTTP | Per-cluster API key injection with client credential stripping. Literal `value` fields are redacted in `--dump` output. |
-| `a2a` | Payload Processing | HTTP | A2A protocol classifier: extract method, family, task ID, streaming detection, and version for routing |
 | `json_body_field` | Payload Processing | HTTP | Extract a JSON body field and promote to header |
-| `json_rpc` | AI / Agentic | HTTP | Parse JSON-RPC 2.0 envelopes and extract method/id/kind for routing |
-| `mcp` | AI / Agentic | HTTP | MCP protocol classifier: extract method, tool/resource/prompt name, and session metadata for routing |
+| `json_rpc` | Payload Processing | HTTP | Parse JSON-RPC 2.0 envelopes and extract method/id/kind for routing |
+| `grpc_detection` | Traffic Management | HTTP | Detect gRPC from Content-Type and promote variant to metadata |
 | `compression` | Payload Processing | HTTP | Gzip, brotli, and zstd response compression |
 | `cors` | Security | HTTP | CORS preflight handling, origin validation, credential support |
 | `csrf` | Security | HTTP | Origin-based CSRF protection with gradual rollout and Sec-Fetch-Site support |
 | `redirect` | Traffic Management | HTTP | `status` (301/302/307/308), `location` template with `${path}`/`${query}` |
 | `path_rewrite` | Transformation | HTTP | `strip_prefix`, `add_prefix`, or `replace` (regex) on request path |
 | `url_rewrite` | Transformation | HTTP | `operations[]`: `regex_replace`, `strip_query_params`, `add_query_params` |
-| `model_to_header` | AI / Inference | HTTP | Extract JSON "model" field and promote to X-Model header. Requires `ai-inference` feature. |
-| `prompt_enrich` | AI / Inference | HTTP | Inject messages into OpenAI-compatible chat completion request bodies. Requires `ai-inference` feature. |
+
+AI filters (`model_to_header`, `mcp`, `a2a`, OpenAI Responses,
+Anthropic Messages, and others) ship with the `praxis-ai` binary.
+See [AI filter reference](/docs/reference/ai-filters).
 
 For detailed configuration of each built-in filter, see
 [Configuration](/docs/configuration/overview).
@@ -675,4 +676,4 @@ extra code.
 For detailed configuration of individual built-in filters,
 see [Configuration](/docs/configuration/overview). For best
 practices when writing custom filters, see
-[Custom Filters](custom-filters).
+[Custom Filters](/docs/filters/extensions).

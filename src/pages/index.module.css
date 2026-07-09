@@ -170,6 +170,25 @@
   align-items: center;
 }
 
+.pipelineLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+.pipelineLink:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pipelineLink:hover .pipeline {
+  border-color: rgba(139, 108, 199, 0.45);
+}
+
 .pipelineLabel {
   font-family: var(--praxis-font-body);
   font-size: 0.6rem;

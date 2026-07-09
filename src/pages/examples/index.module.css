@@ -117,6 +117,28 @@
   white-space: nowrap;
 }
 
+.repoBadge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.repoBadgeCore {
+  color: #8ec8ff;
+  background: rgba(100, 160, 255, 0.12);
+  border: 1px solid rgba(100, 160, 255, 0.25);
+}
+
+.repoBadgeAi {
+  color: #c4a0ff;
+  background: rgba(160, 120, 255, 0.12);
+  border: 1px solid rgba(160, 120, 255, 0.25);
+}
+
 .cardDesc {
   font-family: var(--praxis-font-body);
   font-size: 0.8rem;

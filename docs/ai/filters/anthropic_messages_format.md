@@ -1,0 +1,41 @@
+
+# `anthropic_messages_format`
+
+Classifies Anthropic Messages API requests and promotes routing facts to headers, metadata, and filter results.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `on_invalid` | `continue` \| `reject` \| `error` | no | Behavior when the body cannot be classified. |
+| `max_body_bytes` | integer | no | Maximum body size in bytes for `StreamBuffer` mode. |
+| `headers` | AnthropicMessagesFormatHeaders | no | Header names for promoted classification facts. |
+| `headers.format` | string | no | Header name for the detected format. |
+| `headers.model` | string | no | Header name for the extracted model value. |
+| `headers.stream` | string | no | Header name for the extracted stream flag. |
+
+## Examples
+
+### Example 1
+
+```yaml
+filter: anthropic_messages_format
+```
+
+### Example 2
+
+```yaml
+filter: anthropic_messages_format
+on_invalid: continue
+max_body_bytes: 1048576
+headers:
+  format: x-praxis-ai-format
+  model: x-praxis-ai-model
+  stream: x-praxis-ai-stream
+```
+
+## Related examples
+- `examples/configs/anthropic/messages-protocol.yaml`
+- `examples/configs/anthropic/messages-to-openai.yaml`
+- `examples/configs/anthropic/request-validate.yaml`
+- `examples/configs/anthropic/unified-gateway.yaml`

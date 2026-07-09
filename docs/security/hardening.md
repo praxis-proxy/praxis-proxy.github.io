@@ -32,7 +32,7 @@ ambiguous configuration:
 - Supply chain audited via `cargo audit` and
   `cargo deny`.
 - Reserved internal headers (`x-praxis-*`,
-  `x-mcp-*`, `x-a2a-*`) are rejected from client
+  `x-ext-protocol-*`, `x-ext-agent-*`) are rejected from client
   requests, stripped before forwarding to backends,
   and stripped from backend responses before reaching
   clients.

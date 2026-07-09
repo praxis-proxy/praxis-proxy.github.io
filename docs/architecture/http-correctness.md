@@ -1,3 +1,8 @@
+---
+sidebar_position: 8
+title: HTTP Correctness
+---
+
 # HTTP Correctness
 
 A proxy must enforce HTTP invariants that upstream servers
@@ -73,6 +78,6 @@ the framework level:
 
 ## Related
 
-- [Architecture Overview](overview.md)
+- [Architecture Overview](/docs/architecture/system-design)
 - [Connection Lifecycle](connection-lifecycle.md)
 - [RFC Conformance conventions](../development/contributing.md#rfc-conformance)
