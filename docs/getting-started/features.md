@@ -234,8 +234,15 @@ Classification, validation, protocol headers, OpenAI translation
 
 ### Security and observability
 
-- **AI guardrails** (`ai_guardrails`)
-- **Token counting** (`token_count`, `token_usage_headers`)
+- **AI guardrails** (`ai_guardrails`): pass-through scaffold
+  today; buffers request bodies but does not call the NeMo
+  provider yet. Response-side evaluation is tracked in
+  [#50](https://github.com/praxis-proxy/ai/issues/50).
+- **Token counting** (`token_count`): extracts usage from
+  provider responses (JSON and SSE) into filter metadata.
+- **Token usage headers** (`token_usage_headers`):
+  injects `Praxis-Token-Input`, `Praxis-Token-Output`,
+  and `Praxis-Token-Total` when metadata is present.
 
 StreamBuffer body access enables inline JSON inspection
 without external processors. See

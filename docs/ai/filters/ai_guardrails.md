@@ -1,7 +1,10 @@
-
 # `ai_guardrails`
 
-Calls an external AI guardrail provider to evaluate request (and eventually response) bodies. The provider determines whether content should be passed, blocked, or redacted.
+Pass-through scaffold for external AI guardrail evaluation.
+
+## Configuration Notes
+
+Buffers request bodies via `StreamBuffer` but does not call the configured provider yet; `on_request_body` returns `Continue` unconditionally. Response-side evaluation is also not wired.
 
 ## Configuration
 
@@ -27,4 +30,4 @@ phase:
 ```
 
 ## Related examples
-- `examples/configs/ai-guardrails.yaml`
+- [ai-guardrails.yaml](https://github.com/praxis-proxy/ai/blob/main/examples/configs/ai-guardrails.yaml)

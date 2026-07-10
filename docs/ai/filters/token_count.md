@@ -1,7 +1,6 @@
-
 # `token_count`
 
-Extracts token usage from AI inference responses and writes unified counts to `filter_metadata`.
+Extracts token usage from AI inference responses and writes unified counts to [filter_metadata](/docs/ai/filters/extensions#filter_metadata).
 
 ## Configuration Notes
 
@@ -21,4 +20,4 @@ provider: openai
 ```
 
 ## Related examples
-- `examples/configs/token-counting.yaml`
+- [token-counting.yaml](https://github.com/praxis-proxy/ai/blob/main/examples/configs/token-counting.yaml)

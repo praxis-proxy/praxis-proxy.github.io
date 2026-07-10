@@ -159,7 +159,7 @@ to the `messages` array. Uses `BodyAccess::ReadWrite`.
 Per-cluster API key injection with client credential
 stripping. Provided by Praxis core, commonly paired with
 AI pipelines. See
-[core credential_injection docs](https://github.com/praxis-proxy/praxis/blob/main/docs/filters/http/security/credential_injection.md).
+[core credential_injection docs](/docs/filters/http/security/credential_injection).
 
 ### `openai_response_store`
 

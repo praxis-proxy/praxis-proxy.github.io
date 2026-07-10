@@ -6,7 +6,7 @@ filter system architecture (pipeline execution, filter
 traits, body access, conditional execution, filter
 chains), see the Praxis core filter documentation.
 
-[praxis-filters]: https://github.com/praxis-proxy/praxis/tree/main/docs/filters
+[praxis-filters]: /docs/filters/filter-model
 
 ## AI Filter Categories
 
@@ -57,7 +57,7 @@ Core builtins used alongside AI filters: `json_rpc`,
 |--------|-------------|
 | `a2a` | A2A protocol metadata extraction |
 | `mcp` | MCP protocol broker and routing |
-| `ai_guardrails` | External guardrail provider integration |
+| `ai_guardrails` | Pass-through scaffold for external AI guardrail evaluation |
 | `model_to_header` | Promotes `model` body field to header |
 | `prompt_enrich` | Injects messages into chat completions |
 | `token_count` | Extracts token usage into filter metadata |

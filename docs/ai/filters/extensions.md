@@ -7,6 +7,32 @@ register into the shared `FilterRegistry`.
 
 [praxis]: https://github.com/praxis-proxy/praxis
 
+## filter_metadata
+
+Praxis attaches a per-request `filter_metadata` map to
+[`HttpFilterContext`][http-filter-context] from Praxis
+core. Filters store flat string key-value pairs that
+persist across all HTTP lifecycle phases on the same
+request (request, request-body, response,
+response-body).
+
+Keys use dot-prefix namespacing by convention (for
+example `token.input`, `token.output`, `a2a.method`).
+Upstream filters write values; downstream filters read
+them in later phases without coupling to each other's
+internals. Note the phase-ordering constraint: `token_count`
+writes body-derived counts in `on_response_body`, while
+`token_usage_headers` reads metadata in `on_response`, so
+those two filters cannot chain into response headers in one
+pass (see [token-counting](/docs/ai/token-counting) and
+[proposal 00214](https://github.com/praxis-proxy/ai/blob/main/docs/proposals/00214_token-usage-response-headers.md)).
+
+Custom filters can read and write `filter_metadata` via
+`ctx.filter_metadata` in `on_request`, `on_response`,
+and body hooks.
+
+[http-filter-context]: https://github.com/praxis-proxy/praxis/blob/main/filter/src/context.rs
+
 ## Auto-Discovery (Recommended)
 
 External filter crates can self-register into Praxis AI
@@ -294,3 +320,18 @@ filter with `FilterFactory::Http(Arc::new(factory))`,
 build a minimal YAML config, and assert on status codes
 and response bodies. See `tests/integration/` for
 examples.
+
+Built-in filter reference pages are generated from source.
+After changing a filter config struct, run:
+
+```console
+cargo xtask generate-filter-docs
+```
+
+CI runs `cargo xtask lint-filter-docs` as part of `make lint`.
+Every example under `examples/configs/` must have an
+integration test (or an entry in the SKIP allowlist):
+
+```console
+cargo xtask lint-example-tests
+```

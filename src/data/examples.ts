@@ -708,7 +708,7 @@ export const examples: Example[] = [
   },
   {
     name: 'AI Guardrails',
-    description: 'AI guardrails filter with NeMo provider endpoint in the request pipeline',
+    description: 'AI guardrails pass-through scaffold with NeMo provider config in the request pipeline',
     category: 'AI / Inference',
     path: 'examples/configs/ai-guardrails.yaml',
     filename: 'ai-guardrails.yaml',

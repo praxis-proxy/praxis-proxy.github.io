@@ -19,8 +19,8 @@ and proxy, then route upstream.
 | `tool_parse` | Request | Parse tools for branch routing |
 | `openai_responses_rehydrate` | Request | Load history from `previous_response_id` |
 | `responses_proxy` | Request | Rebuild body from `ResponsesState` |
-| `openai_response_store` | Response | Persist completed responses |
-| `openai_stream_events` | Response | Accumulate streaming SSE events |
+| `openai_response_store` | Request/response | Persist responses; local GET/DELETE |
+| `openai_stream_events` | Request/response | Accumulate streaming SSE events |
 | `openai_responses_model_rewrite` | Request body | Rewrite `model` field |
 
 ## Minimal gateway
