@@ -4,9 +4,11 @@ title: Ai Inference
 
 # AI Inference
 
-Body-aware classification, routing, and enrichment
-for AI inference traffic, built on the filter
-pipeline and StreamBuffer body access pattern.
+The **routing and parsing** layer of the
+[AI Gateway](/docs/ai/overview): body-aware classification,
+enrichment, and upstream selection for AI inference traffic,
+built on the filter pipeline and StreamBuffer body access
+pattern.
 
 ## Overview
 

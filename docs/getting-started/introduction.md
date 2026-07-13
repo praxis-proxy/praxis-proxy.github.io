@@ -5,11 +5,22 @@ title: Introduction
 
 # Praxis
 
-Praxis is a high-performance and security-first proxy server and framework for AI and cloud-native workloads.
+Praxis is a high-performance, security-first **proxy framework
+and traffic plane** for ingress, egress, and load balancing.
+Compose routing, security, and body-aware filters in YAML
+pipelines with hot reload.
+
+**AI Gateway** capabilities (AI-native proxy server for
+inference and agentic traffic) ship in
+[praxis-ai](https://github.com/praxis-proxy/ai). See the
+[product map](/docs/getting-started/product-map) and
+[AI Gateway overview](/docs/ai/overview).
 
 ## Getting Started
 
-- [Quickstart](quickstart)
+- [Product map](/docs/getting-started/product-map)
+- [Quickstart](/docs/getting-started/quickstart)
+- [Quickstart: praxis-ai](/docs/getting-started/quickstart-ai)
 - [Example configs](https://github.com/praxis-proxy/praxis/tree/main/examples)
 
 ## Documentation

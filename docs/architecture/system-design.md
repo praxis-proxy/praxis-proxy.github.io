@@ -26,14 +26,21 @@ compose a bespoke proxy server from the same primitives.
 `HttpFilter`:/docs/filters/filter-model
 `TcpFilter`:/docs/filters/filter-model
 
+## Traffic plane
+
+Praxis is a composable **traffic plane**: the same filter
+pipeline serves **ingress** (clients to services), **egress**
+(workloads to external APIs), and **east/west** (sidecar or
+mesh) placements.
+
 ## Primary Use-Cases
 
-- **Ingress**: Reverse proxy, API gateway, edge proxy
-- **Egress**: Outbound proxy, service-to-service
+- **Ingress**: API gateway, reverse proxy, edge proxy
+- **Egress**: Outbound proxy, service-to-service forwarding
 - **East/West**: Sidecar or converged proxy for service mesh
-- **AI Inference**: Proxy for AI inference workloads
-- **AI Agents**: Proxy for AI agents
-- **Security Gateway**: Guardrails, Network Policy
+- **AI inference and agents**: [AI Gateway](/docs/ai/overview)
+  on `praxis-ai`
+- **Security gateway**: Guardrails, network policy
 
 :::tip Interactive Diagram
 See the [interactive architecture diagram](pathname:///architecture/diagram.html)

@@ -209,8 +209,12 @@ deployment guidance.
 
 ## AI Gateway (praxis-ai)
 
-Shipped in the [praxis-ai](https://github.com/praxis-proxy/ai)
-binary. Full docs: [AI Gateway](/docs/ai/overview).
+An **AI Gateway** (AI API Gateway) and **AI-native proxy
+server** that routes, manages, enriches, and parses inference
+and agentic traffic. Deploy at the edge, as an in-cluster
+service, or as an egress proxy. Shipped in
+[praxis-ai](https://github.com/praxis-proxy/ai).
+Overview: [AI Gateway](/docs/ai/overview).
 
 ### Inference
 
