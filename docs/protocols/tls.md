@@ -6,7 +6,7 @@ title: TLS & mTLS
 # TLS
 
 Working example configs for every TLS scenario live in
-[`examples/configs/protocols/`](https://github.com/praxis-proxy/praxis/tree/main/examples/configs/protocols):
+`examples/configs/protocols/`(https://github.com/praxis-proxy/praxis/tree/main/examples/configs/protocols):
 
 | Example | Scenario |
 | ------- | -------- |

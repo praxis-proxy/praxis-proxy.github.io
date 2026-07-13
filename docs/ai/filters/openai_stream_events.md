@@ -1,0 +1,32 @@
+
+# `openai_stream_events`
+
+Accumulates state from native Responses API SSE event streams.
+
+## Configuration Notes
+
+All fields are optional; omitted values fall back to `SseParserConfig` defaults.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `max_buffer_bytes` | integer | no | Maximum bytes buffered for incomplete SSE lines/data across chunk boundaries. Default: 10 MiB. |
+| `max_events` | integer | no | Maximum number of SSE events before the parser errors. Default: 100,000. |
+| `timeout_secs` | integer | no | Maximum seconds from first chunk to stream completion. Default: 300 (5 minutes). |
+| `max_tool_call_argument_bytes` | integer | no | Maximum bytes accumulated per function-call argument string from `function_call_arguments.delta` events. Default: 1 MiB. |
+
+## Example
+
+```yaml
+filter: openai_stream_events
+# All fields optional:
+# max_buffer_bytes: 10485760
+# max_events: 100000
+# timeout_secs: 300
+# max_tool_call_argument_bytes: 1048576
+```
+
+## Related examples
+- `examples/configs/openai/responses/full-flow.yaml`
+- `examples/configs/openai/responses/stream-events.yaml`

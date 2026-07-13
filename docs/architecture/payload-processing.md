@@ -1,3 +1,8 @@
+---
+sidebar_position: 6
+title: Payload Processing
+---
+
 # Payload Processing
 
 Filters declare body access needs at construction time via
@@ -75,6 +80,6 @@ body hooks.
 
 ## Related
 
-- [Architecture Overview](overview.md)
+- [Architecture Overview](/docs/architecture/system-design)
 - [Connection Lifecycle](connection-lifecycle.md)
-- [Filter System](../filters/README.md)
+- [Filter System](/docs/filters/filter-model)

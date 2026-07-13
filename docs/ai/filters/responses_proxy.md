@@ -1,0 +1,35 @@
+
+# `responses_proxy`
+
+Rebuilds the request body from `ResponsesState` when present.
+
+## Configuration Notes
+
+Reads the assembled conversation history from `ResponsesState::messages` and replaces the `input` field in the outbound body. Strips `previous_response_id` since Praxis already resolved it locally via the rehydrate filter.
+
+When no `ResponsesState` exists (non-Responses requests, or requests without `previous_response_id`), passes through unchanged.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `max_body_bytes` | integer | no | Maximum body size in bytes for `StreamBuffer` mode. |
+
+## Examples
+
+### Example 1
+
+```yaml
+filter: responses_proxy
+```
+
+### Example 2
+
+```yaml
+filter: responses_proxy
+max_body_bytes: 67108864
+```
+
+## Related examples
+- `examples/configs/openai/responses/full-flow.yaml`
+- `examples/configs/openai/responses/responses-proxy.yaml`

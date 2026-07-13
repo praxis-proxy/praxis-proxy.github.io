@@ -89,14 +89,14 @@ title: Features
 - **Payload size limits**: global hard ceilings on
   request and response payload size.
 
-[payload-processing]:../architecture/system-design#payload-processing
+[payload-processing]:/docs/architecture/payload-processing
 
 ## Security
 
 Security is a primary design constraint. Praxis ships
 with secure defaults and fails closed on ambiguous
 configuration. See the
-[Security Hardening Guide](../security/hardening) for
+[Security Hardening Guide](/docs/security/hardening) for
 deployment guidance.
 
 **Build-level guarantees:**
@@ -202,123 +202,59 @@ deployment guidance.
   server instance. See
   [Protocol Abstraction][protocol-abstraction].
 
-[http-lifecycle]:../architecture/system-design#http-connection-lifecycle
-[tcp-lifecycle]:../architecture/system-design#tcp-connection-lifecycle
-[protocol-abstraction]:../architecture/system-design#protocol-adapters
-[tls-docs]:../protocols/tls
+[http-lifecycle]:/docs/architecture/connection-lifecycle
+[tcp-lifecycle]:/docs/architecture/connection-lifecycle
+[protocol-abstraction]:/docs/architecture/system-design
+[tls-docs]:/docs/protocols/tls
 
-## AI Inference
+## AI Gateway (praxis-ai)
 
-Praxis is designed as an AI-native proxy. AI inference
-capabilities are built on the [filter pipeline][filters]
-and [StreamBuffer][payload-processing] body access
-pattern, making them composable with all other filters
-rather than bolted-on external processors.
+An **AI Gateway** (AI API Gateway) and **AI-native proxy
+server** that routes, manages, enriches, and parses inference
+and agentic traffic. Deploy at the edge, as an in-cluster
+service, or as an egress proxy. Shipped in
+[praxis-ai](https://github.com/praxis-proxy/ai).
+Overview: [AI Gateway](/docs/ai/overview).
 
-### Current
+### Inference
 
-- **Model-based routing** (`model_to_header`): extracts
-  the `model` field from JSON request bodies and
-  promotes it to an `X-Model` header, enabling
-  header-based routing to provider-specific clusters.
-  Uses StreamBuffer to inspect the body before upstream
-  selection.
-- **Credential injection** (`credential_injection`):
-  per-cluster API key injection with client credential
-  stripping. Supports inline values and environment
-  variable sources. Pair with a source discriminator
-  (IP ACL, client auth) to control which clients get
-  credential upgrades.
+- **Model routing** (`model_to_header`)
+- **Prompt enrichment** (`prompt_enrich`)
+- **Credential injection** (`credential_injection`, core)
 
-### Planned
+### OpenAI Responses API
 
-The following capabilities are on the roadmap. Each
-builds on the StreamBuffer body access pattern and the
-filter pipeline.
+Classification, validation, store, rehydrate, conversations,
+proxy, stream events, tool routing
 
-- **Token counting**: input/output token counts from
-  request and response bodies
-- **Provider routing**: unified routing across LLM
-  providers with API translation
-- **Provider failover**: ordered failover chains with
-  automatic API translation on failure
-- **Token-based rate limiting**: per-client token quotas
-  with sliding window or token bucket
-- **Cost attribution**: token counting mapped to user,
-  session, model, and endpoint
-- **SSE streaming inspection**: per-event filter hooks
-  for streaming responses
-- **Semantic caching**: prompt deduplication via vector
-  similarity search
-- **AI guardrails**: prompt validation, content
-  filtering, and policy enforcement
+### Anthropic Messages API
 
-### StreamBuffer as AI Primitive
+Classification, validation, protocol headers, OpenAI translation
 
-StreamBuffer is the key differentiator for AI inference
-workloads. Traditional proxies operate on headers only,
-requiring external processors for body inspection.
-Praxis inspects request bodies inline:
+### Agentic
 
-1. Buffer the first N bytes (typically the JSON
-   envelope containing the model name, parameters,
-   and prompt prefix).
-2. Extract routing signals (model, provider, token
-   budget, tool name).
-3. Select the upstream based on body content.
-4. Forward the buffered prefix, then stream the
-   remainder with zero additional buffering latency.
+- **JSON-RPC** (`json_rpc`, core)
+- **MCP** (`mcp`) and **A2A** (`a2a`)
 
-This peek-then-stream pattern avoids the latency and
-operational complexity of external processor
-architectures while providing full body visibility
-where it matters.
+### Security and observability
 
-## AI Agentic
+- **AI guardrails** (`ai_guardrails`): pass-through scaffold
+  today; buffers request bodies but does not call the NeMo
+  provider yet. Response-side evaluation is tracked in
+  [#50](https://github.com/praxis-proxy/ai/issues/50).
+- **Token counting** (`token_count`): extracts usage from
+  provider responses (JSON and SSE) into filter metadata.
+- **Token usage headers** (`token_usage_headers`):
+  injects `Praxis-Token-Input`, `Praxis-Token-Output`,
+  and `Praxis-Token-Total` when metadata is present.
 
-Praxis targets first-class support for AI agent
-protocols, positioning MCP and A2A as headline
-capabilities alongside HTTP and TCP proxying.
-
-### JSON-RPC Support
-
-- **JSON-RPC 2.0 foundation**: request envelope parsing
-  and method/id extraction for HTTP POST bodies, enabling
-  method-based routing for MCP/A2A-style traffic via the
-  `json_rpc` filter
-
-### Planned
-
-The following capabilities are on the roadmap and not
-yet implemented:
-
-- **MCP proxying**: session management, tool discovery
-  and routing, session lifecycle, auth and rate limiting
-  for Model Context Protocol connections
-- **A2A proxying**: agent card discovery, task lifecycle
-  management, SSE streaming for Agent-to-Agent protocol
-- **Stateful agent sessions**: shared session storage,
-  affinity, and lifecycle hooks for MCP and A2A
-
-## Build Features
-
-AI filters are controlled via Cargo features (enabled
-by default):
-
-- `ai-inference`: model routing (`model_to_header`
-  filter)
-- `ai-agentic`: MCP, A2A, agent orchestration (planned)
-
-To disable AI features:
-
-```console
-cargo build -p praxis --no-default-features
-```
+StreamBuffer body access enables inline JSON inspection
+without external processors. See
+[payload processing](/docs/architecture/payload-processing).
 
 ## Extensions
 
-- **Rust extensions**: compile-time custom filters with
-  zero overhead via the `HttpFilter`/`TcpFilter` traits
-  and `register_filters!` macro.
+- **Rust extensions**: `HttpFilter`/`TcpFilter` and
+  `register_filters!`
 
-[filters]:../filters/filter-model
+[filters]:/docs/filters/filter-model

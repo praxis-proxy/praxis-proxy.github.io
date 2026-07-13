@@ -32,6 +32,14 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
 
+      - name: Lint examples catalog
+        run: |
+          git clone --depth 1 https://github.com/praxis-proxy/praxis.git /tmp/praxis-examples-src
+          git clone --depth 1 https://github.com/praxis-proxy/ai.git /tmp/ai-examples-src
+          PRAXIS_EXAMPLES_README=/tmp/praxis-examples-src/examples/README.md \
+          AI_EXAMPLES_README=/tmp/ai-examples-src/examples/README.md \
+          bash scripts/lint-examples-catalog.sh
+
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 

@@ -1,0 +1,30 @@
+
+# `rate_limit`
+
+Token bucket rate limiter that rejects excess traffic with 429.
+
+## Configuration Notes
+
+Supports `global` (one shared bucket) and `per_ip` (one bucket per source IP) modes. Rate limit headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`) are injected into both 429 rejections and successful responses.
+
+State is all managed locally.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `mode` | `global` \| `per_ip` | yes | Whether to use a single global bucket or per-IP buckets. |
+| `rate` | number | yes | Tokens replenished per second. |
+| `burst` | integer | yes | Maximum bucket capacity. |
+
+## Example
+
+```yaml
+filter: rate_limit
+mode: per_ip        # "per_ip" or "global"
+rate: 100           # tokens per second
+burst: 200          # max bucket capacity
+```
+
+## Related examples
+- `examples/configs/traffic-management/rate-limiting.yaml`

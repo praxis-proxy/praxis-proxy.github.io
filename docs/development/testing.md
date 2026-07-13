@@ -3,11 +3,11 @@ sidebar_position: 2
 title: Testing
 ---
 
-# Development
+# Testing
 
 ## Requirements
 
-- Rust stable 1.94+
+- Rust stable 1.96+
 - Rust nightly
 - CMake 3.31+
 - Docker 29.3.0+
@@ -56,7 +56,7 @@ deployment guidance.
 
 ## Adding a new Built-in Filter
 
-Review [Custom Filters](/docs/filters/custom-filters) first.
+Review [Custom Filters](/docs/filters/extensions) first.
 
 1. Create the filter module under
    `filter/src/builtins/<protocol>/<category>/`.

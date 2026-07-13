@@ -7,7 +7,7 @@ title: Installation
 
 ## Prerequisites
 
-- **Rust** stable 1.94 or later
+- **Rust** stable 1.96 or later
 - **CMake** 3.31 or later (required for building some native dependencies)
 
 ## Building from Source
@@ -21,6 +21,16 @@ make release
 ```
 
 The binary will be at `./target/release/praxis`.
+
+For the AI gateway, clone [praxis-proxy/ai](https://github.com/praxis-proxy/ai)
+and build `praxis-ai`:
+
+```console
+git clone https://github.com/praxis-proxy/ai.git
+cd ai
+make release
+./target/release/praxis-ai --version
+```
 
 To verify the build:
 

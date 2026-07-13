@@ -1,0 +1,32 @@
+
+# `circuit_breaker`
+
+Rejects requests to clusters whose circuit is open.
+
+## Configuration Notes
+
+Each configured cluster has an independent circuit breaker state machine. Clusters not listed in the config are unaffected (pass-through).
+
+When consecutive upstream failures reach the threshold, the circuit opens and subsequent requests receive 503 immediately. After the recovery window, a single probe request is forwarded; if it succeeds the circuit closes.
+
+## Configuration
+
+| Field | Type | Required | Description |
+|-------|------|---------|-------------|
+| `clusters` | ClusterCircuitBreakerConfig[] | yes | Per-cluster circuit breaker settings. |
+| `clusters[].name` | string | yes | Cluster name (must match a cluster in the load balancer). |
+| `clusters[].consecutive_failures` | integer | yes | Number of consecutive upstream failures before the circuit trips to Open. |
+| `clusters[].recovery_window_secs` | integer | yes | Seconds the circuit stays Open before transitioning to Half-Open. |
+
+## Example
+
+```yaml
+filter: circuit_breaker
+clusters:
+  - name: backend
+    consecutive_failures: 5
+    recovery_window_secs: 30
+```
+
+## Related examples
+- `examples/configs/traffic-management/circuit-breaker.yaml`

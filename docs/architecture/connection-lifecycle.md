@@ -1,3 +1,8 @@
+---
+sidebar_position: 7
+title: Connection Lifecycle
+---
+
 # Connection Lifecycle
 
 ## HTTP Connection Lifecycle
@@ -72,6 +77,6 @@ sequenceDiagram
 
 ## Related
 
-- [Architecture Overview](overview.md)
+- [Architecture Overview](/docs/architecture/system-design)
 - [Payload Processing](payload-processing.md)
 - [HTTP Correctness](http-correctness.md)

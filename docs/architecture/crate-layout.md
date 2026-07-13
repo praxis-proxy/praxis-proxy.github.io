@@ -1,3 +1,8 @@
+---
+sidebar_position: 4
+title: Crate Layout
+---
+
 # Crate Layout
 
 ## Workspace Crates
@@ -339,6 +344,6 @@ a higher level and across multiple crates.
 
 ## Related
 
-- [Architecture Overview](overview.md)
+- [Architecture Overview](/docs/architecture/system-design)
 - [Connection Lifecycle](connection-lifecycle.md)
 - [HTTP Correctness](http-correctness.md)

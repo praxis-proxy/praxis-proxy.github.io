@@ -1,0 +1,18 @@
+# `token_usage_headers`
+
+Injects `Praxis-Token-Input`, `Praxis-Token-Output`, and `Praxis-Token-Total` headers into downstream responses when token usage data is present in [filter_metadata](/docs/ai/filters/extensions#filter_metadata).
+
+## Configuration Notes
+
+Reads token counts written by upstream filters and exposes them as HTTP response headers for infrastructure-level consumption (billing, monitoring, logging).
+
+When no token metadata is present the filter is a no-op.
+
+## Example
+
+```yaml
+filter: token_usage_headers
+```
+
+## Related examples
+- [token-usage-headers.yaml](https://github.com/praxis-proxy/ai/blob/main/examples/configs/token-usage-headers.yaml)
