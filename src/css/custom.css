@@ -37,7 +37,6 @@
   --praxis-accent-subtle: rgba(124, 92, 184, 0.08);
   --praxis-overlay-faint: rgba(0, 0, 0, 0.03);
   --praxis-overlay-border: rgba(0, 0, 0, 0.08);
-  --praxis-glow-alpha: 0.06;
 
   --ifm-background-color: var(--praxis-bg-deep);
   --ifm-background-surface-color: var(--praxis-bg-surface);
@@ -77,7 +76,6 @@
   --praxis-accent-subtle: rgba(139, 108, 199, 0.1);
   --praxis-overlay-faint: rgba(255, 255, 255, 0.03);
   --praxis-overlay-border: rgba(255, 255, 255, 0.08);
-  --praxis-glow-alpha: 0.08;
 
   --ifm-background-color: var(--praxis-bg-deep);
   --ifm-background-surface-color: var(--praxis-bg-surface);
@@ -309,7 +307,7 @@ h1 { letter-spacing: -0.04em; }
 /* Inline code in docs — brand-tinted background (not inside code blocks) */
 .markdown :not(pre) > code {
   background: var(--praxis-accent-subtle);
-  border: 1px solid rgba(124, 92, 184, 0.12);
+  border: 1px solid var(--praxis-overlay-border);
   border-radius: 4px;
   padding: 0.1em 0.35em;
   font-size: 0.875em;
