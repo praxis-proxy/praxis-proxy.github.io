@@ -29,12 +29,133 @@
   50% { opacity: 0.4; }
 }
 
+/* ============================================
+   Galaxy Background — nebula clouds + starfield
+   ============================================ */
+
+@keyframes nebulaDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8px, -5px) scale(1.02); }
+  66% { transform: translate(-5px, 3px) scale(0.98); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes twinkle2 {
+  0%, 100% { opacity: 0.2; }
+  30% { opacity: 0.05; }
+  70% { opacity: 0.65; }
+}
+
 /* Hero — darker shade */
 .hero {
   position: relative;
   padding: 0;
   overflow: hidden;
   background: var(--praxis-bg-alt);
+}
+
+/* Starfield — dense cluster of varied-size stars */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* Bright stars */
+    radial-gradient(2px 2px at 7% 18%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 20% 72%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2px 2px at 38% 22%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 52% 85%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2px 2px at 68% 12%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 82% 55%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 93% 30%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2px 2px at 45% 45%, var(--praxis-accent) 50%, transparent 100%),
+    /* Dim distant stars */
+    radial-gradient(1px 1px at 3% 40%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 12% 55%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 18% 8%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 28% 38%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 35% 65%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 42% 92%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 55% 15%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 62% 48%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 72% 78%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 78% 28%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 85% 88%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 92% 62%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 15% 95%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 48% 5%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 75% 42%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 88% 15%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 5% 75%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 58% 58%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 32% 82%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 95% 45%, var(--praxis-text-muted) 50%, transparent 100%);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+/* Second star layer — offset timing for shimmer depth */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 32%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2px 2px at 25% 50%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 58% 28%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(2px 2px at 75% 65%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 18%, var(--praxis-accent) 50%, transparent 100%),
+    radial-gradient(1px 1px at 15% 62%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 40% 80%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 65% 38%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 82% 72%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 50% 10%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 22% 88%, var(--praxis-text-muted) 50%, transparent 100%),
+    radial-gradient(1px 1px at 70% 5%, var(--praxis-text-muted) 50%, transparent 100%);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkle2 8s ease-in-out infinite;
+}
+
+/* Nebula cloud 1 — main purple gas cloud */
+.heroGlow::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 70%;
+  height: 80%;
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(124, 92, 184, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 55% 55%, rgba(91, 58, 153, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 40% at 20% 70%, rgba(160, 132, 212, 0.08) 0%, transparent 55%);
+  pointer-events: none;
+  filter: blur(40px);
+  animation: nebulaDrift 30s ease-in-out infinite;
+}
+
+/* Nebula cloud 2 — secondary wisp, offset */
+.heroGlow::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  width: 65%;
+  height: 70%;
+  background:
+    radial-gradient(ellipse 45% 55% at 60% 35%, rgba(124, 92, 184, 0.1) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 40% 65%, rgba(78, 51, 136, 0.08) 0%, transparent 55%);
+  pointer-events: none;
+  filter: blur(50px);
+  animation: nebulaDrift 25s ease-in-out 5s infinite;
 }
 
 .heroSplit {
@@ -60,15 +181,30 @@
   animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
 }
 
-/* Radial glow behind hero content */
+/* Nebula container — anchors the blurred cloud pseudo-elements */
 .heroGlow {
   position: absolute;
-  top: 30%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 600px;
-  background: radial-gradient(ellipse, rgba(139, 108, 199, 0.07) 0%, transparent 65%);
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Cosmic dust band — a faint diagonal streak like a galaxy arm */
+.heroOrbit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(124, 92, 184, 0.04) 35%,
+    rgba(160, 132, 212, 0.07) 45%,
+    rgba(124, 92, 184, 0.04) 55%,
+    transparent 70%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -112,7 +248,7 @@
 
 .ctaPrimary {
   background: var(--praxis-accent);
-  color: var(--praxis-text-primary);
+  color: #fff;
   padding: 11px 26px;
   border-radius: 8px;
   font-family: var(--praxis-font-body);
@@ -127,7 +263,7 @@
 
 .ctaPrimary:hover {
   background: var(--praxis-accent-hover);
-  color: var(--praxis-text-primary);
+  color: #fff;
   text-decoration: none;
   transform: translateY(-1px);
 }
@@ -234,8 +370,8 @@
   align-items: center;
   text-align: center;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--praxis-overlay-faint);
+  border: 1px solid var(--praxis-overlay-border);
   border-radius: 8px;
   padding: 12px 20px;
   width: 100%;
@@ -291,8 +427,8 @@
 }
 
 .filterNodeSmall {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--praxis-overlay-faint);
+  border: 1px solid var(--praxis-overlay-border);
   border-radius: 6px;
   padding: 10px 14px;
   text-align: center;
@@ -406,6 +542,7 @@
 .featureCard:nth-child(2) { animation-delay: 0.9s; }
 .featureCard:nth-child(3) { animation-delay: 1.0s; }
 .featureCard:nth-child(4) { animation-delay: 1.1s; }
+.featureCard:nth-child(5) { animation-delay: 1.2s; }
 
 .featureIcon {
   margin-right: 10px;
@@ -576,6 +713,20 @@
     animation: none;
   }
 
+  .heroGlow,
+  .heroOrbit {
+    animation: none;
+  }
+
+  .heroGlow::before,
+  .heroGlow::after {
+    animation: none;
+  }
+
+  .hero::before,
+  .hero::after {
+    animation: none;
+  }
 
   .featureCard,
   .ctaPrimary,

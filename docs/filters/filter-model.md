@@ -506,11 +506,31 @@ A filter can have both `conditions` (request phase) and
 | `redirect` | Traffic Management | HTTP | `status` (301/302/307/308), `location` template with `${path}`/`${query}` |
 | `path_rewrite` | Transformation | HTTP | `strip_prefix`, `add_prefix`, or `replace` (regex) on request path |
 | `url_rewrite` | Transformation | HTTP | `operations[]`: `regex_replace`, `strip_query_params`, `add_query_params` |
-| `model_to_header` | AI / Inference | HTTP | Extract JSON "model" field and promote to X-Model header. Requires `ai-inference` feature. |
-| `prompt_enrich` | AI / Inference | HTTP | Inject messages into OpenAI-compatible chat completion request bodies. Requires `ai-inference` feature. |
+| `model_to_header` | AI / Inference | HTTP | Extract JSON "model" field and promote to X-Model header |
+| `prompt_enrich` | AI / Inference | HTTP | Inject messages into OpenAI-compatible chat completion request bodies |
+| `ai_guardrails` | AI / Security | HTTP | Call external guardrail provider to evaluate request bodies |
+| `token_usage_headers` | AI / Observability | HTTP | Inject `Praxis-Token-*` headers from filter metadata |
+| `openai_responses_format` | AI / OpenAI | HTTP | Classify Responses API vs Chat Completions requests; promote routing facts |
+| `openai_responses_validate` | AI / OpenAI | HTTP | Validate parameter combinations, generate `resp_`/`conv_` IDs |
+| `openai_responses_model_rewrite` | AI / OpenAI | HTTP | Rewrite `model` field with aliases and wildcard patterns |
+| `openai_responses_rehydrate` | AI / OpenAI | HTTP | Fetch stored response for `previous_response_id` conversation context |
+| `openai_response_store` | AI / OpenAI | HTTP | Persist Responses API responses to SQLite or PostgreSQL |
+| `openai_conversations` | AI / OpenAI | HTTP | Handle `/v1/conversations` endpoints locally from store |
+| `openai_stream_events` | AI / OpenAI | HTTP | Accumulate state from Responses API SSE event streams |
+| `responses_proxy` | AI / OpenAI | HTTP | Rebuild request body from `ResponsesState` conversation history |
+| `anthropic_messages_format` | AI / Anthropic | HTTP | Classify Anthropic Messages API requests; promote routing facts |
+| `anthropic_validate` | AI / Anthropic | HTTP | Validate proxy-owned JSON envelope before forwarding |
+| `anthropic_messages_protocol` | AI / Anthropic | HTTP | Inject `anthropic-version` header for native backends |
+| `anthropic_to_openai` | AI / Anthropic | HTTP | Bidirectional body transformation between Anthropic and Chat Completions |
+| `anthropic_stream_events` | AI / Anthropic | HTTP | Transform streaming SSE between OpenAI and Anthropic formats |
 
 For detailed configuration of each built-in filter, see
 [Configuration](/docs/configuration/overview).
+
+AI filters are provided by the
+[Praxis AI](https://github.com/praxis-proxy/ai)
+extension crate and are registered alongside core
+filters at startup.
 
 ### Security Filter Restrictions
 

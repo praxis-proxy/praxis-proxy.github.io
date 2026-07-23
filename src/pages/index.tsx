@@ -4,27 +4,33 @@ import styles from './index.module.css';
 
 const features = [
   {
-    title: 'AI-Native Routing',
+    title: 'Route to Any AI Provider',
     description:
-      'Route LLM requests to the right provider by inspecting JSON bodies. Inject credentials per-cluster so clients never handle API keys.',
+      'Send requests to OpenAI, Anthropic, or your own models. Praxis reads the model name, injects the right API key, and routes to the right upstream — your app never touches a credential.',
     icon: '⇉',
   },
   {
-    title: 'Everything is a Filter',
+    title: 'Built for Claude Code & Codex',
     description:
-      '35+ built-in filters you compose into pipelines. Need something custom? Write it in Rust — it compiles into the binary.',
+      'Native MCP gateway — aggregate tools from multiple servers behind one endpoint. Praxis handles session management, credential injection, and tool-call routing so your AI coding agents work securely at scale.',
+    icon: '◈',
+  },
+  {
+    title: 'Build Pipelines, Not Middleware',
+    description:
+      'Stack rate limiting, auth, guardrails, and routing in any order using a simple YAML config. 35+ built-in filters ship ready to use, and you can write your own in Rust.',
     icon: '≡',
   },
   {
-    title: 'Secure by Default',
+    title: 'Security Without the Setup',
     description:
-      'Zero lines of unsafe code. Rustls instead of OpenSSL. Every security filter — CORS, CSRF, IP ACL, rate limiting — ships ready to use.',
+      'TLS everywhere, zero unsafe code, CORS and rate limiting out of the box. Praxis ships locked down so you don\'t have to bolt security on after the fact.',
     icon: '△',
   },
   {
-    title: 'Any Protocol, Zero Downtime',
+    title: 'Ship Changes Without Downtime',
     description:
-      'HTTP/1.1, HTTP/2, TCP, WebSocket, SSE, gRPC with TLS and mTLS. Swap configs at runtime without dropping a connection.',
+      'HTTP/1.1, HTTP/2, gRPC, WebSocket, TCP — all supported. Hot-reload your config at runtime without dropping a single connection.',
     icon: '⬡',
   },
 ];
@@ -116,6 +122,7 @@ export default function Home(): React.JSX.Element {
       <main>
         <section className={styles.hero}>
           <div className={styles.heroGlow} aria-hidden="true" />
+          <div className={styles.heroOrbit} aria-hidden="true" />
           <div className={styles.heroSplit}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
@@ -124,8 +131,8 @@ export default function Home(): React.JSX.Element {
               </h1>
 
               <p className={styles.heroSubtitle}>
-                An open-source proxy framework where every behavior is a composable
-                filter. Secure by default, extensible in Rust.
+                One proxy between your apps and every AI provider. Route traffic,
+                manage keys, enforce guardrails — all from a single config file.
               </p>
 
               <div className={styles.heroCtas}>
@@ -172,9 +179,9 @@ export default function Home(): React.JSX.Element {
         <section className={styles.ctaSection}>
           <div className={styles.ctaInner}>
             <div>
-              <h2 className={styles.ctaSectionTitle}>Open source. Start building.</h2>
+              <h2 className={styles.ctaSectionTitle}>Deploy in minutes, not weeks.</h2>
               <p className={styles.ctaSectionSub}>
-                MIT licensed. From first config to production in minutes.
+                MIT licensed. One binary, one config file, production-ready.
               </p>
             </div>
             <div className={styles.ctaLinks}>

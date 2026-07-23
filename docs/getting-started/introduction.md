@@ -14,6 +14,8 @@ Praxis is a high-performance and security-first proxy server and framework for A
 
 ## Documentation
 
+- [Features](features) — AI inference, provider APIs,
+  agentic protocols, and core proxy capabilities
 - [Configuration](/docs/configuration/overview)
 - [Filters](/docs/filters/filter-model)
 - [Custom Filters](/docs/filters/custom-filters)
