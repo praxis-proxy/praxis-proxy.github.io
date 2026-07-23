@@ -215,8 +215,6 @@ and [StreamBuffer][payload-processing] body access
 pattern, making them composable with all other filters
 rather than bolted-on external processors.
 
-### Current
-
 - **Model-based routing** (`model_to_header`): extracts
   the `model` field from JSON request bodies and
   promotes it to an `X-Model` header, enabling
@@ -229,29 +227,107 @@ rather than bolted-on external processors.
   variable sources. Pair with a source discriminator
   (IP ACL, client auth) to control which clients get
   credential upgrades.
+- **Prompt enrichment** (`prompt_enrich`): inject
+  system or user messages into OpenAI-compatible chat
+  completion request bodies at the proxy layer. Static
+  configured messages are prepended or appended to the
+  `messages` array before forwarding upstream.
+- **AI guardrails** (`ai_guardrails`): calls an
+  external AI guardrail provider (e.g. NeMo Guardrails)
+  to evaluate request bodies. The provider determines
+  whether content should be passed, blocked, or
+  redacted.
+- **Token usage headers** (`token_usage_headers`):
+  injects `Praxis-Token-Input`, `Praxis-Token-Output`,
+  and `Praxis-Token-Total` headers into downstream
+  responses when token usage data is present in filter
+  metadata.
 
-### Planned
+### OpenAI Responses API
 
-The following capabilities are on the roadmap. Each
-builds on the StreamBuffer body access pattern and the
-filter pipeline.
+Full support for the OpenAI Responses API (`/v1/responses`)
+through composable filters that handle classification,
+validation, conversation state, storage, and streaming.
 
-- **Token counting**: input/output token counts from
-  request and response bodies
-- **Provider routing**: unified routing across LLM
-  providers with API translation
-- **Provider failover**: ordered failover chains with
-  automatic API translation on failure
-- **Token-based rate limiting**: per-client token quotas
-  with sliding window or token bucket
-- **Cost attribution**: token counting mapped to user,
-  session, model, and endpoint
-- **SSE streaming inspection**: per-event filter hooks
-  for streaming responses
-- **Semantic caching**: prompt deduplication via vector
-  similarity search
-- **AI guardrails**: prompt validation, content
-  filtering, and policy enforcement
+- **Request classification**
+  (`openai_responses_format`): classifies request
+  bodies as Responses API, Chat Completions, or
+  unknown format. Promotes format, model, stream, and
+  routing mode (stateless/stateful) to configurable
+  headers, metadata, and filter results for downstream
+  routing via branch chains.
+- **Request validation**
+  (`openai_responses_validate`): validates parameter
+  combinations (stream/background, background/store
+  conflicts), extracts conversation IDs, and generates
+  cryptographically random response and conversation
+  IDs with `resp_` and `conv_` prefixes.
+- **Model rewrite**
+  (`openai_responses_model_rewrite`): rewrites the
+  `model` field in request bodies with support for
+  default models, exact aliases, and wildcard pattern
+  matching.
+- **Response rehydration**
+  (`openai_responses_rehydrate`): validates
+  `previous_response_id` by fetching the stored
+  response, confirming its status is `"completed"`,
+  and populating `ResponsesState` with the full
+  conversation history.
+- **Response store** (`openai_response_store`):
+  persists non-streaming Responses API responses to
+  SQLite or PostgreSQL with tenant isolation, SSRF
+  protections, and configurable TLS for database
+  connections.
+- **Conversation management**
+  (`openai_conversations`): handles all
+  `/v1/conversations` endpoints locally from the
+  configured store without forwarding upstream.
+- **Responses proxy** (`responses_proxy`): rebuilds
+  the request body from `ResponsesState` when present,
+  replacing `input` with the assembled conversation
+  history and stripping `previous_response_id` since
+  rehydration was handled locally.
+- **Stream events** (`openai_stream_events`):
+  accumulates state from native Responses API SSE
+  event streams with configurable buffer, event, and
+  timeout limits.
+
+### Anthropic Messages API
+
+Full support for the Anthropic Messages API
+(`/v1/messages`) through five composable filters that
+enable passthrough to native backends, passthrough to
+`api.anthropic.com`, and bidirectional translation to
+OpenAI Chat Completions format.
+
+- **Request classification**
+  (`anthropic_messages_format`): classifies requests
+  by body structure and promotes routing facts to
+  headers, metadata, and filter results. Handles
+  ambiguous requests where both Anthropic and Chat
+  Completions signals are present.
+- **Request validation** (`anthropic_validate`):
+  validates the proxy-owned JSON envelope (body
+  present, valid JSON, JSON object) before forwarding.
+  Backend-owned semantics (model availability, role
+  ordering, token limits) are deferred to the backend.
+- **Protocol headers**
+  (`anthropic_messages_protocol`): injects
+  `anthropic-version` header if absent for native
+  `/v1/messages` backends.
+- **API translation** (`anthropic_to_openai`):
+  bidirectional request/response transformation
+  between Anthropic Messages and Chat Completions
+  wire format. Hoists `system` to an OpenAI system
+  message, flattens content blocks, maps
+  `stop_sequences` to `stop`, translates tool
+  definitions, and transforms responses back.
+- **Stream event translation**
+  (`anthropic_stream_events`): transforms streaming
+  SSE responses between OpenAI and Anthropic formats,
+  processing each chunk as it arrives. Arms
+  automatically based on upstream classifier metadata
+  and response `Content-Type`.
 
 ### StreamBuffer as AI Primitive
 
@@ -274,40 +350,49 @@ operational complexity of external processor
 architectures while providing full body visibility
 where it matters.
 
+### Planned
+
+The following capabilities are on the roadmap:
+
+- **Provider failover**: ordered failover chains with
+  automatic API translation on failure
+- **Token-based rate limiting**: per-client token quotas
+  with sliding window or token bucket
+- **Cost attribution**: token counting mapped to user,
+  session, model, and endpoint
+- **Semantic caching**: prompt deduplication via vector
+  similarity search
+
 ## AI Agentic
 
-Praxis targets first-class support for AI agent
+Praxis provides first-class support for AI agent
 protocols, positioning MCP and A2A as headline
 capabilities alongside HTTP and TCP proxying.
 
-### JSON-RPC Support
-
-- **JSON-RPC 2.0 foundation**: request envelope parsing
-  and method/id extraction for HTTP POST bodies, enabling
-  method-based routing for MCP/A2A-style traffic via the
-  `json_rpc` filter
-
-### Planned
-
-The following capabilities are on the roadmap and not
-yet implemented:
-
-- **MCP proxying**: session management, tool discovery
-  and routing, session lifecycle, auth and rate limiting
-  for Model Context Protocol connections
-- **A2A proxying**: agent card discovery, task lifecycle
-  management, SSE streaming for Agent-to-Agent protocol
-- **Stateful agent sessions**: shared session storage,
-  affinity, and lifecycle hooks for MCP and A2A
+- **JSON-RPC 2.0 foundation** (`json_rpc`): request
+  envelope parsing and method/id extraction for HTTP
+  POST bodies, enabling method-based routing for
+  MCP/A2A-style traffic. Supports batch policies,
+  configurable header names, and invalid-body handling.
+- **MCP proxying** (`mcp`): Model Context Protocol
+  support with metadata extraction (method, tool/resource
+  name, protocol version, session ID), header validation,
+  and an optional broker mode with static tool catalog
+  aggregation across multiple backend servers.
+- **A2A proxying** (`a2a`): Agent-to-Agent protocol
+  support with metadata extraction (method, task ID,
+  family, streaming flag), task-ownership routing with
+  TTL-based expiry, and incremental SSE response
+  scanning for streaming A2A methods.
 
 ## Build Features
 
 AI filters are controlled via Cargo features (enabled
 by default):
 
-- `ai-inference`: model routing (`model_to_header`
-  filter)
-- `ai-agentic`: MCP, A2A, agent orchestration (planned)
+- `ai-inference`: model routing, API classification,
+  response store, token usage, guardrails
+- `ai-agentic`: JSON-RPC, MCP, A2A
 
 To disable AI features:
 

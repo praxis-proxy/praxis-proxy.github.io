@@ -94,8 +94,8 @@ const config: Config = {
   themeConfig: {
     colorMode: {
       defaultMode: 'dark',
-      disableSwitch: true,
-      respectPrefersColorScheme: false,
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'Praxis',
@@ -116,7 +116,6 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
       links: [
         {
           title: 'Getting Started',
@@ -158,7 +157,7 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Praxis Contributors. MIT License.`,
     },
     prism: {
-      theme: themes.vsDark,
+      theme: themes.vsLight,
       darkTheme: themes.vsDark,
       additionalLanguages: ['bash', 'yaml', 'toml', 'rust', 'json'],
     },
