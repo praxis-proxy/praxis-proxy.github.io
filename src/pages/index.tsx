@@ -133,6 +133,7 @@ export default function Home(): React.JSX.Element {
               <p className={styles.heroSubtitle}>
                 One proxy between your apps and every AI provider. Route traffic,
                 manage keys, enforce guardrails — all from a single config file.
+                Built in Rust for performance and safety.
               </p>
 
               <div className={styles.heroCtas}>
