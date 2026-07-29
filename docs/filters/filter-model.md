@@ -25,6 +25,12 @@ At startup, the referenced chains are resolved and
 concatenated into a single pipeline per listener. Different
 listeners can compose different subsets of chains.
 
+:::tip Visual Guide
+For an animated walkthrough of how requests flow through
+filter pipelines, see the
+[Core visual guide](/praxis-core-booklet.html).
+:::
+
 ## Filter Model
 
 Filters are the core processing units in Praxis. Each
