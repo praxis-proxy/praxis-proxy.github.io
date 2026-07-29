@@ -106,7 +106,18 @@ const config: Config = {
           position: 'left',
           label: 'Docs',
         },
+        {to: '/docs/grid/overview', label: 'Grid', position: 'left'},
         {to: '/examples', label: 'Examples', position: 'left'},
+        {
+          type: 'dropdown',
+          label: 'Visual Guides',
+          position: 'left',
+          items: [
+            {label: 'Praxis Core', href: '/praxis-core-booklet.html'},
+            {label: 'Praxis AI', href: '/praxis-ai-booklet.html'},
+            {label: 'Praxis Grid', href: '/praxis-grid-booklet.html'},
+          ],
+        },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/praxis-proxy/praxis',
@@ -134,6 +145,7 @@ const config: Config = {
             {label: 'Filters', to: '/docs/filters/filter-model'},
             {label: 'Protocols', to: '/docs/protocols/tls'},
             {label: 'Security', to: '/docs/security/hardening'},
+            {label: 'Grid', to: '/docs/grid/overview'},
           ],
         },
         {
@@ -151,6 +163,9 @@ const config: Config = {
             {label: 'Blog', to: '/blog'},
             {label: 'Benchmarks', to: '/docs/development/benchmarks'},
             {label: 'Releases', href: 'https://github.com/praxis-proxy/praxis/releases'},
+            {label: 'Core Visual Guide', href: '/praxis-core-booklet.html'},
+            {label: 'AI Visual Guide', href: '/praxis-ai-booklet.html'},
+            {label: 'Grid Visual Guide', href: '/praxis-grid-booklet.html'},
           ],
         },
       ],
