@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praxis Grid - Deciding What's Routable</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap');
+  :root{
+    --ink:#0a1220;--paper:#e6edf6;--f1:#4c8cf0;--f2:#5ad2c4;--f3:#f0a848;
+    --node:#4c8cf0;--node2:#f0a848;--glow:#7ab3ff;
+    --a:#4c8cf0;--b:#c86ff0;--c:#5ad2c4;
+    --wire:#5f7288;--panel:#10192a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--paper);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  .rail{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--f1),var(--f2));z-index:100;transition:width .1s linear}
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative;overflow:hidden}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+  .cover-inner{position:relative;z-index:2;max-width:880px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.35em;text-transform:uppercase;font-size:.72rem;color:var(--f2);margin-bottom:1.5rem}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.6rem,8vw,5.6rem);line-height:.95;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--f3);display:block}
+  .sub{margin-top:1.6rem;font-size:clamp(1rem,2.4vw,1.25rem);color:#a8b8ca;max-width:620px;margin:1.6rem auto 0}
+  .scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--wire);animation:bob 2s infinite;z-index:2}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+  .chapter{max-width:880px;margin:0 auto;padding:5rem 1.6rem}
+  .part-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ink);background:var(--f2);padding:.25rem .7rem;border-radius:20px;margin-bottom:1rem}
+  .chapter-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.3em;color:var(--f3);text-transform:uppercase}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.9rem,5vw,3rem);line-height:1.05;margin:.4rem 0 1.4rem;letter-spacing:-.01em}
+  p{margin-bottom:1.1rem;font-size:1.05rem;color:#c2cedb}
+  p .hi{color:var(--f3);font-weight:500}
+  .lead{font-size:1.2rem;color:#dde6ef}
+  strong{color:#fff;font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:#ffffff12;padding:.1em .4em;border-radius:4px;font-size:.9em;color:var(--f2)}
+  .stage{background:var(--panel);border:1px solid #ffffff14;border-radius:18px;padding:1.2rem;margin:2rem 0;position:relative;box-shadow:0 24px 60px -30px #000}
+  .stage-label{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wire);margin-bottom:.6rem;padding:0 .3rem;flex-wrap:wrap}
+  .stage svg{width:100%;height:auto;display:block}
+  .btnrow{display:flex;gap:.5rem;flex-wrap:wrap}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;background:var(--f1);color:#04101f;border:none;padding:.5rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;transition:transform .1s,filter .15s}
+  .btn.alt{background:var(--b);color:#0e0820}.btn.merge{background:var(--c);color:#04140f}
+  .btn:hover{filter:brightness(1.13)}.btn:active{transform:scale(.96)}
+  .caption{font-size:.9rem;color:#9caec0;text-align:center;margin-top:.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;min-height:1.2em}
+  .legend{display:flex;gap:1.2rem;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#a8b8ca;margin-top:.8rem;justify-content:center}
+  .legend span{display:flex;align-items:center;gap:.4rem}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .label{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:#dae4ef}
+  .callout{border-left:3px solid var(--f3);padding:.4rem 0 .4rem 1.2rem;margin:1.6rem 0;color:#dde6ef;font-size:1.05rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.6rem 0}
+  .card{background:#ffffff08;border:1px solid #ffffff12;border-radius:12px;padding:1.1rem}
+  .card h4{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--f2);margin-bottom:.5rem}
+  .card p{font-size:.94rem;margin:0;color:#bccadb}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .divider{max-width:880px;margin:2rem auto;padding:0 1.6rem}
+  .divider-inner{border-top:1px solid #ffffff18;padding-top:2.5rem;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--f2)}
+  .props{list-style:none;margin:1.4rem 0}
+  .props li{font-family:'IBM Plex Mono',monospace;font-size:.95rem;padding:.7rem 0;border-top:1px solid #ffffff12;display:flex;gap:.9rem;align-items:baseline;color:#c2cedb}
+  .props li b{color:var(--f3);min-width:110px;display:inline-block}
+  footer{text-align:center;padding:4rem 1.6rem 5rem;color:var(--wire);font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.1em;border-top:1px solid #ffffff10;max-width:880px;margin:2rem auto 0}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="rail" id="rail"></div>
+
+<section class="cover">
+  <canvas id="coverNet"></canvas>
+  <div class="cover-inner">
+    <div class="eyebrow">Praxis Grid - Multi-Site AI Control Plane</div>
+    <h1>Deciding What's<em>Routable</em></h1>
+    <p class="sub">A Kubernetes control plane that discovers every provider across every site, scores them, and hands Praxis a flat file to route from - so the request hot path never has to ask a cluster anything.</p>
+  </div>
+  <div class="scroll-cue">scroll to begin &#8595;</div>
+</section>
+
+<!-- Part I: Architecture -->
+<section class="chapter">
+  <div class="part-tag">Part I - Architecture</div>
+  <div class="chapter-num">Chapter 01</div>
+  <h2>Grid decides. Praxis routes.</h2>
+  <p class="lead">One sentence carries the whole design: <span class="hi">Grid decides what should be routable; Praxis AI performs the actual routing.</span> Grid never proxies model traffic, terminates data-plane TLS, or touches a request.</p>
+  <p>Without Grid, every gateway would need static knowledge of every backend, every remote cluster, every credential rule, every health signal. That does not scale across sites and providers. Grid turns that moving control-plane state into a <strong>local file the gateway reads cheaply</strong>.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.01 - control plane vs data plane</span></div>
+    <svg id="planeSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption">Grid prepares state above; Praxis handles the network hot path below.</div>
+  </div>
+  <div class="callout">The rule that makes it fast: a live request never calls Kubernetes, SWIM, the CRDT layer, or the operator. It reads one pre-computed <code>grid-config.json</code> and goes.</div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 02</div>
+  <h2>Three CRDs describe the world</h2>
+  <p class="lead">Grid is a Kubernetes operator, so its inputs are custom resources in the <code>grid.praxis-proxy.io/v1alpha1</code> API group. Three of them define everything the routing layer needs.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.02 - the control-plane resources</span></div>
+    <svg id="crdSvg" viewBox="0 0 600 240"></svg>
+    <div class="caption">A network contains sites; sites advertise inference providers.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>GridNetwork</h4><p>A logical grid: SWIM seeds, TLS settings, gateway references, region/zone geography. The membrane everything else lives inside. Supports multi-tenancy - one cluster can host multiple networks.</p></div>
+    <div class="card"><h4>GridSite</h4><p>One participating cluster: its discovery state, egress address, trust material for mTLS. Phases track lifecycle from Pending through Discovered to Active. A site becomes Active only after cert fingerprint verification passes.</p></div>
+    <div class="card"><h4>InferenceProvider</h4><p>A declaration of model capacity: model names, backend kind (local, remote, cloud, API), endpoint, health config, auth strategy, and access policy via site label selectors.</p></div>
+    <div class="card"><h4>The output</h4><p>Not a CRD - the rendered <code>grid-config.json</code> ConfigMap that Praxis AI's <code>grid_route</code> filter consumes. Pre-sorted candidates with scores, admission state, and credential references.</p></div>
+  </div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 03</div>
+  <h2>From scattered state to one ordered list</h2>
+  <p class="lead">The operator reconciles continuously. For each network it lists local providers, scrapes their metrics, folds in provider records from <strong>remote sites via CRDTs</strong>, scores everything, and writes the overlay.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.03 - the rendering pipeline</span><button class="btn" id="renderBtn">&#9654; run the loop</button></div>
+    <svg id="renderSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption" id="renderCap">Watch scattered inputs converge into a scored overlay.</div>
+  </div>
+  <p>The scoring engine blends <strong>six normalized signals</strong> with configurable weights: locality (3.0), queue depth (3.0), KV-cache utilization (2.0), prefix-cache hit ratio (2.0), P99 latency (2.0), and cost per token (1.0). Missing values default to a neutral <code>0.5</code>; providers reporting unhealthy are dropped entirely.</p>
+  <p>Post-scoring, candidates are enriched with <strong>admission state</strong> (NewAndExisting, ExistingOnly, or Excluded based on metric thresholds) and <strong>locality tier</strong> (SameSite, SameZone, SameRegion, CrossRegion). The final sort is: admission state first, then locality tier, then score, then freshness. <span class="hi">Praxis just picks from the top.</span></p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 04</div>
+  <h2>Prefer what is close, cheap, and yours</h2>
+  <p>The locality signal encodes a clear preference order by <code>backendKind</code> - use capacity you own and that is near before falling out to third-party APIs.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.04 - backend-kind preference ladder</span></div>
+    <svg id="localSvg" viewBox="0 0 600 260"></svg>
+    <div class="caption">Local first, then remote Grid sites, then managed cloud, then API fallback.</div>
+  </div>
+  <p>Credentials never leak into routing data: Grid projects a <strong>reference</strong> to a Kubernetes Secret into the overlay, and the token is injected later by Praxis from a mounted secret. <span class="hi">Token bytes never appear in ConfigMaps, logs, status fields, or tracing spans.</span></p>
+</section>
+
+<div class="divider"><div class="divider-inner">Part II - How Sites Agree</div></div>
+
+<section class="chapter">
+  <div class="part-tag">Part II - Convergence</div>
+  <div class="chapter-num">Chapter 05</div>
+  <h2>How sites find each other: SWIM</h2>
+  <p class="lead">Grid learns "which sites are alive" with <strong>SWIM</strong>, a gossip-based membership protocol. Grid wraps the <code>foca</code> crate and carries it over <span class="hi">AES-256-GCM encrypted UDP</span>.</p>
+  <p>There is no central registry pinging everyone. Each site periodically probes a random peer; if it goes quiet, others double-check before anyone is declared gone. News of a join or failure spreads like an infection - reaching the whole mesh in a handful of rounds.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.05 - SWIM: probe, suspect, gossip</span><div class="btnrow"><button class="btn" id="probeBtn">&#9654; probe</button><button class="btn" id="gossipBtn">&#9654; spread event</button></div></div>
+    <svg id="swimSvg" viewBox="0 0 600 340"></svg>
+    <div class="caption" id="swimCap">Each site watches a few peers; membership news gossips outward.</div>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--node)"></span>alive</span>
+      <span><span class="dot" style="background:var(--node2)"></span>suspect</span>
+      <span><span class="dot" style="background:var(--glow)"></span>just heard</span>
+    </div>
+  </div>
+  <p>SWIM detects a downed site in seconds without flooding the network, and scales at <code>O(log n)</code> gossip cost. Its membership events feed the operator controllers, which react by re-rendering the overlay. CRDT state broadcasts <span class="hi">piggyback on SWIM probe messages</span> - no separate transport needed.</p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 06</div>
+  <h2>Agreeing without asking: CRDTs</h2>
+  <p class="lead">Knowing which sites are alive is only half the job. Each site also needs the <strong>others' provider state</strong> - and every site updates its own view at once. Grid propagates this as a <strong>CRDT</strong>: a data structure that merges automatically and always converges, with no coordinator.</p>
+  <p>A CRDT - Conflict-free Replicated Data Type - is a data structure whose merge operation obeys three algebraic properties:</p>
+  <ul class="props">
+    <li><b>Commutative</b> merge(A, B) = merge(B, A) - order of arrival does not matter.</li>
+    <li><b>Associative</b> Grouping does not matter - merge in any batching and get the same result.</li>
+    <li><b>Idempotent</b> Merging the same update twice changes nothing - safe to re-send on a flaky network.</li>
+  </ul>
+  <p>These three rules mean messages can arrive <span class="hi">out of order, duplicated, or batched</span>, and every site still lands on identical final state. This convergence is called <strong>strong eventual consistency</strong>.</p>
+  <div class="callout">Grid uses three CRDT types, each chosen for a specific job: <strong>LWW registers</strong> for provider records, <strong>add-wins OR-Sets</strong> for capabilities, and <strong>G-Counters</strong> for budget tracking.</div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 07</div>
+  <h2>How provider state converges</h2>
+  <p class="lead">The unit of exchange between sites is a <code>GridStateSnapshot</code>, carrying lightweight control-plane facts: provider capabilities, lifecycle phase, and normalized scoring metrics.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.06 - provider records: last-writer-wins</span><div class="btnrow"><button class="btn" id="lwwA">edit on A</button><button class="btn alt" id="lwwB">edit on B</button><button class="btn merge" id="lwwM">&#8644; merge</button></div></div>
+    <svg id="lwwSvg" viewBox="0 0 600 240"></svg>
+    <div class="caption" id="lwwCap">Two sites edit the same provider. A deterministic rule picks the winner.</div>
+  </div>
+  <p><strong>Provider records</strong> use last-writer-wins: each write carries a <code>(revision, writer_id)</code> tuple. Higher revision wins. Equal revisions break ties by lexicographic writer_id. The rule is deterministic, so <span class="hi">every site chooses the same winner</span>.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.07 - capabilities: add-wins OR-Set</span><div class="btnrow"><button class="btn" id="orAdd">A adds model</button><button class="btn alt" id="orRem">B removes it</button><button class="btn merge" id="orMerge">&#8644; merge</button></div></div>
+    <svg id="orSvg" viewBox="0 0 600 200"></svg>
+    <div class="caption" id="orCap">Concurrent add and remove of the same model - add wins.</div>
+  </div>
+  <p><strong>Capabilities</strong> (models, tools, agents) use an add-wins <strong>OR-Set</strong>. Each add creates a unique tag; a remove only tombstones the tags it has observed. If one site adds a model while another removes it, the add's fresh tag survives the remove's stale tombstone list. Losing a capability you just registered because a stale remove arrived late would be worse than briefly keeping one.</p>
+  <div class="two">
+    <div class="card"><h4>G-Counter</h4><p>Each site keeps its own slot; the real value is the sum. Merge takes the max of each slot. Used for per-tenant budget tracking - under partition, each site sees a lower bound rather than hard-rejecting.</p></div>
+    <div class="card"><h4>State broadcasts</h4><p>Piggybacked on SWIM probes. Four independent invalidation lanes (state, gateway, cert, metadata) so a gateway address update cannot block a provider state broadcast. Per-origin revision ordering rejects stale messages.</p></div>
+  </div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 08</div>
+  <h2>Encryption and trust</h2>
+  <p class="lead">SWIM traffic is encrypted with <strong>AES-256-GCM</strong>. The wire format is compact: 4-byte magic, 1-byte version, 12-byte nonce (OS RNG), ciphertext, 16-byte GCM tag - 33 bytes of overhead.</p>
+  <p>Wrong key or tampered data: GCM tag verification fails, packet silently dropped. Plaintext packets when a key is configured: rejected on the magic bytes. Encryption proves membership in the shared key group.</p>
+  <p>Site-to-site trust uses <strong>mTLS</strong> with SHA-256 cert fingerprint pinning. A GridSite becomes Active only after its cert fingerprint matches the configured trust value. Public cert PEM is propagated via SWIM broadcasts - structural checks discard any message containing private key markers.</p>
+  <div class="callout">Together, SWIM and CRDTs let Grid's sites agree on the whole picture <span class="hi">without a central coordinator</span> - and because the merged state is computed off the hot path and baked into <code>grid-config.json</code>, none of this touches a live request.</div>
+</section>
+
+<footer>
+  Praxis Grid - MIT - multi-site AI routing control plane - SWIM via foca (encrypted UDP) + OR-Set/LWW CRDTs - diagrams are live simulations
+</footer>
+
+<script>
+const rail=document.getElementById('rail');
+addEventListener('scroll',()=>{const h=document.documentElement;rail.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const NS='http://www.w3.org/2000/svg';
+const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* cover: sites gossiping */
+(function(){
+  const c=document.getElementById('coverNet'),x=c.getContext('2d');let W,H,pts;
+  function size(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;init();}
+  function init(){pts=[];const n=Math.min(44,Math.floor(W*H/40000));for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28});}
+  function frame(){
+    x.clearRect(0,0,W,H);
+    for(const a of pts){a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1;}
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y),lim=135*devicePixelRatio;
+      if(d<lim){x.strokeStyle='rgba(90,210,196,'+(1-d/lim)*.2+')';x.lineWidth=devicePixelRatio;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+    for(const a of pts){x.fillStyle='rgba(76,140,240,.9)';x.beginPath();x.arc(a.x,a.y,2.4*devicePixelRatio,0,7);x.fill();}
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size);size();requestAnimationFrame(frame);
+})();
+
+/* fig01: planes */
+(function(){
+  const svg=document.getElementById('planeSvg');
+  const defs=el('defs');defs.innerHTML='<marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#7ab3ff"/></marker>';svg.appendChild(defs);
+  const t1=el('text',{x:300,y:26,'text-anchor':'middle',class:'label',fill:'var(--f2)','letter-spacing':'2'});t1.textContent='CONTROL PLANE - Grid Operator';svg.appendChild(t1);
+  ['GridNetwork','InferenceProvider','SWIM / CRDT'].forEach((s,i)=>{const x=100+i*160;svg.appendChild(el('rect',{x,y:44,width:130,height:40,rx:9,fill:'#ffffff08',stroke:'var(--f1)','stroke-width':1.6}));const t=el('text',{x:x+65,y:69,'text-anchor':'middle',class:'label',fill:'#dae4ef'});t.textContent=s;svg.appendChild(t);});
+  svg.appendChild(el('rect',{x:220,y:120,width:160,height:38,rx:9,fill:'var(--f2)',opacity:.9}));
+  const cfg=el('text',{x:300,y:144,'text-anchor':'middle',class:'label',fill:'#04140f','font-weight':600});cfg.textContent='grid-config.json';svg.appendChild(cfg);
+  svg.appendChild(el('line',{x1:300,y1:84,x2:300,y2:120,stroke:'#ffffff30','stroke-width':2,'marker-end':'url(#a1)'}));
+  svg.appendChild(el('line',{x1:40,y1:180,x2:560,y2:180,stroke:'#ffffff18','stroke-width':1,'stroke-dasharray':'4 6'}));
+  const t2=el('text',{x:300,y:206,'text-anchor':'middle',class:'label',fill:'var(--f3)','letter-spacing':'2'});t2.textContent='DATA PLANE - Praxis AI Gateway';svg.appendChild(t2);
+  svg.appendChild(el('rect',{x:150,y:224,width:130,height:40,rx:9,fill:'#ffffff08',stroke:'var(--f3)','stroke-width':1.6}));
+  const g1=el('text',{x:215,y:249,'text-anchor':'middle',class:'label',fill:'#dae4ef'});g1.textContent='grid_route';svg.appendChild(g1);
+  svg.appendChild(el('rect',{x:320,y:224,width:130,height:40,rx:9,fill:'#ffffff08',stroke:'var(--f3)','stroke-width':1.6}));
+  const g2=el('text',{x:385,y:249,'text-anchor':'middle',class:'label',fill:'#dae4ef'});g2.textContent='proxy > backend';svg.appendChild(g2);
+  svg.appendChild(el('line',{x1:300,y1:158,x2:215,y2:224,stroke:'#ffffff20','stroke-width':1.5,'stroke-dasharray':'3 4'}));
+})();
+
+/* fig02: CRDs nesting */
+(function(){
+  const svg=document.getElementById('crdSvg');
+  svg.appendChild(el('rect',{x:40,y:30,width:520,height:180,rx:14,fill:'none',stroke:'var(--f1)','stroke-width':2}));
+  const t=el('text',{x:56,y:52,class:'label',fill:'var(--f1)','font-weight':600});t.textContent='GridNetwork "production"';svg.appendChild(t);
+  [[80,'site-east'],[320,'site-west']].forEach(s=>{
+    svg.appendChild(el('rect',{x:s[0],y:70,width:200,height:120,rx:11,fill:'#ffffff06',stroke:'var(--f2)','stroke-width':1.6}));
+    const st=el('text',{x:s[0]+16,y:92,class:'label',fill:'var(--f2)','font-weight':600});st.textContent='GridSite '+s[1];svg.appendChild(st);
+    ['model-a','model-b'].forEach((p,i)=>{svg.appendChild(el('rect',{x:s[0]+16,y:104+i*38,width:168,height:30,rx:7,fill:'var(--f3)',opacity:.8}));const pt=el('text',{x:s[0]+100,y:124+i*38,'text-anchor':'middle',class:'label',fill:'#04101f','font-weight':600});pt.textContent='InferenceProvider - '+p;svg.appendChild(pt);});
+  });
+})();
+
+/* fig03: render loop */
+(function(){
+  const svg=document.getElementById('renderSvg'),cap=document.getElementById('renderCap');
+  const steps=['list local providers','scrape Prometheus metrics','fold in remote CRDT records','score with 6 signals','filter by access policy','write grid-config.json'];
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    steps.forEach((s,i)=>{const y=16+i*46;svg.appendChild(el('rect',{x:100,y,width:400,height:36,rx:9,fill:'#ffffff08',stroke:'#ffffff20','stroke-width':1.4,id:'rs'+i}));const t=el('text',{x:300,y:y+22,'text-anchor':'middle',class:'label',fill:'#c2cedb'});t.textContent=(i+1)+'. '+s;svg.appendChild(t);});
+  }
+  build();
+  async function run(){
+    if(running)return;running=true;build();
+    for(let i=0;i<steps.length;i++){
+      const b=document.getElementById('rs'+i);
+      b.setAttribute('stroke',i===steps.length-1?'var(--f2)':'var(--glow)');
+      b.setAttribute('stroke-width','2.5');
+      cap.textContent=steps[i]+'...';
+      await wait(450);
+    }
+    document.getElementById('rs5').setAttribute('fill','#5ad2c422');
+    cap.textContent='grid-config.json written. Praxis picks from the top candidate.';
+    running=false;
+  }
+  document.getElementById('renderBtn').onclick=run;
+})();
+
+/* fig04: locality ladder */
+(function(){
+  const svg=document.getElementById('localSvg');
+  const kinds=[['local','Self-hosted, local site','var(--f2)',1.0],['remote','Self-hosted, another site','var(--f1)',.75],['cloud_managed','Managed cloud capacity','#c86ff0',.5],['api_provider','Third-party API fallback','var(--f3)',.25]];
+  kinds.forEach((k,i)=>{
+    const y=20+i*58;const w=120+k[3]*380;
+    svg.appendChild(el('rect',{x:40,y,width:w,height:42,rx:9,fill:k[2],opacity:.85}));
+    const t=el('text',{x:52,y:y+26,class:'label',fill:'#04101f','font-weight':600});t.textContent=k[0];svg.appendChild(t);
+    const d=el('text',{x:52+w+10,y:y+26,class:'label',fill:'#9caec0'});d.textContent=k[1];svg.appendChild(d);
+  });
+})();
+
+/* fig05: SWIM ring */
+(function(){
+  const svg=document.getElementById('swimSvg'),cap=document.getElementById('swimCap');
+  let pts,running=false;
+  function ring(){
+    svg.innerHTML='';pts=[];
+    const cx=300,cy=170,r=125,n=8;
+    for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;pts.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});}
+    pts.forEach((p,i)=>pts.forEach((q,j)=>{if(j>i&&Math.random()>.5)svg.appendChild(el('line',{x1:p.x,y1:p.y,x2:q.x,y2:q.y,stroke:'#5f728833','stroke-width':1}));}));
+    pts.forEach((p,i)=>{const c=el('circle',{cx:p.x,cy:p.y,r:16,fill:'var(--node)',stroke:'#0a1220','stroke-width':3});svg.appendChild(c);p.node=c;
+      const t=el('text',{x:p.x,y:p.y+4,'text-anchor':'middle',class:'label',fill:'#04101f','font-weight':600,'font-size':'10'});t.textContent='s'+i;svg.appendChild(t);});
+  }
+  ring();
+  function beam(a,b,color){return new Promise(res=>{const d=el('circle',{r:5,fill:color,cx:a.x,cy:a.y});svg.appendChild(d);
+    if(reduce){d.remove();return res();}const st=performance.now(),dur=460;
+    (function s(t){const k=Math.min(1,(t-st)/dur);d.setAttribute('cx',a.x+(b.x-a.x)*k);d.setAttribute('cy',a.y+(b.y-a.y)*k);k<1?requestAnimationFrame(s):(function(){d.remove();res();})();})(st);});}
+  async function probe(){
+    if(running)return;running=true;ring();
+    const A=0,E=4,helpers=[2,6];
+    cap.textContent='s0 probes s4 directly...';
+    await beam(pts[A],pts[E],'var(--glow)');
+    pts[E].node.setAttribute('fill','var(--node2)');
+    cap.textContent='No reply. s0 asks s2 and s6 to check indirectly...';
+    await wait(500);
+    for(const h of helpers)beam(pts[h],pts[E],'var(--f3)');
+    await wait(700);
+    pts[E].node.setAttribute('fill','var(--node)');
+    cap.textContent='s6 reached s4 - just a dropped packet. s4 stays alive.';
+    running=false;
+  }
+  async function gossip(){
+    if(running)return;running=true;ring();
+    const heard=new Array(pts.length).fill(false);heard[0]=true;pts[0].node.setAttribute('fill','var(--glow)');
+    let frontier=[0],round=0;
+    cap.textContent='s0 has a membership event...';
+    await wait(500);
+    while(!heard.every(Boolean)&&round<6){
+      round++;const next=[];
+      for(const src of frontier){let cnt=0,tries=0;while(cnt<2&&tries<8){const t=Math.floor(Math.random()*pts.length);tries++;if(!heard[t]){heard[t]=true;await beam(pts[src],pts[t],'var(--glow)');pts[t].node.setAttribute('fill','var(--glow)');next.push(t);cnt++;}}}
+      frontier.forEach(function(f){pts[f].node.setAttribute('fill','var(--node)');});
+      frontier=next;
+      cap.textContent='Round '+round+': '+heard.filter(Boolean).length+'/'+pts.length+' sites know.';
+      if(!frontier.length)break;
+      await wait(350);
+    }
+    pts.forEach(function(p){p.node.setAttribute('fill','var(--node)');});
+    cap.textContent='Whole mesh synced in '+round+' rounds.';
+    running=false;
+  }
+  document.getElementById('probeBtn').onclick=probe;
+  document.getElementById('gossipBtn').onclick=gossip;
+})();
+
+/* fig06: LWW provider record */
+(function(){
+  const svg=document.getElementById('lwwSvg'),cap=document.getElementById('lwwCap');
+  let A={val:'phase=Ready',rev:3},B={val:'phase=Ready',rev:3};
+  function draw(flash){
+    svg.innerHTML='';
+    box(70,'site-east','var(--a)',A);
+    box(360,'site-west','var(--b)',B);
+    svg.appendChild(el('line',{x1:240,y1:120,x2:360,y2:120,stroke:'#ffffff22','stroke-width':2,'stroke-dasharray':'5 6'}));
+    if(flash){const t=el('text',{x:300,y:110,'text-anchor':'middle',class:'label',fill:'var(--c)'});t.textContent='merge';svg.appendChild(t);}
+  }
+  function box(x,name,color,st){
+    svg.appendChild(el('rect',{x,y:40,width:170,height:150,rx:12,fill:'#ffffff08',stroke:color,'stroke-width':2}));
+    const h=el('text',{x:x+16,y:66,class:'label',fill:color,'font-weight':600});h.textContent=name;svg.appendChild(h);
+    const v=el('text',{x:x+16,y:110,class:'label',fill:'#e6edf6','font-size':'14'});v.textContent=st.val;svg.appendChild(v);
+    const r=el('text',{x:x+16,y:140,class:'label',fill:'var(--f3)'});r.textContent='rev '+st.rev;svg.appendChild(r);
+  }
+  draw();
+  document.getElementById('lwwA').onclick=function(){A={val:'phase=Draining',rev:A.rev+1};draw();cap.textContent='site-east writes '+A.val+' at rev '+A.rev+'.';};
+  document.getElementById('lwwB').onclick=function(){B={val:'phase=Ready',rev:B.rev+1};draw();cap.textContent='site-west writes '+B.val+' at rev '+B.rev+'.';};
+  document.getElementById('lwwM').onclick=function(){
+    const win=A.rev>=B.rev?A:B;
+    A={val:win.val,rev:win.rev};B={val:win.val,rev:win.rev};draw(true);
+    cap.textContent='Higher (revision, writer) wins: both agree on '+win.val+' @ rev '+win.rev+'.';
+  };
+})();
+
+/* fig07: OR-Set add-wins */
+(function(){
+  const svg=document.getElementById('orSvg'),cap=document.getElementById('orCap');
+  let A=new Set(),B=new Set(),addedTag=null;
+  function draw(flash){
+    svg.innerHTML='';
+    site(70,'site-east',A,'var(--a)');
+    site(360,'site-west',B,'var(--b)');
+    if(flash){const t=el('text',{x:300,y:30,'text-anchor':'middle',class:'label',fill:'var(--c)'});t.textContent='merge: add wins';svg.appendChild(t);}
+  }
+  function site(x,name,set,color){
+    svg.appendChild(el('rect',{x,y:40,width:170,height:120,rx:12,fill:'#ffffff08',stroke:color,'stroke-width':2}));
+    const h=el('text',{x:x+16,y:64,class:'label',fill:color,'font-weight':600});h.textContent=name;svg.appendChild(h);
+    if(set.size){var arr=[];set.forEach(function(m){arr.push(m);});arr.forEach(function(m,i){svg.appendChild(el('rect',{x:x+16,y:80+i*30,width:138,height:24,rx:6,fill:'var(--c)',opacity:.85}));var t=el('text',{x:x+85,y:96+i*30,'text-anchor':'middle',class:'label',fill:'#04140f','font-weight':600});t.textContent=m;svg.appendChild(t);});}
+    else{var e=el('text',{x:x+85,y:110,'text-anchor':'middle',class:'label',fill:'#5f7288'});e.textContent='(empty)';svg.appendChild(e);}
+  }
+  draw();
+  document.getElementById('orAdd').onclick=function(){A.add('model-x');addedTag=true;draw();cap.textContent='site-east adds model-x (tagged with a unique id).';};
+  document.getElementById('orRem').onclick=function(){B.delete('model-x');draw();cap.textContent='site-west removes model-x - but only tags it has observed.';};
+  document.getElementById('orMerge').onclick=function(){
+    var merged=new Set();A.forEach(function(v){merged.add(v);});B.forEach(function(v){merged.add(v);});
+    A=new Set(merged);B=new Set(merged);draw(true);
+    cap.textContent="A's add carried a tag B never saw, so the remove misses it: model-x stays.";
+  };
+})();
+</script>
+</body>
+</html>
