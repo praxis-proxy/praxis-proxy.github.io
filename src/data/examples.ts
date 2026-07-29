@@ -74,6 +74,34 @@ export const examples: Example[] = [
     filename: 'weighted-load-balancing.yaml',
   },
   {
+    name: 'Endpoint Selector',
+    description: 'Header-based upstream endpoint selection for deterministic routing',
+    category: 'Traffic Management',
+    path: 'examples/configs/traffic-management/endpoint-selector.yaml',
+    filename: 'endpoint-selector.yaml',
+  },
+  {
+    name: 'gRPC Detection',
+    description: 'Automatic gRPC and gRPC-Web content-type detection',
+    category: 'Traffic Management',
+    path: 'examples/configs/traffic-management/grpc-detection.yaml',
+    filename: 'grpc-detection.yaml',
+  },
+  {
+    name: 'Iterative Request Router Failover',
+    description: 'Iterative sub-request execution with failover across upstreams',
+    category: 'Traffic Management',
+    path: 'examples/configs/traffic-management/iterative-request-router-failover.yaml',
+    filename: 'iterative-request-router-failover.yaml',
+  },
+  {
+    name: 'Iterative Request Router Origin Failover',
+    description: 'Origin-based failover with iterative request routing',
+    category: 'Traffic Management',
+    path: 'examples/configs/traffic-management/iterative-request-router-origin-failover.yaml',
+    filename: 'iterative-request-router-origin-failover.yaml',
+  },
+  {
     name: 'Least Connections',
     description: 'Route to backend with fewest in-flight requests',
     category: 'Traffic Management',
@@ -244,6 +272,34 @@ export const examples: Example[] = [
     category: 'Security',
     path: 'examples/configs/security/cors.yaml',
     filename: 'cors.yaml',
+  },
+  {
+    name: 'Basic Auth',
+    description: 'HTTP Basic Authentication (RFC 7617) with credential validation',
+    category: 'Security',
+    path: 'examples/configs/security/basic-auth.yaml',
+    filename: 'basic-auth.yaml',
+  },
+  {
+    name: 'Peer Identity Trust',
+    description: 'mTLS peer identity validation for workload authentication',
+    category: 'Security',
+    path: 'examples/configs/security/peer-identity-trust.yaml',
+    filename: 'peer-identity-trust.yaml',
+  },
+  {
+    name: 'Policy',
+    description: 'CPEX policy engine with JWT, APL route policy, and PII scanning',
+    category: 'Security',
+    path: 'examples/configs/security/policy.yaml',
+    filename: 'policy.yaml',
+  },
+  {
+    name: 'Policy HTTP',
+    description: 'HTTP-specific policy configuration with route-level enforcement',
+    category: 'Security',
+    path: 'examples/configs/security/policy-http.yaml',
+    filename: 'policy-http.yaml',
   },
 
   // Observability
@@ -483,6 +539,20 @@ export const examples: Example[] = [
     category: 'Pipeline',
     path: 'examples/configs/pipeline/failure-mode.yaml',
     filename: 'failure-mode.yaml',
+  },
+  {
+    name: 'Iterative Request Router Sequence',
+    description: 'Sequential sub-request execution through an iterative pipeline',
+    category: 'Pipeline',
+    path: 'examples/configs/pipeline/iterative-request-router-sequence.yaml',
+    filename: 'iterative-request-router-sequence.yaml',
+  },
+  {
+    name: 'Iterative Request Router Circuit Breaker',
+    description: 'Iterative request routing with circuit breaker integration',
+    category: 'Pipeline',
+    path: 'examples/configs/pipeline/iterative-request-router-circuit-breaker.yaml',
+    filename: 'iterative-request-router-circuit-breaker.yaml',
   },
 
   // AI / Inference
