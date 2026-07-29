@@ -18,7 +18,7 @@ const features = [
   {
     title: 'Build Pipelines, Not Middleware',
     description:
-      'Stack rate limiting, auth, guardrails, and routing in any order using a simple YAML config. 35+ built-in filters ship ready to use, and you can write your own in Rust.',
+      'Stack rate limiting, auth, guardrails, and routing in any order using a simple YAML config. 50+ built-in filters ship ready to use, and you can write your own in Rust.',
     icon: '≡',
   },
   {
