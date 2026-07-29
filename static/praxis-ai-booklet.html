@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praxis AI - A Gateway That Reads the Body</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap');
+  :root{
+    --ink:#0c0a1a;--paper:#ece9f6;--f1:#7c6cf0;--f2:#4cc9f0;--f3:#f06fae;
+    --accent:#7c6cf0;--glow:#a99bff;--wire:#6b6690;--panel:#141127;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--paper);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  .rail{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--f1),var(--f3));z-index:100;transition:width .1s linear}
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative;overflow:hidden}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+  .cover-inner{position:relative;z-index:2;max-width:860px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.35em;text-transform:uppercase;font-size:.72rem;color:var(--glow);margin-bottom:1.5rem}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.6rem,8vw,5.6rem);line-height:.95;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--f3);display:block}
+  .sub{margin-top:1.6rem;font-size:clamp(1rem,2.4vw,1.25rem);color:#b6b0d0;max-width:600px;margin:1.6rem auto 0}
+  .scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--wire);animation:bob 2s infinite;z-index:2}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+  .chapter{max-width:880px;margin:0 auto;padding:5rem 1.6rem}
+  .chapter-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.3em;color:var(--f3);text-transform:uppercase}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.9rem,5vw,3rem);line-height:1.05;margin:.4rem 0 1.4rem;letter-spacing:-.01em}
+  p{margin-bottom:1.1rem;font-size:1.05rem;color:#cbc5e0}
+  p .hi{color:var(--f3);font-weight:500}
+  .lead{font-size:1.2rem;color:#e4dff2}
+  strong{color:#fff;font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:#ffffff12;padding:.1em .4em;border-radius:4px;font-size:.9em;color:var(--glow)}
+  .stage{background:var(--panel);border:1px solid #ffffff14;border-radius:18px;padding:1.2rem;margin:2rem 0;position:relative;box-shadow:0 24px 60px -30px #000}
+  .stage-label{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wire);margin-bottom:.6rem;padding:0 .3rem;flex-wrap:wrap}
+  .stage svg{width:100%;height:auto;display:block}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;background:var(--f1);color:#0a0820;border:none;padding:.5rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;transition:transform .1s,filter .15s}
+  .btn:hover{filter:brightness(1.15)}.btn:active{transform:scale(.96)}
+  .caption{font-size:.9rem;color:#a49dc4;text-align:center;margin-top:.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;min-height:1.2em}
+  .label{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:#e0dcf0}
+  .callout{border-left:3px solid var(--f3);padding:.4rem 0 .4rem 1.2rem;margin:1.6rem 0;color:#e4dff2;font-size:1.05rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.6rem 0}
+  .card{background:#ffffff08;border:1px solid #ffffff12;border-radius:12px;padding:1.1rem}
+  .card h4{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--f2);margin-bottom:.5rem}
+  .card p{font-size:.94rem;margin:0;color:#c3bcd8}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .part-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ink);background:var(--f1);padding:.25rem .7rem;border-radius:20px;margin-bottom:1rem}
+  .divider{max-width:880px;margin:2rem auto;padding:0 1.6rem}
+  .divider-inner{border-top:1px solid #ffffff18;padding-top:2.5rem;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--f1)}
+  footer{text-align:center;padding:4rem 1.6rem 5rem;color:var(--wire);font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.1em;border-top:1px solid #ffffff10;max-width:880px;margin:2rem auto 0}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="rail" id="rail"></div>
+
+<section class="cover">
+  <canvas id="coverNet"></canvas>
+  <div class="cover-inner">
+    <div class="eyebrow">Praxis AI - Inference &amp; Agent Gateway</div>
+    <h1>A Gateway That<em>Reads the Body</em></h1>
+    <p class="sub">Built on Praxis Core. It looks inside the request - the model, the format, the intent - and routes, enriches, and guards AI traffic without the backend lifting a finger.</p>
+  </div>
+  <div class="scroll-cue">scroll to begin &#8595;</div>
+</section>
+
+<!-- Part I -->
+<section class="chapter">
+  <div class="part-tag">Part I - Scope &amp; Architecture</div>
+  <div class="chapter-num">Chapter 01</div>
+  <h2>Ordinary proxies route on the envelope</h2>
+  <p class="lead">A normal proxy decides where traffic goes by looking at the path and headers - the envelope. But AI traffic hides everything that matters <span class="hi">inside the JSON body</span>: which model, which API shape, whether it streams, whether it is stateful.</p>
+  <p>Praxis AI extends Core with filters that inspect that body safely and turn what they find into routing signals. The base proxy still handles TLS, HTTP/2, load balancing; <strong>Praxis AI adds the intelligence layer on top</strong>.</p>
+  <div class="callout">The enabling trick is <code>StreamBuffer</code>: buffer just enough of the body to classify it, <strong>before</strong> choosing an upstream - without buffering the whole stream or blocking it.</div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 02</div>
+  <h2>An overlay on Core, not a fork</h2>
+  <p class="lead">Praxis AI is not a standalone proxy. It is a <strong>layer of AI-aware filters and provider types</strong> that plugs into the same filter pipeline covered in the Core booklet.</p>
+  <p>Core stays <span class="hi">general and AI-free</span>: TLS, routing, load balancing, the pipeline engine. Praxis AI adds only what is specific to inference and agent traffic - body classification, provider API shapes, credential injection, streaming translation, a response store. <strong>Nothing AI-specific leaks into the core.</strong></p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.01 - where AI sits on the stack</span></div>
+    <svg id="scopeSvg" viewBox="0 0 600 280"></svg>
+    <div class="caption">AI filters compose into Core's pipeline; Core rides on Pingora.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>praxis-ai-apis</h4><p>Provider API types and persistence: OpenAI and Anthropic shapes, the request classifier, response store, token usage extraction, and an MCP client. The nouns.</p></div>
+    <div class="card"><h4>praxis-ai-filters</h4><p>AI filter implementations: classification, model routing, credential injection, prompt enrichment, stream translation, guardrails, MCP/A2A agentic protocols. The verbs.</p></div>
+  </div>
+  <p>On top sits <code>praxis-ai-proxy</code>, the <strong>AI-native server binary</strong> built on Praxis. It calls <code>FilterRegistry::with_builtins()</code> to get all Core filters, then registers the AI filters on top. The split means provider types and the response store can be tested and reused independently of the filters that act on them.</p>
+</section>
+
+<div class="divider"><div class="divider-inner">Part II - How a Request Is Understood</div></div>
+
+<section class="chapter">
+  <div class="part-tag">Part II - The Request Path</div>
+  <div class="chapter-num">Chapter 03</div>
+  <h2>What kind of request is this, really?</h2>
+  <p class="lead">The first filter is a <strong>pure classifier</strong> - no I/O, it just parses the body once and returns the facts. It walks a precedence ladder to name the format.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.02 - the classification ladder</span><button class="btn" id="clsBtn">&#9654; classify a request</button></div>
+    <svg id="clsSvg" viewBox="0 0 600 380"></svg>
+    <div class="caption" id="clsCap">A body drops in; the classifier checks each rule in order.</div>
+  </div>
+  <p>The classifier recognizes <strong>six formats</strong>. Precedence matters: an <code>input</code> field means <strong>Responses API</strong>; <code>messages</code> + <code>max_tokens</code> + Anthropic signals means <strong>Anthropic Messages</strong>; <code>messages</code> alone is <strong>Chat Completions</strong>. Valid JSON with no recognized fields is <strong>UnknownJson</strong>; malformed bodies are <strong>InvalidJson</strong>; empty bodies are <strong>NonJson</strong>.</p>
+  <p>Path-based shortcuts bypass body parsing entirely: <code>GET /v1/responses/{id}</code> and similar sub-resource endpoints are classified as Responses API by URL alone. WebSocket upgrade handshakes on <code>/v1/responses</code> are also detected.</p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 04</div>
+  <h2>Facts travel on three channels</h2>
+  <p>Once classified, the facts have to reach the filters downstream. Praxis AI promotes them three ways at once, each for a different consumer.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.03 - one fact, three destinations</span><button class="btn" id="promBtn">&#9654; promote facts</button></div>
+    <svg id="promSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption" id="promCap">The classified model and format fan out to three channels.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>Metadata</h4><p>Durable key-value pairs that persist across proxy phases - the way filters talk to each other through the entire request lifetime.</p></div>
+    <div class="card"><h4>Headers</h4><p>Added to the upstream request (e.g. <code>X-Model</code>) so the router can pick a provider-specific cluster.</p></div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>Filter results</h4><p>Written to a result set that branch chains read to make conditional routing decisions.</p></div>
+    <div class="card"><h4>Sanitized</h4><p>Every promoted value is length-capped and scrubbed of control characters. Untrusted body content never flows into a header unchecked.</p></div>
+  </div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 05</div>
+  <h2>Route, rewrite, enrich, inject</h2>
+  <p class="lead">With facts in hand, a toolbox of <strong>27+ AI filters</strong> does the real work - each a normal Praxis filter, composed like any other.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.04 - the AI filter toolbox</span></div>
+    <svg id="actSvg" viewBox="0 0 600 280"></svg>
+    <div class="caption">Model routing, credential injection, prompt enrichment, format translation - pick what you need.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>Credential injection</h4><p>Per-cluster API keys added at the proxy; client keys stripped. Backends stay secret. Clients never hold provider credentials.</p></div>
+    <div class="card"><h4>Prompt enrichment</h4><p>Inject system or user messages into the chat body before forwarding - policy and context applied centrally via <code>prepend</code> and <code>append</code> lists.</p></div>
+    <div class="card"><h4>Stream translation</h4><p>Transform streaming SSE between OpenAI and Anthropic shapes on the fly, handling incomplete UTF-8 across chunk boundaries. One client format reaches many backends.</p></div>
+    <div class="card"><h4>Response store</h4><p>Persist non-streaming responses (SQLite or Postgres) and rehydrate a conversation by <code>previous_response_id</code> for multi-turn Responses API support.</p></div>
+  </div>
+  <p>Token counting works across <strong>six provider formats</strong>: OpenAI, Anthropic, Google, Bedrock (both Converse and InvokeModel), and Azure. The <code>token_count</code> filter extracts usage from both streaming SSE events and non-streaming JSON responses, writing <code>token.input</code>, <code>token.output</code>, and <code>token.total</code> to metadata for downstream consumption.</p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 06</div>
+  <h2>Speaking JSON-RPC for MCP and A2A</h2>
+  <p class="lead">Beyond model calls, Praxis AI understands <strong>agentic protocols</strong>. A shared <code>json_rpc</code> filter from Core parses the JSON-RPC 2.0 envelope once; MCP and A2A filters layer protocol-specific extraction on top.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.05 - the agentic protocol stack</span><button class="btn" id="mcpBtn">&#9654; parse an MCP call</button></div>
+    <svg id="mcpSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption" id="mcpCap">A JSON-RPC envelope splits into protocol-aware handlers.</div>
+  </div>
+  <p>The <strong>MCP filter</strong> recognizes methods like <code>tools/call</code>, <code>tools/list</code>, <code>resources/read</code>, and <code>initialize</code>, extracting tool and resource names from params. In <strong>broker mode</strong>, it can aggregate tool catalogs from multiple backend MCP servers and handle <code>tools/list</code> and <code>tools/call</code> locally, routing tool invocations to the correct backend.</p>
+  <p>The <strong>A2A filter</strong> handles Google's Agent-to-Agent protocol, extracting task IDs and context IDs for routing. It tracks task ownership across responses so follow-up requests route back to the originating backend. <span class="hi">Agent traffic becomes first-class, routable, inspectable proxy traffic.</span></p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 07</div>
+  <h2>Conversations and persistence</h2>
+  <p class="lead">For the OpenAI Responses API, Praxis AI manages <strong>multi-turn conversations locally</strong> without forwarding to any upstream.</p>
+  <p>The <code>conversations</code> filter handles all eight CRUD operations on conversations and items directly via <code>FilterAction::Reject</code> - these requests never leave the proxy. The <code>rehydrate</code> filter loads prior context from the response store when a request includes <code>previous_response_id</code>.</p>
+  <p>The response store supports both <strong>SQLite</strong> (local development) and <strong>Postgres</strong> (production) backends. Records are tenant-scoped, and the store tracks conversation items with monotonic positioning for ordered retrieval. The <code>ResponseStoreRegistry</code> implements <code>PipelineExtension</code> so stores are injected into the request context at pipeline setup - no global state needed.</p>
+  <div class="callout">The Responses API has two routing modes: <span class="hi">stateful</span> (when using previous_response_id, tools, conversations, or background mode) and <span class="hi">stateless</span> (when store=false with no stateful markers). The format filter detects this automatically and promotes the mode for routing decisions.</div>
+</section>
+
+<footer>
+  Praxis AI - MIT - body-aware inference &amp; agent gateway built on Praxis Core - diagrams are live simulations of the architecture
+</footer>
+
+<script>
+const rail=document.getElementById('rail');
+addEventListener('scroll',()=>{const h=document.documentElement;rail.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const NS='http://www.w3.org/2000/svg';
+const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* cover: JSON tokens streaming */
+(function(){
+  const c=document.getElementById('coverNet'),x=c.getContext('2d');let W,H,toks;
+  const glyphs=['{','}','"model"','messages','stream','tools',':','input','max_tokens','[',']'];
+  function size(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;init();}
+  function init(){toks=[];for(let i=0;i<26;i++)toks.push({x:Math.random()*W,y:Math.random()*H,sp:(.3+Math.random()*.9)*devicePixelRatio,g:glyphs[i%glyphs.length],a:.2+Math.random()*.5});}
+  function frame(){
+    x.clearRect(0,0,W,H);x.font=12*devicePixelRatio+"px 'IBM Plex Mono',monospace";
+    for(const t of toks){t.x+=t.sp;if(t.x>W+40){t.x=-40;t.y=Math.random()*H;}
+      x.fillStyle='rgba(169,155,255,'+t.a+')';x.fillText(t.g,t.x,t.y);}
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size);size();requestAnimationFrame(frame);
+})();
+
+/* fig01: scope stack */
+(function(){
+  const svg=document.getElementById('scopeSvg');if(!svg)return;
+  const layers=[
+    ['AI filters + provider types','var(--f1)',30,'Praxis AI'],
+    ['Praxis Core - pipeline, config, live reload','var(--f2)',100,'Core'],
+    ['Pingora - network core, HTTP, TLS','var(--f3)',170,'Pingora'],
+    ['Rust async runtime (Tokio)','#6b6690',240,''],
+  ];
+  layers.forEach(l=>{
+    const y=l[2];
+    svg.appendChild(el('rect',{x:60,y,width:480,height:52,rx:10,fill:'#ffffff08',stroke:l[1],'stroke-width':2}));
+    const tt=el('text',{x:80,y:y+31,class:'label',fill:'#e0dcf0','font-weight':600});tt.textContent=l[0];svg.appendChild(tt);
+    if(l[3]){const b=el('text',{x:520,y:y+31,'text-anchor':'end',class:'label',fill:l[1],'font-size':'10'});b.textContent=l[3];svg.appendChild(b);}
+  });
+  const t=el('text',{x:300,y:20,'text-anchor':'middle',class:'label',fill:'#a49dc4','font-size':'11'});
+  t.textContent='each layer adds only its own concern - nothing leaks downward';svg.appendChild(t);
+})();
+
+/* fig02: classification ladder */
+(function(){
+  const svg=document.getElementById('clsSvg'),cap=document.getElementById('clsCap');
+  const rules=[
+    ['input / prompt / previous_response_id','Responses API','var(--f1)'],
+    ['messages + max_tokens + Anthropic signals','Anthropic Messages','var(--f3)'],
+    ['messages alone','Chat Completions','var(--f2)'],
+    ['valid JSON, no known fields','UnknownJson','#8a86a8'],
+    ['malformed JSON body','InvalidJson','#8a86a8'],
+    ['empty or absent body','NonJson','#8a86a8'],
+  ];
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    rules.forEach((r,i)=>{
+      const y=40+i*52;
+      svg.appendChild(el('rect',{x:60,y,width:480,height:40,rx:10,fill:'#ffffff08',stroke:'#ffffff20','stroke-width':1.4,id:'rule'+i}));
+      const t=el('text',{x:78,y:y+25,class:'label',fill:'#cbc5e0'});t.textContent=r[0];svg.appendChild(t);
+      const o=el('text',{x:522,y:y+25,'text-anchor':'end',class:'label',fill:r[2],'font-weight':600,id:'out'+i,opacity:.3});o.textContent='> '+r[1];svg.appendChild(o);
+    });
+  }
+  build();
+  async function run(target){
+    if(running)return;running=true;build();
+    if(target===undefined)target=Math.floor(Math.random()*3);
+    const d=el('circle',{r:8,fill:'var(--glow)',cx:30,cy:60});svg.appendChild(d);
+    cap.textContent='Request body enters the classifier...';
+    for(let i=0;i<rules.length;i++){
+      const y=40+i*52+20;
+      await mv(d,90,y);
+      document.getElementById('rule'+i).setAttribute('stroke','var(--glow)');
+      if(i===target){
+        document.getElementById('rule'+i).setAttribute('stroke',rules[i][2]);
+        document.getElementById('rule'+i).setAttribute('stroke-width','2.5');
+        document.getElementById('out'+i).setAttribute('opacity','1');
+        await mv(d,500,y);d.setAttribute('fill',rules[i][2]);
+        cap.textContent='Matched: '+rules[i][1]+'. Classification done.';
+        running=false;return;
+      }else{
+        document.getElementById('rule'+i).setAttribute('stroke','#3a3654');
+        cap.textContent='No match on "'+rules[i][0]+'" - fall through.';
+        await wait(220);
+      }
+    }
+    running=false;
+  }
+  document.getElementById('clsBtn').onclick=()=>run();
+  function mv(d,x,y){return new Promise(res=>{if(reduce){d.setAttribute('cx',x);d.setAttribute('cy',y);return res();}
+    const sx=+d.getAttribute('cx'),sy=+d.getAttribute('cy'),st=performance.now(),dur=300;
+    (function s(t){const k=Math.min(1,(t-st)/dur),e=1-Math.pow(1-k,3);d.setAttribute('cx',sx+(x-sx)*e);d.setAttribute('cy',sy+(y-sy)*e);k<1?requestAnimationFrame(s):res();})(st);});}
+})();
+
+/* fig03: promote to three channels */
+(function(){
+  const svg=document.getElementById('promSvg'),cap=document.getElementById('promCap');
+  const chans=[['Metadata','var(--f1)',70],['Headers','var(--f2)',150],['Filter results','var(--f3)',230]];
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    svg.appendChild(el('rect',{x:40,y:120,width:150,height:50,rx:10,fill:'#ffffff10',stroke:'var(--glow)','stroke-width':2}));
+    const t=el('text',{x:115,y:142,'text-anchor':'middle',class:'label',fill:'var(--glow)','font-weight':600});t.textContent='model=gpt-4o';svg.appendChild(t);
+    const t2=el('text',{x:115,y:158,'text-anchor':'middle',class:'label',fill:'#a49dc4','font-size':'10'});t2.textContent='format=responses';svg.appendChild(t2);
+    chans.forEach((c)=>{svg.appendChild(el('rect',{x:400,y:c[2],width:160,height:44,rx:10,fill:'#ffffff08',stroke:c[1],'stroke-width':2}));const tt=el('text',{x:480,y:c[2]+27,'text-anchor':'middle',class:'label',fill:c[1],'font-weight':600});tt.textContent=c[0];svg.appendChild(tt);});
+  }
+  build();
+  async function run(){
+    if(running)return;running=true;build();
+    cap.textContent='Classified facts fan out to three channels at once...';
+    for(const c of chans){
+      const d=el('circle',{r:6,fill:c[1],cx:190,cy:145});svg.appendChild(d);
+      await mv(d,400,c[2]+22);
+    }
+    cap.textContent='Metadata for filters, headers for the router, results for branch chains.';
+    running=false;
+  }
+  function mv(d,x,y){return new Promise(res=>{if(reduce){d.setAttribute('cx',x);d.setAttribute('cy',y);return res();}
+    const sx=+d.getAttribute('cx'),sy=+d.getAttribute('cy'),st=performance.now(),dur=520;
+    (function s(t){const k=Math.min(1,(t-st)/dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;d.setAttribute('cx',sx+(x-sx)*e);d.setAttribute('cy',sy+(y-sy)*e);k<1?requestAnimationFrame(s):res();})(st);});}
+  document.getElementById('promBtn').onclick=run;
+})();
+
+/* fig04: toolbox on the path */
+(function(){
+  const svg=document.getElementById('actSvg');
+  function pill(x,y,txt,color){svg.appendChild(el('rect',{x,y,width:80,height:34,rx:10,fill:color,opacity:.9}));const t=el('text',{x:x+40,y:y+22,'text-anchor':'middle',class:'label',fill:'#0a0820','font-weight':600});t.textContent=txt;svg.appendChild(t);}
+  pill(20,120,'Client','var(--f2)');
+  pill(500,120,'Provider','var(--f3)');
+  svg.appendChild(el('line',{x1:90,y1:137,x2:500,y2:137,stroke:'#ffffff18','stroke-width':2}));
+  const stops=[['classify','var(--f1)',115],['cred inject','var(--f3)',245],['prompt enrich','var(--f2)',375]];
+  stops.forEach(s=>{
+    svg.appendChild(el('line',{x1:s[2]+8,y1:110,x2:s[2]+8,y2:137,stroke:s[1],'stroke-width':1.5,'stroke-dasharray':'3 3'}));
+    svg.appendChild(el('rect',{x:s[2]-40,y:74,width:96,height:34,rx:8,fill:'#ffffff08',stroke:s[1],'stroke-width':1.8}));
+    const t=el('text',{x:s[2]+8,y:95,'text-anchor':'middle',class:'label',fill:s[1]});t.textContent=s[0];svg.appendChild(t);
+    svg.appendChild(el('circle',{cx:s[2]+8,cy:137,r:5,fill:s[1]}));
+  });
+  const note=el('text',{x:300,y:200,'text-anchor':'middle',class:'label',fill:'#8a86a8','font-size':'11'});note.textContent='all ordinary Praxis filters - composed, reordered, or skipped per listener';svg.appendChild(note);
+})();
+
+/* fig05: agentic stack */
+(function(){
+  const svg=document.getElementById('mcpSvg'),cap=document.getElementById('mcpCap');
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    box(220,20,160,'json_rpc','var(--glow)','jr');
+    box(80,130,150,'MCP filter','var(--f1)','mcp');
+    box(370,130,150,'A2A filter','var(--f3)','a2a');
+    leaf(40,230,'Broker');leaf(160,230,'Tool meta');
+    leaf(330,230,'Task route');leaf(450,230,'SSE scan');
+    edge(300,64,155,130);edge(300,64,445,130);
+    edge(115,174,75,230);edge(155,174,195,230);
+    edge(405,174,365,230);edge(445,174,485,230);
+  }
+  function box(x,y,w,txt,color,id){svg.appendChild(el('rect',{x,y,width:w,height:44,rx:10,fill:'#ffffff08',stroke:color,'stroke-width':2,id}));const t=el('text',{x:x+w/2,y:y+27,'text-anchor':'middle',class:'label',fill:color,'font-weight':600});t.textContent=txt;svg.appendChild(t);}
+  function leaf(x,y,txt){svg.appendChild(el('rect',{x:x-5,y,width:96,height:34,rx:8,fill:'#ffffff06',stroke:'#ffffff20','stroke-width':1.3}));const t=el('text',{x:x+43,y:y+21,'text-anchor':'middle',class:'label',fill:'#b6b0d0','font-size':'11'});t.textContent=txt;svg.appendChild(t);}
+  function edge(x1,y1,x2,y2){svg.appendChild(el('line',{x1,y1,x2,y2,stroke:'#ffffff20','stroke-width':1.5}));}
+  build();
+  async function run(){
+    if(running)return;running=true;build();
+    const d=el('circle',{r:8,fill:'var(--glow)',cx:300,cy:10});svg.appendChild(d);
+    cap.textContent='A JSON-RPC 2.0 envelope arrives...';
+    await mv(d,300,42);
+    document.getElementById('jr').setAttribute('stroke-width','3');
+    cap.textContent='json_rpc parses kind, method, id - once.';
+    await wait(500);
+    await mv(d,155,152);
+    document.getElementById('mcp').setAttribute('stroke-width','3');
+    cap.textContent='method "tools/call" - MCP filter extracts the tool name.';
+    running=false;
+  }
+  function mv(d,x,y){return new Promise(res=>{if(reduce){d.setAttribute('cx',x);d.setAttribute('cy',y);return res();}
+    const sx=+d.getAttribute('cx'),sy=+d.getAttribute('cy'),st=performance.now(),dur=420;
+    (function s(t){const k=Math.min(1,(t-st)/dur),e=1-Math.pow(1-k,3);d.setAttribute('cx',sx+(x-sx)*e);d.setAttribute('cy',sy+(y-sy)*e);k<1?requestAnimationFrame(s):res();})(st);});}
+  document.getElementById('mcpBtn').onclick=run;
+})();
+</script>
+</body>
+</html>
