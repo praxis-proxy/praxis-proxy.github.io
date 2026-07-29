@@ -92,4 +92,4 @@ operator.
 For an interactive walkthrough with live diagrams
 covering architecture, CRDs, scoring, SWIM, and CRDT
 convergence, see the
-[Grid Booklet](/praxis-grid-booklet.html).
+[Grid Booklet](pathname:///praxis-grid-booklet.html).

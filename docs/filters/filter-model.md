@@ -28,7 +28,7 @@ listeners can compose different subsets of chains.
 :::tip Visual Guide
 For an animated walkthrough of how requests flow through
 filter pipelines, see the
-[Core visual guide](/praxis-core-booklet.html).
+[Core visual guide](pathname:///praxis-core-booklet.html).
 :::
 
 ## Filter Model

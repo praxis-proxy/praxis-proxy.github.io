@@ -237,4 +237,4 @@ out to third-party APIs.
 
 For interactive diagrams showing SWIM probing, CRDT
 convergence, and the scoring pipeline, see the
-[Grid Booklet](/praxis-grid-booklet.html).
+[Grid Booklet](pathname:///praxis-grid-booklet.html).

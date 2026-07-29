@@ -209,5 +209,5 @@ cluster endpoint (fail-closed).
 
 - [Concepts](concepts) - Deep dive into CRDs, SWIM,
   CRDTs, and scoring
-- [Grid Booklet](/praxis-grid-booklet.html) -
+- [Grid Booklet](pathname:///praxis-grid-booklet.html) -
   Interactive visual guide with live diagrams

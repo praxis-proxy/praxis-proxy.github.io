@@ -40,21 +40,21 @@ const guides = [
     title: 'Praxis Core',
     description:
       'How requests flow through filter pipelines, how chains compose, and how config reloads without dropping a connection.',
-    href: '/praxis-core-booklet.html',
+    href: 'pathname:///praxis-core-booklet.html',
     label: 'Read the Core guide',
   },
   {
     title: 'Praxis AI',
     description:
       'How the AI gateway classifies requests, routes to providers, injects credentials, and speaks MCP and A2A.',
-    href: '/praxis-ai-booklet.html',
+    href: 'pathname:///praxis-ai-booklet.html',
     label: 'Read the AI guide',
   },
   {
     title: 'Praxis Grid',
     description:
       'How the distributed control plane converges state with CRDTs, discovers sites with SWIM, and scores routes by locality.',
-    href: '/praxis-grid-booklet.html',
+    href: 'pathname:///praxis-grid-booklet.html',
     label: 'Read the Grid guide',
   },
 ];

@@ -10,9 +10,9 @@ Praxis is a high-performance and security-first proxy server and framework for A
 :::tip Visual Guides
 New to Praxis? The interactive visual guides walk through
 the architecture with animated diagrams:
-[Praxis Core](/praxis-core-booklet.html) |
-[Praxis AI](/praxis-ai-booklet.html) |
-[Praxis Grid](/praxis-grid-booklet.html)
+[Praxis Core](pathname:///praxis-core-booklet.html) |
+[Praxis AI](pathname:///praxis-ai-booklet.html) |
+[Praxis Grid](pathname:///praxis-grid-booklet.html)
 :::
 
 ## Getting Started

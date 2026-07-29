@@ -29,7 +29,7 @@ compose a bespoke proxy server from the same primitives.
 :::tip Visual Guide
 For an interactive walkthrough of the architecture with
 animated diagrams, see the
-[Praxis Core visual guide](/praxis-core-booklet.html).
+[Praxis Core visual guide](pathname:///praxis-core-booklet.html).
 :::
 
 ## Primary Use-Cases
