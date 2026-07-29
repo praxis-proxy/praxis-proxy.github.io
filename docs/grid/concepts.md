@@ -210,9 +210,10 @@ The locality signal encodes a clear preference ladder
 by `backendKind`:
 
 1. **local** - Self-hosted, local site (score 1.0)
-2. **remote** - Self-hosted, another Grid site (0.75)
-3. **cloud_managed** - Managed cloud capacity (0.5)
-4. **api_provider** - Third-party API fallback (0.25)
+2. **remote** - Self-hosted, another Grid site (0.7
+   same-region, 0.4 cross-region)
+3. **cloud_managed** - Managed cloud capacity (0.2)
+4. **api_provider** - Third-party API fallback (0.1)
 
 Use capacity you own and that is near before falling
 out to third-party APIs.

@@ -107,11 +107,6 @@ the grid.
 
 ```yaml
 apiVersion: grid.praxis-proxy.io/v1alpha1
-kind: GridNetwork
-metadata:
-  name: production
----
-apiVersion: grid.praxis-proxy.io/v1alpha1
 kind: InferenceProvider
 metadata:
   name: local-llama
