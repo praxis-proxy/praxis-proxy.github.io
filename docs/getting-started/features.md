@@ -46,6 +46,13 @@ title: Features
   supports `${path}` and `${query}` template placeholders
 - **Timeout enforcement** - 504 rejection when upstream
   response exceeds a configured latency SLA
+- **Endpoint selector** - header-based upstream
+  endpoint selection for deterministic routing
+- **gRPC detection** - automatic gRPC and gRPC-Web
+  content-type detection for protocol-aware handling
+- **Iterative request router** - execute sub-requests
+  iteratively with failover and circuit breaker
+  integration
 - **Connection tuning** - per-cluster connection, read,
   write, idle, and total connection (TLS handshake)
   timeouts
@@ -133,6 +140,10 @@ deployment guidance.
   support, wildcard subdomains, and log-only mode
 - **Forwarded headers**: X-Forwarded-For/Proto/Host
   injection with trusted proxy CIDR support
+- **Basic auth**: HTTP Basic Authentication (RFC 7617)
+  with configurable credential validation
+- **Peer identity trust**: mTLS peer identity
+  validation for workload-to-workload authentication
 
 ## Observability
 
