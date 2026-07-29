@@ -24,7 +24,7 @@ title: Features
 - **Path, host, and header routing** - prefix-based
   routing with optional `Host` header and request header
   matching; longest prefix wins
-- **Load balancing** - round-robin, least-connections,
+- **Load balancing** - round-robin, least-connections, p2c (power of two choices),
   consistent-hash, weighted endpoints
 - **Static responses** - return fixed status, headers,
   and body without upstream
