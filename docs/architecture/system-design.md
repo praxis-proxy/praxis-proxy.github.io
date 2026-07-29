@@ -26,6 +26,12 @@ compose a bespoke proxy server from the same primitives.
 [`HttpFilter`]:/docs/filters/filter-model
 [`TcpFilter`]:/docs/filters/filter-model
 
+:::tip Visual Guide
+For an interactive walkthrough of the architecture with
+animated diagrams, see the
+[Praxis Core visual guide](/praxis-core-booklet.html).
+:::
+
 ## Primary Use-Cases
 
 - **Ingress**: Reverse proxy, API gateway, edge proxy

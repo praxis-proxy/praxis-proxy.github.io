@@ -7,6 +7,14 @@ title: Introduction
 
 Praxis is a high-performance and security-first proxy server and framework for AI and cloud-native workloads.
 
+:::tip Visual Guides
+New to Praxis? The interactive visual guides walk through
+the architecture with animated diagrams:
+[Praxis Core](/praxis-core-booklet.html) |
+[Praxis AI](/praxis-ai-booklet.html) |
+[Praxis Grid](/praxis-grid-booklet.html)
+:::
+
 ## Getting Started
 
 - [Quickstart](quickstart)

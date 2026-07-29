@@ -24,7 +24,7 @@ title: Features
 - **Path, host, and header routing** - prefix-based
   routing with optional `Host` header and request header
   matching; longest prefix wins
-- **Load balancing** - round-robin, least-connections,
+- **Load balancing** - round-robin, least-connections, p2c (power of two choices),
   consistent-hash, weighted endpoints
 - **Static responses** - return fixed status, headers,
   and body without upstream
@@ -46,6 +46,13 @@ title: Features
   supports `${path}` and `${query}` template placeholders
 - **Timeout enforcement** - 504 rejection when upstream
   response exceeds a configured latency SLA
+- **Endpoint selector** - header-based upstream
+  endpoint selection for deterministic routing
+- **gRPC detection** - automatic gRPC and gRPC-Web
+  content-type detection for protocol-aware handling
+- **Iterative request router** - execute sub-requests
+  iteratively with failover and circuit breaker
+  integration
 - **Connection tuning** - per-cluster connection, read,
   write, idle, and total connection (TLS handshake)
   timeouts
@@ -133,6 +140,10 @@ deployment guidance.
   support, wildcard subdomains, and log-only mode
 - **Forwarded headers**: X-Forwarded-For/Proto/Host
   injection with trusted proxy CIDR support
+- **Basic auth**: HTTP Basic Authentication (RFC 7617)
+  with configurable credential validation
+- **Peer identity trust**: mTLS peer identity
+  validation for workload-to-workload authentication
 
 ## Observability
 
@@ -385,25 +396,28 @@ capabilities alongside HTTP and TCP proxying.
   TTL-based expiry, and incremental SSE response
   scanning for streaming A2A methods.
 
-## Build Features
+## Praxis AI Extension
 
-AI filters are controlled via Cargo features (enabled
-by default):
+AI inference, agentic protocol, and provider API
+filters are provided by the
+[Praxis AI](https://github.com/praxis-proxy/ai)
+extension crate. The AI crate builds on the core
+Praxis filter framework and ships as a separate binary
+(`praxis-ai`) with all AI filters registered alongside
+core filters at startup.
 
-- `ai-inference`: model routing, API classification,
-  response store, token usage, guardrails
-- `ai-agentic`: JSON-RPC, MCP, A2A
-
-To disable AI features:
-
-```console
-cargo build -p praxis --no-default-features
-```
+To use AI features, build and run from the
+[ai](https://github.com/praxis-proxy/ai) repository
+instead of the core praxis binary.
 
 ## Extensions
 
 - **Rust extensions**: compile-time custom filters with
   zero overhead via the `HttpFilter`/`TcpFilter` traits
   and `register_filters!` macro.
+- **Auto-discovery**: external filter crates
+  self-register at build time via
+  `[package.metadata.praxis-filters]` in their
+  `Cargo.toml`.
 
 [filters]:../filters/filter-model

@@ -7,7 +7,7 @@ title: Installation
 
 ## Prerequisites
 
-- **Rust** stable 1.94 or later
+- **Rust** stable 1.96 or later
 - **CMake** 3.31 or later (required for building some native dependencies)
 
 ## Building from Source

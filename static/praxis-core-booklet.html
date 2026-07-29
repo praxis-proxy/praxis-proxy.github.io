@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praxis Core - Everything Is a Filter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap');
+  :root{
+    --ink:#0a1410;--paper:#e8f0ea;--f1:#3ecf8e;--f2:#4cc9f0;--f3:#f0a848;
+    --accent:#3ecf8e;--glow:#6fffc4;--wire:#5f7a70;--panel:#0f1e18;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--paper);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  .rail{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--f1),var(--f2));z-index:100;transition:width .1s linear}
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative;overflow:hidden}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+  .cover-inner{position:relative;z-index:2;max-width:860px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.35em;text-transform:uppercase;font-size:.72rem;color:var(--glow);margin-bottom:1.5rem}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.6rem,8vw,5.6rem);line-height:.95;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--f3);display:block}
+  .sub{margin-top:1.6rem;font-size:clamp(1rem,2.4vw,1.25rem);color:#a6c0b4;max-width:600px;margin:1.6rem auto 0}
+  .scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--wire);animation:bob 2s infinite;z-index:2}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+  .chapter{max-width:880px;margin:0 auto;padding:5rem 1.6rem}
+  .chapter-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.3em;color:var(--f3);text-transform:uppercase}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.9rem,5vw,3rem);line-height:1.05;margin:.4rem 0 1.4rem;letter-spacing:-.01em}
+  p{margin-bottom:1.1rem;font-size:1.05rem;color:#c6d6cd}
+  p .hi{color:var(--f3);font-weight:500}
+  .lead{font-size:1.2rem;color:#dfeae3}
+  strong{color:#fff;font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:#ffffff12;padding:.1em .4em;border-radius:4px;font-size:.9em;color:var(--glow)}
+  .stage{background:var(--panel);border:1px solid #ffffff14;border-radius:18px;padding:1.2rem;margin:2rem 0;position:relative;box-shadow:0 24px 60px -30px #000}
+  .stage-label{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wire);margin-bottom:.6rem;padding:0 .3rem;flex-wrap:wrap}
+  .stage svg{width:100%;height:auto;display:block}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;background:var(--f1);color:#04140d;border:none;padding:.5rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;transition:transform .1s,filter .15s}
+  .btn:hover{filter:brightness(1.12)}.btn:active{transform:scale(.96)}
+  .caption{font-size:.9rem;color:#9fb6ab;text-align:center;margin-top:.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;min-height:1.2em}
+  .label{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:#dbe8e1}
+  .callout{border-left:3px solid var(--f3);padding:.4rem 0 .4rem 1.2rem;margin:1.6rem 0;color:#dfeae3;font-size:1.05rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.6rem 0}
+  .card{background:#ffffff08;border:1px solid #ffffff12;border-radius:12px;padding:1.1rem}
+  .card h4{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--f2);margin-bottom:.5rem}
+  .card p{font-size:.94rem;margin:0;color:#bccec4}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .part-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ink);background:var(--f1);padding:.25rem .7rem;border-radius:20px;margin-bottom:1rem}
+  .divider{max-width:880px;margin:2rem auto;padding:0 1.6rem}
+  .divider-inner{border-top:1px solid #ffffff18;padding-top:2.5rem;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--f1)}
+  footer{text-align:center;padding:4rem 1.6rem 5rem;color:var(--wire);font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.1em;border-top:1px solid #ffffff10;max-width:880px;margin:2rem auto 0}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="rail" id="rail"></div>
+
+<section class="cover">
+  <canvas id="coverNet"></canvas>
+  <div class="cover-inner">
+    <div class="eyebrow">Praxis Core - Rust on Pingora</div>
+    <h1>Everything Is<em>a Filter</em></h1>
+    <p class="sub">A proxy framework where routing, load balancing, and security are all the same primitive - composed into pipelines, swapped at runtime, without dropping a request.</p>
+  </div>
+  <div class="scroll-cue">scroll to begin &#8595;</div>
+</section>
+
+<section class="chapter">
+  <div class="part-tag">Part I - Foundations</div>
+  <div class="chapter-num">Chapter 01</div>
+  <h2>One primitive, composed endlessly</h2>
+  <p class="lead">Most proxies bolt features on as special cases. Praxis takes a different approach: <span class="hi">every behavior is a filter</span>, and built-in filters use the exact same traits as user-written ones.</p>
+  <p>Cluster routing, load balancing, rate limiting, body inspection, TLS policy - all filters. They implement <code>HttpFilter</code> or <code>TcpFilter</code>, get composed into pipelines, and execute in declared order. That single decision makes Praxis a <strong>framework for building proxies</strong>, not just a proxy you configure.</p>
+  <p>Each filter returns a <code>FilterAction</code> telling the pipeline what to do next: <code>Continue</code> to the next filter, <code>Reject</code> to stop with an error, or <code>TerminalResponse</code> to return a complete response while still running response-phase filters. No special cases.</p>
+  <div class="callout">Four design goals drive everything: <strong>fast</strong>, <strong>secure by default</strong>, <strong>composable</strong>, and <strong>adaptive</strong>. The filter model is how all four are reached at once.</div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 02</div>
+  <h2>Standing on Pingora</h2>
+  <p class="lead">Praxis does not write its own event loop, TLS stack, or HTTP parser. It builds on <strong>Pingora</strong> - a battle-tested Rust proxy framework handling <span class="hi">trillions of requests per day</span> in production.</p>
+  <p>Connection handling, HTTP/1 and HTTP/2 framing, connection pooling, request smuggling prevention, the async runtime - all inherited. Praxis spends its code budget on the layer above: <strong>the filter model, configuration, and composition engine</strong>.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.01 - what Praxis owns vs. what it inherits</span></div>
+    <svg id="foundSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption">Praxis logic sits above adapters; the hardened network core is Pingora's.</div>
+  </div>
+  <p>Pingora is <span class="hi">quarantined behind adapters</span>. Only the <code>protocol</code> and <code>core</code> crates import it directly. The filter model and everything you build on top never touch Pingora types. That keeps the dependency contained and the framework surface clean.</p>
+  <div class="callout">The payoff: Praxis gets memory-safe Rust performance and a proven concurrency core for free, and inherits upstream improvements instead of maintaining its own network stack.</div>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 03</div>
+  <h2>Built wide, not tall</h2>
+  <p class="lead">Praxis is a <strong>Cargo workspace of focused crates</strong>, not one monolith. Each crate has a single job and a clear boundary. Capabilities sit <span class="hi">side by side</span> and depend on each other explicitly.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.02 - the framework crates</span><button class="btn" id="crateBtn">&#9654; trace a dependency</button></div>
+    <svg id="crateSvg" viewBox="0 0 600 360"></svg>
+    <div class="caption" id="crateCap">Five framework crates, a thin binary on top, test band to the side.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>praxis-proxy-filter</h4><p>The pipeline engine, <code>HttpFilter</code> and <code>TcpFilter</code> traits, condition evaluation, branch chains, load balancing strategies, and every built-in filter. The heart of the composition model.</p></div>
+    <div class="card"><h4>praxis-proxy-core</h4><p>Configuration types (YAML via serde), validation, error types, server factory, subrequest client, circuit breaker, and memory pressure monitoring.</p></div>
+    <div class="card"><h4>praxis-proxy-protocol</h4><p>Protocol adapters translating Pingora callbacks into pipeline invocations. The only crate (with core) that imports Pingora directly.</p></div>
+    <div class="card"><h4>praxis-proxy-tls</h4><p>TLS configuration, certificate loading, SNI-based cert selection, hot-reloadable cert resolver, mTLS client auth, and CRL support.</p></div>
+  </div>
+  <p>On top sits <code>praxis-proxy</code> - the <strong>proxy binary</strong>, kept thin because the real capability lives in the framework crates below. Alongside them, a full test band: <code>conformance</code>, <code>integration</code>, <code>resilience</code>, <code>security</code>, and <code>schema</code> - each its own workspace member.</p>
+  <p>The dependency direction is strict and one-way: binary depends on framework crates, they depend on adapters, adapters depend on Pingora. <span class="hi">Nothing points back up.</span></p>
+</section>
+
+<div class="divider"><div class="divider-inner">Part II - How Requests Move</div></div>
+
+<section class="chapter">
+  <div class="part-tag">Part II - The Pipeline</div>
+  <div class="chapter-num">Chapter 04</div>
+  <h2>Down the pipeline, and back up</h2>
+  <p class="lead">A request enters and passes through filters <strong>in declared order</strong>. Each can read, rewrite, or short-circuit. On the way back, response filters run in <span class="hi">reverse order</span> - so the filter that opened a concern is the one that closes it.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.03 - request down, response up</span><button class="btn" id="reqBtn">&#9654; send a request</button></div>
+    <svg id="reqSvg" viewBox="0 0 600 360"></svg>
+    <div class="caption" id="reqCap">Watch a request flow through the pipeline and back.</div>
+  </div>
+  <p>Along the way, filters populate a shared <code>HttpFilterContext</code>: the router sets the target <code>cluster</code>, the load balancer picks the <code>upstream</code>. Filters communicate through durable <strong>metadata</strong> (key-value pairs persisting the entire request lifetime), transient <strong>filter results</strong> (for branch conditions), and <strong>header mutations</strong>.</p>
+  <p>Filters also declare how they access the body. Three modes exist: <code>Stream</code> (pass-through), <code>StreamBuffer</code> (buffer up to N bytes before deciding), and <code>SizeLimit</code> (enforce a maximum). Multiple filters requesting different modes produces <span class="hi">the most capable mode</span> - modes only ratchet upward, never down.</p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 05</div>
+  <h2>Named chains, flat pipelines</h2>
+  <p class="lead">Filters are grouped into <strong>named chains</strong> - a "security" chain, an "observability" chain, a "traffic" chain. Each listener references the chains it wants, and at startup they are concatenated into one flat pipeline.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.04 - two listeners composing shared chains</span></div>
+    <svg id="chainSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption">A public listener adds security; an internal one skips it. Same chains, different composition.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>Pipelining</h4><p>Startup-time: which chains a listener concatenates into its pipeline. Structural and validated before any request arrives.</p></div>
+    <div class="card"><h4>Routing</h4><p>Request-time: the <code>router</code> filter picks an upstream cluster by path, host, and headers. Dynamic and per-request.</p></div>
+  </div>
+  <p>Chain boundaries disappear at runtime - the pipeline is a flat <code>Vec&lt;PipelineFilter&gt;</code> with pre-computed body capabilities. Validation catches problems at startup: load balancers without routers, unconditional static responses, security filters bypassed by branch chains.</p>
+</section>
+
+<section class="chapter">
+  <div class="chapter-num">Chapter 06</div>
+  <h2>Swap the pipeline mid-flight</h2>
+  <p class="lead">Praxis replaces filter pipelines at runtime <span class="hi">without restarting or dropping in-flight requests</span>. Each listener holds an <code>ArcSwap&lt;FilterPipeline&gt;</code>. Every request loads a snapshot pinned for its lifetime; a reload atomically stores a new pipeline.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.05 - atomic pipeline swap</span><button class="btn" id="swapBtn">&#9654; trigger a reload</button></div>
+    <svg id="swapSvg" viewBox="0 0 600 300"></svg>
+    <div class="caption" id="swapCap">In-flight requests finish on the old pipeline; new ones use the new one.</div>
+  </div>
+  <p>A file watcher monitors the config directory with 500ms debounce and content hashing to skip unchanged files. <strong>If validation fails, nothing changes.</strong> The new config is fully parsed, all pipelines rebuilt, and only then swapped in atomically. Exponential backoff (1s base, 60s max) handles transient errors.</p>
+  <p>What reloads dynamically: filter chains, cluster definitions, body limits, KV stores. What requires a restart: listener addresses, protocol type, TLS toggles. <span class="hi">The distinction is detected by diffing and logged, never half-applied.</span></p>
+</section>
+
+<div class="divider"><div class="divider-inner">Part III - Capabilities</div></div>
+
+<section class="chapter">
+  <div class="part-tag">Part III - The Toolbox</div>
+  <div class="chapter-num">Chapter 07</div>
+  <h2>26 HTTP filters, 3 TCP, 4 load balancers</h2>
+  <p class="lead">Praxis ships with a broad set of built-in filters covering security, traffic management, transformation, and observability. All use the same traits a custom filter would.</p>
+  <div class="stage">
+    <div class="stage-label"><span>fig.06 - built-in filter categories</span></div>
+    <svg id="toolSvg" viewBox="0 0 600 340"></svg>
+    <div class="caption">Every built-in filter composes, reorders, and hot-reloads like any other.</div>
+  </div>
+  <div class="two">
+    <div class="card"><h4>Security</h4><p><code>cors</code>, <code>csrf</code>, <code>ip_acl</code>, <code>credential_injection</code>, <code>forwarded_headers</code>, <code>guardrails</code>, <code>peer_identity_trust</code>, <code>policy</code></p></div>
+    <div class="card"><h4>Traffic</h4><p><code>router</code>, <code>load_balancer</code>, <code>rate_limit</code>, <code>circuit_breaker</code>, <code>timeout</code>, <code>redirect</code>, <code>static_response</code></p></div>
+    <div class="card"><h4>Transform</h4><p><code>headers</code>, <code>path_rewrite</code>, <code>url_rewrite</code>, <code>compression</code> (gzip, brotli, zstd)</p></div>
+    <div class="card"><h4>Observe &amp; Payload</h4><p><code>access_log</code>, <code>request_id</code>, <code>json_body_field</code>, <code>json_rpc</code>, <code>grpc_detection</code></p></div>
+  </div>
+  <p>Four load balancing strategies are built in: <strong>weighted round-robin</strong>, <strong>least connections</strong> (atomic in-flight counters), <strong>consistent hashing</strong> (stable endpoint by header or path), and <strong>power-of-two-choices</strong> (sample two, pick the less loaded). All are health-aware and skip endpoints marked unhealthy by active health checks.</p>
+  <p>TCP filters cover <code>sni_router</code> (route by TLS SNI), <code>tcp_load_balancer</code>, and <code>tcp_access_log</code>. An <code>AnyFilter</code> wrapper lets HTTP and TCP filters coexist in one pipeline. <span class="hi">HTTP listeners accept both; TCP listeners accept only TCP filters.</span> Mismatches are caught at startup.</p>
+</section>
+
+<footer>
+  Praxis Core - MIT - a filter-first proxy framework on Pingora - diagrams are live simulations of the architecture
+</footer>
+
+<script>
+const rail=document.getElementById('rail');
+addEventListener('scroll',()=>{const h=document.documentElement;rail.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const NS='http://www.w3.org/2000/svg';
+const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* cover: flowing packets through vertical filter bands */
+(function(){
+  const c=document.getElementById('coverNet'),x=c.getContext('2d');let W,H,ps;
+  function size(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;init();}
+  function init(){ps=[];for(let i=0;i<28;i++)ps.push({y:Math.random()*H,x:Math.random()*W,sp:(.4+Math.random()*1.1)*devicePixelRatio,r:(1.5+Math.random()*2)*devicePixelRatio});}
+  const bands=[.25,.4,.55,.7];
+  function frame(){
+    x.clearRect(0,0,W,H);
+    x.strokeStyle='rgba(62,207,142,.10)';x.lineWidth=devicePixelRatio;
+    bands.forEach(b=>{x.beginPath();x.moveTo(b*W,0);x.lineTo(b*W,H);x.stroke();});
+    for(const p of ps){p.x+=p.sp;if(p.x>W){p.x=0;p.y=Math.random()*H;}
+      x.fillStyle='rgba(111,255,196,.8)';x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();}
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size);size();requestAnimationFrame(frame);
+})();
+
+/* fig01: foundation stack */
+(function(){
+  const svg=document.getElementById('foundSvg');if(!svg)return;
+  const layers=[
+    ['Your filters + configuration','var(--f1)',40,'You'],
+    ['Filter engine, core, protocol adapters','var(--f2)',110,'Praxis'],
+    ['Pingora - event loop, HTTP framing, pooling, TLS','var(--f3)',180,'Pingora'],
+    ['Rust async runtime (Tokio)','#7f9a8e',250,''],
+  ];
+  const t=el('text',{x:300,y:24,'text-anchor':'middle',class:'label',fill:'#9fb6ab','font-size':'11'});
+  t.textContent='only protocol + core adapters import Pingora directly';svg.appendChild(t);
+  layers.forEach(l=>{
+    svg.appendChild(el('rect',{x:60,y:l[2],width:480,height:52,rx:10,fill:'#ffffff08',stroke:l[1],'stroke-width':2}));
+    const tt=el('text',{x:80,y:l[2]+31,class:'label',fill:'#dbe8e1','font-weight':600});tt.textContent=l[0];svg.appendChild(tt);
+    if(l[3]){const b=el('text',{x:520,y:l[2]+31,'text-anchor':'end',class:'label',fill:l[1],'font-size':'10'});b.textContent=l[3];svg.appendChild(b);}
+  });
+  svg.appendChild(el('rect',{x:52,y:170,width:496,height:72,rx:12,fill:'none',stroke:'var(--f3)','stroke-width':1,'stroke-dasharray':'4 5',opacity:.6}));
+})();
+
+/* fig02: crate graph */
+(function(){
+  const svg=document.getElementById('crateSvg');if(!svg)return;
+  const cap=document.getElementById('crateCap');
+  const nodes={
+    server:{x:300,y:40,w:200,label:'praxis-proxy (binary)',c:'var(--f1)'},
+    filter:{x:170,y:140,w:150,label:'filter',c:'var(--f2)'},
+    core:{x:430,y:140,w:140,label:'core',c:'var(--f2)'},
+    protocol:{x:170,y:240,w:150,label:'protocol',c:'var(--f3)'},
+    tls:{x:430,y:240,w:120,label:'tls',c:'var(--f3)'},
+    pingora:{x:170,y:320,w:150,label:'Pingora',c:'#7f9a8e'},
+  };
+  const edges=[['server','filter'],['server','core'],['filter','core'],['filter','tls'],['core','tls'],['protocol','filter'],['protocol','tls']];
+  function build(hl){
+    svg.innerHTML='';
+    edges.forEach(([a,b])=>{const n=nodes[a],m=nodes[b];const on=hl&&hl.includes(a)&&hl.includes(b);
+      svg.appendChild(el('line',{x1:n.x,y1:n.y+16,x2:m.x,y2:m.y-16,stroke:on?'var(--glow)':'#ffffff20','stroke-width':on?3:1.4}));});
+    svg.appendChild(el('line',{x1:nodes.protocol.x,y1:nodes.protocol.y+16,x2:nodes.pingora.x,y2:nodes.pingora.y-16,stroke:hl&&hl.includes('protocol')&&hl.includes('pingora')?'var(--glow)':'#ffffff20','stroke-width':hl&&hl.includes('protocol')&&hl.includes('pingora')?3:1.4}));
+    for(const k in nodes){const n=nodes[k];const on=hl&&hl.includes(k);
+      svg.appendChild(el('rect',{x:n.x-n.w/2,y:n.y-16,width:n.w,height:34,rx:9,fill:on?'#ffffff14':'#ffffff08',stroke:on?'var(--glow)':n.c,'stroke-width':2}));
+      const t=el('text',{x:n.x,y:n.y+5,'text-anchor':'middle',class:'label',fill:on?'#fff':n.c,'font-weight':600});t.textContent=n.label;svg.appendChild(t);}
+  }
+  build();
+  const btn=document.getElementById('crateBtn');
+  if(btn)btn.onclick=async()=>{
+    const path=['server','filter','core','protocol','pingora'];
+    build();cap.textContent='Tracing a request through the crate layers...';
+    for(let i=0;i<path.length;i++){build(path.slice(0,i+1));await wait(550);}
+    cap.textContent='server -> filter -> core -> protocol -> Pingora. One-way, acyclic.';
+  };
+})();
+
+/* fig03: life of a request */
+(function(){
+  const svg=document.getElementById('reqSvg'),cap=document.getElementById('reqCap');
+  const stages=['RequestId','Router','Headers','LoadBalancer'];
+  const notes=['tags the request','sets ctx.cluster','rewrites headers','picks ctx.upstream'];
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    pill(30,40,'Client','var(--f2)');pill(470,40,'Upstream','var(--f3)');
+    stages.forEach((s,i)=>{
+      const y=80+i*56;
+      svg.appendChild(el('rect',{x:180,y,width:240,height:42,rx:10,fill:'#ffffff08',stroke:'var(--f1)','stroke-width':1.6,id:'st'+i}));
+      const t=el('text',{x:300,y:y+20,'text-anchor':'middle',class:'label',fill:'#dbe8e1','font-weight':600});t.textContent=s;svg.appendChild(t);
+      const n=el('text',{x:300,y:y+34,'text-anchor':'middle',class:'label',fill:'#7f9a8e','font-size':'10'});n.textContent=notes[i];svg.appendChild(n);
+    });
+  }
+  function pill(x,y,txt,color){svg.appendChild(el('rect',{x,y,width:100,height:34,rx:10,fill:color,opacity:.9}));const t=el('text',{x:x+50,y:y+22,'text-anchor':'middle',class:'label',fill:'#04140d','font-weight':600});t.textContent=txt;svg.appendChild(t);}
+  build();
+  function dot(color){const d=el('circle',{r:7,fill:color,cx:80,cy:57});svg.appendChild(d);return d;}
+  function move(d,x,y){return new Promise(res=>{if(reduce){d.setAttribute('cx',x);d.setAttribute('cy',y);return res();}
+    const sx=+d.getAttribute('cx'),sy=+d.getAttribute('cy'),st=performance.now(),dur=340;
+    (function s(t){const k=Math.min(1,(t-st)/dur),e=1-Math.pow(1-k,3);d.setAttribute('cx',sx+(x-sx)*e);d.setAttribute('cy',sy+(y-sy)*e);k<1?requestAnimationFrame(s):res();})(st);});}
+  async function run(){
+    if(running)return;running=true;build();
+    const d=dot('var(--f2)');
+    cap.textContent='Request enters the pipeline...';
+    for(let i=0;i<stages.length;i++){
+      await move(d,300,101+i*56);
+      document.getElementById('st'+i).setAttribute('stroke','var(--glow)');
+      document.getElementById('st'+i).setAttribute('stroke-width','2.5');
+      cap.textContent=stages[i]+' - '+notes[i];
+      await wait(280);
+    }
+    await move(d,520,57);d.setAttribute('fill','var(--f3)');
+    cap.textContent='Upstream responds. Response filters run in reverse...';
+    await wait(500);
+    await move(d,300,101+3*56);
+    for(let i=stages.length-1;i>=0;i--){
+      await move(d,300,101+i*56);
+      document.getElementById('st'+i).setAttribute('stroke','var(--f2)');
+      await wait(160);
+    }
+    await move(d,80,57);d.setAttribute('fill','var(--f2)');
+    cap.textContent='Response returned to client. Opened first, closed last.';
+    running=false;
+  }
+  document.getElementById('reqBtn').onclick=run;
+})();
+
+/* fig04: chains composed by listeners */
+(function(){
+  const svg=document.getElementById('chainSvg');
+  function chainBox(x,y,w,label,color){svg.appendChild(el('rect',{x,y,width:w,height:38,rx:9,fill:color,opacity:.85}));const t=el('text',{x:x+w/2,y:y+24,'text-anchor':'middle',class:'label',fill:'#04140d','font-weight':600});t.textContent=label;svg.appendChild(t);}
+  function listener(y,name,chains){
+    svg.appendChild(el('rect',{x:20,y:y-8,width:560,height:64,rx:12,fill:'none',stroke:'#ffffff20','stroke-dasharray':'4 5'}));
+    const t=el('text',{x:32,y:y+10,class:'label',fill:'#9fb6ab','font-weight':600});t.textContent='Listener: '+name;svg.appendChild(t);
+    let x=180;chains.forEach((c,i)=>{if(i){svg.appendChild(el('text',{x:x+4,y:y+22,class:'label',fill:'#5f7a70'})).textContent='→';x+=22;}chainBox(x,y-2,c.w,c.l,c.c);x+=c.w+4;});
+  }
+  const sec={l:'security',c:'var(--f3)',w:110},obs={l:'observability',c:'var(--f2)',w:150},tr={l:'traffic',c:'var(--f1)',w:100};
+  listener(70,'public',[sec,obs,tr]);
+  listener(190,'internal',[obs,tr]);
+  const note=el('text',{x:300,y:275,'text-anchor':'middle',class:'label',fill:'#7f9a8e','font-size':'11'});
+  note.textContent='chains are a config concept; at runtime they flatten into a single pipeline';
+  svg.appendChild(note);
+})();
+
+/* fig05: atomic swap */
+(function(){
+  const svg=document.getElementById('swapSvg'),cap=document.getElementById('swapCap');
+  let running=false;
+  function build(){
+    svg.innerHTML='';
+    svg.appendChild(el('rect',{x:240,y:20,width:120,height:36,rx:9,fill:'#ffffff10',stroke:'var(--glow)','stroke-width':2}));
+    const t=el('text',{x:300,y:43,'text-anchor':'middle',class:'label',fill:'var(--glow)','font-weight':600});t.textContent='ArcSwap';svg.appendChild(t);
+    pipeline(120,110,'Pipeline v1','var(--f1)','p1');
+    pipeline(360,110,'Pipeline v2','var(--f3)','p2',true);
+    svg.appendChild(el('line',{x1:300,y1:56,x2:180,y2:110,stroke:'var(--glow)','stroke-width':2,id:'ptr'}));
+  }
+  function pipeline(x,y,label,color,id,ghost){
+    const g=el('g',{id});g.setAttribute('opacity',ghost?'.35':'1');
+    g.appendChild(el('rect',{x,y,width:120,height:150,rx:12,fill:'#ffffff08',stroke:color,'stroke-width':2}));
+    const t=el('text',{x:x+60,y:y+24,'text-anchor':'middle',class:'label',fill:color,'font-weight':600});t.textContent=label;g.appendChild(t);
+    for(let i=0;i<3;i++)g.appendChild(el('rect',{x:x+18,y:y+40+i*32,width:84,height:22,rx:6,fill:color,opacity:.5}));
+    svg.appendChild(g);
+  }
+  build();
+  async function run(){
+    if(running)return;running=true;build();
+    const ptr=document.getElementById('ptr');
+    cap.textContent='A request is in flight on Pipeline v1...';
+    const d=el('circle',{r:7,fill:'var(--f2)',cx:180,cy:150});svg.appendChild(d);
+    await wait(700);
+    cap.textContent='Config changes. New pipeline validated and built.';
+    document.getElementById('p2').setAttribute('opacity','1');
+    await wait(700);
+    cap.textContent='ArcSwap atomically repoints to v2 - no lock, no restart.';
+    ptr.setAttribute('x2',420);
+    await wait(300);
+    const d2=el('circle',{r:7,fill:'var(--f3)',cx:420,cy:150});svg.appendChild(d2);
+    cap.textContent='New request uses v2; the old one still drains on v1.';
+    await wait(900);
+    document.getElementById('p1').setAttribute('opacity','.2');d.setAttribute('opacity','.2');
+    cap.textContent='Old request finished. v1 is freed. Zero requests dropped.';
+    running=false;
+  }
+  document.getElementById('swapBtn').onclick=run;
+})();
+
+/* fig06: built-in filter categories */
+(function(){
+  const svg=document.getElementById('toolSvg');if(!svg)return;
+  const cats=[
+    {label:'Security',count:'8 filters',color:'var(--f3)',n:8,items:'cors, csrf, ip_acl, credentials...'},
+    {label:'Traffic',count:'7 filters',color:'var(--f1)',n:7,items:'router, load_balancer, rate_limit...'},
+    {label:'Observe',count:'5 filters',color:'var(--f2)',n:5,items:'access_log, request_id, json_rpc...'},
+    {label:'Transform',count:'4 filters',color:'#a0d0b0',n:4,items:'headers, path_rewrite, compression...'},
+    {label:'TCP',count:'3 filters',color:'#a89070',n:3,items:'sni_router, tcp_lb, tcp_access_log'},
+  ];
+  cats.forEach((c,i)=>{
+    const y=10+i*64;
+    const w=120+(c.n/8)*380;
+    svg.appendChild(el('rect',{x:40,y,width:w,height:48,rx:10,fill:'#ffffff08',stroke:c.color,'stroke-width':2}));
+    const h=el('text',{x:56,y:y+20,class:'label',fill:c.color,'font-weight':600});h.textContent=c.label;svg.appendChild(h);
+    const n=el('text',{x:56,y:y+36,class:'label',fill:'#7f9a8e','font-size':'10'});n.textContent=c.items;svg.appendChild(n);
+    const ct=el('text',{x:w+52,y:y+28,class:'label',fill:c.color,'font-size':'11'});ct.textContent=c.count;svg.appendChild(ct);
+  });
+})();
+</script>
+</body>
+</html>

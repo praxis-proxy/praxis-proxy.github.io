@@ -8,7 +8,8 @@ function CodeOverlay({ example, onClose }: { example: Example; onClose: () => vo
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const url = `https://raw.githubusercontent.com/praxis-proxy/praxis/main/${example.path}`;
+    const repo = example.repo === 'ai' ? 'ai' : 'praxis';
+    const url = `https://raw.githubusercontent.com/praxis-proxy/${repo}/main/${example.path}`;
     fetch(url)
       .then((res) => res.text())
       .then(setYaml)
@@ -45,7 +46,7 @@ function CodeOverlay({ example, onClose }: { example: Example; onClose: () => vo
           <div className={styles.overlayActions}>
             <a
               className={styles.overlayBtn}
-              href={`https://github.com/praxis-proxy/praxis/blob/main/${example.path}`}
+              href={`https://github.com/praxis-proxy/${example.repo === 'ai' ? 'ai' : 'praxis'}/blob/main/${example.path}`}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -568,6 +568,95 @@
 }
 
 /* ============================================
+   Visual Guides
+   ============================================ */
+
+.guides {
+  padding: 80px 0;
+  position: relative;
+  background: var(--praxis-bg-alt);
+}
+
+.guidesInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.guidesTitle {
+  font-family: var(--praxis-font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--praxis-text-primary);
+  margin-bottom: 8px;
+}
+
+.guidesSubtitle {
+  font-family: var(--praxis-font-body);
+  font-size: 0.9375rem;
+  color: var(--praxis-text-muted);
+  margin-bottom: 32px;
+  max-width: 560px;
+}
+
+.guidesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.guideCard {
+  background: var(--praxis-bg-surface);
+  border: 1px solid var(--praxis-border);
+  border-radius: 12px;
+  padding: 32px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guideCard:hover {
+  border-color: var(--praxis-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+
+.guideCardTitle {
+  font-family: var(--praxis-font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--praxis-text-primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+
+.guideCardDesc {
+  font-family: var(--praxis-font-body);
+  font-size: 0.875rem;
+  color: var(--praxis-text-muted);
+  line-height: 1.6;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.guideCardLink {
+  font-family: var(--praxis-font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--praxis-accent);
+  transition: letter-spacing 0.2s;
+}
+
+.guideCard:hover .guideCardLink {
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
    CTA Section
    ============================================ */
 
@@ -651,6 +740,10 @@
   .featureCard:nth-child(1) {
     grid-column: span 1;
   }
+
+  .guidesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -693,6 +786,14 @@
   .featureCard {
     padding: 24px;
   }
+
+  .guidesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .guideCard {
+    padding: 24px;
+  }
 }
 
 /* Reduced motion */
@@ -729,6 +830,7 @@
   }
 
   .featureCard,
+  .guideCard,
   .ctaPrimary,
   .ctaSecondary {
     transition: none;

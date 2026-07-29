@@ -25,6 +25,12 @@ At startup, the referenced chains are resolved and
 concatenated into a single pipeline per listener. Different
 listeners can compose different subsets of chains.
 
+:::tip Visual Guide
+For an animated walkthrough of how requests flow through
+filter pipelines, see the
+[Core visual guide](/praxis-core-booklet.html).
+:::
+
 ## Filter Model
 
 Filters are the core processing units in Praxis. Each
@@ -486,6 +492,9 @@ A filter can have both `conditions` (request phase) and
 | `static_response` | Traffic Management | HTTP | `status` (required), `headers`, `body` |
 | `rate_limit` | Traffic Management | HTTP | `mode`, `rate`, `burst`; token bucket with per-IP and global modes |
 | `circuit_breaker` | Traffic Management | HTTP | `clusters[].consecutive_failures`, `.recovery_window_secs`; per-cluster circuit breaking |
+| `endpoint_selector` | Traffic Management | HTTP | Header-based upstream endpoint selection for deterministic routing |
+| `grpc_detection` | Traffic Management | HTTP | Detect gRPC and gRPC-Web via content-type; promote to metadata |
+| `iterative_request_router` | Traffic Management | HTTP | Execute sub-requests iteratively with failover and circuit breaker integration |
 | `headers` | Transformation | HTTP | `request_add`, `response_add/set/remove` |
 | `request_id` | Observability | HTTP | Propagates/generates `X-Request-ID` |
 | `access_log` | Observability | HTTP | Structured JSON logging; optional `sample_rate` |
@@ -496,6 +505,9 @@ A filter can have both `conditions` (request phase) and
 | `guardrails` | Security | HTTP | Reject requests matching header/body string or regex rules |
 | `ip_acl` | Security | HTTP | `allow` or `deny` (CIDR lists, mutually exclusive); 403 on denial |
 | `credential_injection` | Security | HTTP | Per-cluster API key injection with client credential stripping. Literal `value` fields are redacted in `--dump` output. |
+| `basic_auth` | Security | HTTP | HTTP Basic Authentication (RFC 7617) with configurable credential validation |
+| `peer_identity_trust` | Security | HTTP | mTLS peer identity validation for workload authentication |
+| `policy` | Security | HTTP | CPEX policy engine with JWT, APL route policy, PII scanning, and audit (experimental) |
 | `a2a` | Payload Processing | HTTP | A2A protocol classifier: extract method, family, task ID, streaming detection, and version for routing |
 | `json_body_field` | Payload Processing | HTTP | Extract a JSON body field and promote to header |
 | `json_rpc` | AI / Agentic | HTTP | Parse JSON-RPC 2.0 envelopes and extract method/id/kind for routing |

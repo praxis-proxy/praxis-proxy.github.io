@@ -18,7 +18,7 @@ const features = [
   {
     title: 'Build Pipelines, Not Middleware',
     description:
-      'Stack rate limiting, auth, guardrails, and routing in any order using a simple YAML config. 35+ built-in filters ship ready to use, and you can write your own in Rust.',
+      'Stack rate limiting, auth, guardrails, and routing in any order using a simple YAML config. 50+ built-in filters ship ready to use, and you can write your own in Rust.',
     icon: '≡',
   },
   {
@@ -32,6 +32,30 @@ const features = [
     description:
       'HTTP/1.1, HTTP/2, gRPC, WebSocket, TCP — all supported. Hot-reload your config at runtime without dropping a single connection.',
     icon: '⬡',
+  },
+];
+
+const guides = [
+  {
+    title: 'Praxis Core',
+    description:
+      'How requests flow through filter pipelines, how chains compose, and how config reloads without dropping a connection.',
+    href: '/praxis-core-booklet.html',
+    label: 'Read the Core guide',
+  },
+  {
+    title: 'Praxis AI',
+    description:
+      'How the AI gateway classifies requests, routes to providers, injects credentials, and speaks MCP and A2A.',
+    href: '/praxis-ai-booklet.html',
+    label: 'Read the AI guide',
+  },
+  {
+    title: 'Praxis Grid',
+    description:
+      'How the distributed control plane converges state with CRDTs, discovers sites with SWIM, and scores routes by locality.',
+    href: '/praxis-grid-booklet.html',
+    label: 'Read the Grid guide',
   },
 ];
 
@@ -172,6 +196,31 @@ export default function Home(): React.JSX.Element {
                   </h3>
                   <p className={styles.featureDesc}>{feature.description}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.guides}>
+          <div className={styles.guidesInner}>
+            <h2 className={styles.guidesTitle}>Understand the architecture</h2>
+            <p className={styles.guidesSubtitle}>
+              Interactive visual guides that walk through how Praxis works
+              with animated diagrams.
+            </p>
+            <div className={styles.guidesGrid}>
+              {guides.map((guide) => (
+                <a
+                  key={guide.title}
+                  className={styles.guideCard}
+                  href={guide.href}
+                >
+                  <h3 className={styles.guideCardTitle}>{guide.title}</h3>
+                  <p className={styles.guideCardDesc}>{guide.description}</p>
+                  <span className={styles.guideCardLink}>
+                    {guide.label} &rarr;
+                  </span>
+                </a>
               ))}
             </div>
           </div>

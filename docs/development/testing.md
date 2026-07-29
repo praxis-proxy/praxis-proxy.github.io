@@ -7,7 +7,7 @@ title: Testing
 
 ## Requirements
 
-- Rust stable 1.94+
+- Rust stable 1.96+
 - Rust nightly
 - CMake 3.31+
 - Docker 29.3.0+
