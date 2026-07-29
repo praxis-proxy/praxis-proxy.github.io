@@ -4,6 +4,7 @@ export interface Example {
   category: string;
   path: string;
   filename: string;
+  repo?: 'praxis' | 'ai';
 }
 
 export const categories = [
@@ -162,23 +163,33 @@ export const examples: Example[] = [
   {
     name: 'AI Inference Body-Based Routing',
     description: 'Route LLM requests by model field in JSON body',
-    category: 'Payload Processing',
-    path: 'examples/configs/payload-processing/ai-inference-body-based-routing.yaml',
+    category: 'AI / Inference',
+    path: 'examples/configs/ai-inference-body-based-routing.yaml',
     filename: 'ai-inference-body-based-routing.yaml',
+    repo: 'ai',
   },
   {
     name: 'JSON-RPC Routing',
     description: 'Route JSON-RPC 2.0 requests by method for MCP and A2A protocols',
-    category: 'Payload Processing',
-    path: 'examples/configs/payload-processing/json-rpc-routing.yaml',
+    category: 'AI / Inference',
+    path: 'examples/configs/json-rpc-routing.yaml',
     filename: 'json-rpc-routing.yaml',
+    repo: 'ai',
+  },
+  {
+    name: 'JSON-RPC',
+    description: 'Parse JSON-RPC 2.0 envelopes and extract method/id/kind',
+    category: 'Payload Processing',
+    path: 'examples/configs/payload-processing/json-rpc.yaml',
+    filename: 'json-rpc.yaml',
   },
   {
     name: 'MCP Classifier Routing',
     description: 'Route MCP requests by body-derived method and tool name',
-    category: 'Payload Processing',
-    path: 'examples/configs/payload-processing/mcp-classifier-routing.yaml',
+    category: 'AI / Inference',
+    path: 'examples/configs/mcp-classifier-routing.yaml',
     filename: 'mcp-classifier-routing.yaml',
+    repo: 'ai',
   },
   {
     name: 'Stream Buffer',
@@ -559,23 +570,25 @@ export const examples: Example[] = [
   {
     name: 'Credential Injection',
     description: 'Inject per-cluster API credentials and strip client tokens',
-    category: 'AI / Inference',
-    path: 'examples/configs/ai/credential-injection.yaml',
+    category: 'Security',
+    path: 'examples/configs/security/credential-injection.yaml',
     filename: 'credential-injection.yaml',
   },
   {
     name: 'Model-to-Header Routing',
     description: 'Route by model field in JSON body via X-Model header',
     category: 'AI / Inference',
-    path: 'examples/configs/ai/model-to-header-routing.yaml',
+    path: 'examples/configs/model-to-header-routing.yaml',
     filename: 'model-to-header-routing.yaml',
+    repo: 'ai',
   },
   {
     name: 'Prompt Enrichment',
     description: 'Inject system messages into chat completion requests',
     category: 'AI / Inference',
-    path: 'examples/configs/ai/prompt-enrichment.yaml',
+    path: 'examples/configs/prompt-enrichment.yaml',
     filename: 'prompt-enrichment.yaml',
+    repo: 'ai',
   },
 
   // Branching
