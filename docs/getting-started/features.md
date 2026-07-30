@@ -96,7 +96,7 @@ title: Features
 - **Payload size limits**: global hard ceilings on
   request and response payload size.
 
-[payload-processing]:../architecture/system-design#payload-processing
+[payload-processing]:../architecture/payload-processing
 
 ## Security
 
