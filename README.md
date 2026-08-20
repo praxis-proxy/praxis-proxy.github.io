@@ -19,8 +19,9 @@ Server is started with hot reload, make your changes and watch them update live.
 npm run build
 ```
 
-Generates static output in `build/`. The site is deployed automatically
-via GitHub Actions on push to `main`.
+Generates static output in `build/`.
+
+The site is deployed automatically via GitHub Actions on push to `main`.
 
 ## Structure
 
