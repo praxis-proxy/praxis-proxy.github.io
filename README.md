@@ -1,7 +1,6 @@
 # Praxis Website
 
-Source for [praxis.fast](https://praxis.fast), the project website for
-[Praxis](https://github.com/praxis-proxy/praxis).
+Source for [praxis.fast](https://praxis.fast).
 
 ## Development
 
@@ -36,4 +35,4 @@ static/         Static assets (favicon, CNAME)
 
 ## License
 
-MIT
+Apache 2.0
