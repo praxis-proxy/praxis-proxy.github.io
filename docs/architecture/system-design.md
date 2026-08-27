@@ -294,11 +294,6 @@ upstream library callbacks (Pingora) into filter pipeline
 invocations. `Protocol` trait, `ListenerPipelines`, HTTP and
 TCP implementations.
 
-**`praxis-proto`** : Vendored Envoy ext_proc protocol buffer
-definitions compiled into Rust types with tonic/prost gRPC
-stubs. Optional dependency of `praxis-filter` behind the
-`ext-proc` cargo feature.
-
 **`praxis-tls`** : TLS configuration types and runtime
 setup. Defines `ListenerTls` (certificate list, client CA,
 cert mode), `ClusterTls` (upstream TLS settings), TLS
@@ -376,7 +371,7 @@ praxis-core                     Configuration, errors, and server factory
     └── runtime                 PingoraServerRuntime wrapper and options
 
 praxis-filter                   Filter pipeline engine
-├── actions                     FilterAction: continue or reject
+├── actions                     FilterAction (Continue, Reject, TerminalResponse, StreamingTerminalResponse, Release, BodyDone)
 ├── any_filter                  AnyFilter enum (Http | Tcp wrapper)
 ├── body/                       Body access declarations and buffering
 │   ├── access                  BodyAccess enum
@@ -402,29 +397,29 @@ praxis-filter                   Filter pipeline engine
 │   └── tests                   Pipeline unit tests
 └── builtins/                   Built-in filter implementations
     ├── http/                   HTTP protocol filters
-    │   ├── ai/                 AI filters for HTTP workloads
-    │   │   ├── agentic/        Agentic protocol classifiers
-    │   │   │   ├── json_rpc    JSON-RPC 2.0 envelope parsing and metadata extraction
-    │   │   │   └── mcp         MCP protocol classifier and metadata extraction
-    │   │   ├── inference/      Model routing and prompt enrichment
-    │   │   │   └── model_to_header  Extract model field, promote to header
-    │   │   └── prompt_enrich   Inject messages into chat completion bodies
     │   ├── net                 Shared IP utilities (IPv4-mapped normalization)
     │   ├── observability/
     │   │   ├── access_log      Structured JSON request/response logging
     │   │   └── request_id      Correlation ID generation/propagation
     │   ├── payload_processing/
     │   │   ├── compression     Gzip/brotli/zstd response compression
-    │   │   └── json_body_field Extract JSON field, promote to header
+    │   │   ├── json_body_field Extract JSON field, promote to header
+    │   │   └── json_rpc        JSON-RPC 2.0 envelope parsing and metadata extraction
     │   ├── security/
+    │   │   ├── basic_auth      HTTP Basic auth credential validation
     │   │   ├── cors            CORS preflight handling, origin validation
     │   │   ├── credential_injection  Per-cluster API key injection
     │   │   ├── csrf            CSRF protection via origin validation
     │   │   ├── forwarded_headers  X-Forwarded-For/Proto/Host injection
     │   │   ├── guardrails      Reject requests matching string/regex rules
-    │   │   └── ip_acl          Allow/deny by source IP/CIDR
+    │   │   ├── ip_acl          Allow/deny by source IP/CIDR
+    │   │   ├── peer_identity_trust  Trust an authenticated peer's forwarded identity
+    │   │   └── policy          Praxis Policy Engine (PPE) authorization
     │   ├── traffic_management/
     │   │   ├── circuit_breaker Per-cluster circuit breaking (closed/open/half-open)
+    │   │   ├── endpoint_selector  Pin requests to a specific upstream endpoint
+    │   │   ├── grpc_detection  Detect gRPC requests via content-type
+    │   │   ├── iterative_request_router  Multi-step iterative upstream routing
     │   │   ├── rate_limit      Token bucket rate limiting (per-IP, global)
     │   │   ├── router          Path-prefix + host routing to clusters
     │   │   ├── redirect         3xx redirect without upstream
@@ -444,10 +439,6 @@ praxis-filter                   Filter pipeline engine
         └── traffic_management/
             ├── sni_router      SNI-based upstream routing
             └── tcp_load_balancer  Cluster-backed TCP endpoint selection
-
-praxis-proto                    Envoy ext_proc protobuf definitions (opt-in via ext-proc feature)
-├── envoy/service/common/v3     Common Envoy service types
-└── envoy/service/ext_proc/v3   External processor gRPC service
 
 praxis-protocol                 Protocol adapters
 ├── pipelines                   Maps listener names to resolved pipelines
@@ -518,7 +509,6 @@ graph LR
     praxis-protocol --> praxis-core
     praxis-protocol --> praxis-tls
     praxis-filter --> praxis-core
-    praxis-filter -.->|ext-proc| praxis-proto
     praxis-core --> praxis-tls
 ```
 
@@ -679,4 +669,3 @@ a higher level and across multiple crates.
 | `tests/integration` | End-to-end filter and proxy tests |
 | `tests/resilience` | Load, failure recovery, throughput |
 | `tests/security` | Request smuggling, header injection |
-| `tests/smoke` | Quick startup and round-trip sanity |
