@@ -147,7 +147,6 @@ category:
 ```text
 builtins/
   http/                       HTTP protocol filters
-    ai/                       AI workloads (inference)
     observability/            Access logs, request IDs
     payload_processing/       Compression, body field extraction
     security/                 CORS, CSRF, forwarded headers, guardrails, IP ACL
