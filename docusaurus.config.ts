@@ -62,7 +62,6 @@ const config: Config = {
           path: './docs',
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/praxis-proxy/praxis-proxy.github.io/tree/main/',
-          exclude: ['proposals/**', 'superpowers/**'],
         },
         blog: {
           showReadingTime: true,
