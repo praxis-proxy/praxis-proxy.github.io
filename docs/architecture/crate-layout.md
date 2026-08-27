@@ -142,7 +142,7 @@ praxis-filter                   Filter pipeline engine
     │   │   ├── forwarded_headers  X-Forwarded-For/Proto/Host injection
     │   │   ├── guardrails      Reject requests matching string/regex rules
     │   │   ├── ip_acl          Allow/deny by source IP/CIDR
-    │   │   ├── peer_identity_trust  Trust an authenticated peer's forwarded identity
+    │   │   ├── peer_identity_trust  mTLS peer identity validation for workload auth
     │   │   └── policy          Praxis Policy Engine (PPE) authorization
     │   ├── traffic_management/
     │   │   ├── circuit_breaker Per-cluster circuit breaking (closed/open/half-open)
