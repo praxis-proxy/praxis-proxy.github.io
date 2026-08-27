@@ -248,6 +248,11 @@ hooks have default implementations that pass through.
 
 - `Continue` : pass to next filter
 - `Reject(rejection)` : stop pipeline, respond now
+- `TerminalResponse(response)` : return a complete response
+  now, still running response-phase filters (request-phase
+  only)
+- `StreamingTerminalResponse(response)` : return a streaming
+  response now (request-phase only)
 - `Release` : forward accumulated StreamBuffer data to
   upstream; behaves as `Continue` in non-StreamBuffer
   contexts
@@ -508,9 +513,9 @@ A filter can have both `conditions` (request phase) and
 | `basic_auth` | Security | HTTP | HTTP Basic Authentication (RFC 7617) with configurable credential validation |
 | `peer_identity_trust` | Security | HTTP | mTLS peer identity validation for workload authentication |
 | `policy` | Security | HTTP | CPEX policy engine with JWT, APL route policy, PII scanning, and audit (experimental) |
-| `a2a` | Payload Processing | HTTP | A2A protocol classifier: extract method, family, task ID, streaming detection, and version for routing |
+| `a2a` | AI / Agentic | HTTP | A2A protocol classifier: extract method, family, task ID, streaming detection, and version for routing |
 | `json_body_field` | Payload Processing | HTTP | Extract a JSON body field and promote to header |
-| `json_rpc` | AI / Agentic | HTTP | Parse JSON-RPC 2.0 envelopes and extract method/id/kind for routing |
+| `json_rpc` | Payload Processing | HTTP | Parse JSON-RPC 2.0 envelopes and extract method/id/kind for routing |
 | `mcp` | AI / Agentic | HTTP | MCP protocol classifier: extract method, tool/resource/prompt name, and session metadata for routing |
 | `compression` | Payload Processing | HTTP | Gzip, brotli, and zstd response compression |
 | `cors` | Security | HTTP | CORS preflight handling, origin validation, credential support |

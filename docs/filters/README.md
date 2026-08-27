@@ -230,6 +230,11 @@ hooks have default implementations that pass through.
 
 - `Continue` : pass to next filter
 - `Reject(rejection)` : stop pipeline, respond now
+- `TerminalResponse(response)` : return a complete response
+  now, still running response-phase filters (request-phase
+  only)
+- `StreamingTerminalResponse(response)` : return a streaming
+  response now (request-phase only)
 - `Release` : forward accumulated StreamBuffer data to
   upstream; behaves as `Continue` in non-StreamBuffer
   contexts
