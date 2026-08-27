@@ -1,6 +1,6 @@
 # Praxis Website
 
-Source for [praxis.fast](https://praxis.fast).
+Source for the Praxis project website: [praxis.fast](https://praxis.fast).
 
 ## Development
 
