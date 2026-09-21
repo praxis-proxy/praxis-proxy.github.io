@@ -36,4 +36,4 @@ static/         Static assets (favicon, CNAME)
 
 ## License
 
-Apache 2.0
+[Apache-2.0](LICENSE)
