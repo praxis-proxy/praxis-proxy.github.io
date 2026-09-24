@@ -41,10 +41,14 @@ To run with a custom configuration file:
 
 ```console
 docker run -p 8080:8080 \
-  -v /path/to/praxis.yaml:/etc/praxis/praxis.yaml:ro \
-  ghcr.io/praxis-proxy/praxis:latest \
-  -c /etc/praxis/praxis.yaml
+  -v /path/to/praxis.yaml:/etc/praxis/config.yaml:ro \
+  ghcr.io/praxis-proxy/praxis:latest
 ```
+
+The image's entrypoint already runs `praxis -c /etc/praxis/config.yaml`, so
+mount your config over that same path rather than passing `-c` again as a
+trailing argument. Passing `-c` a second time results in an error since it
+can only be specified once.
 
 ### Building the Container Image
 
