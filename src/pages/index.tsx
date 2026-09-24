@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
@@ -210,7 +211,7 @@ export default function Home(): React.JSX.Element {
             </p>
             <div className={styles.guidesGrid}>
               {guides.map((guide) => (
-                <a
+                <Link
                   key={guide.title}
                   className={styles.guideCard}
                   href={guide.href}
@@ -220,7 +221,7 @@ export default function Home(): React.JSX.Element {
                   <span className={styles.guideCardLink}>
                     {guide.label} &rarr;
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
