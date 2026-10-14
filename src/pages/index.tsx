@@ -232,7 +232,7 @@ export default function Home(): React.JSX.Element {
             <div>
               <h2 className={styles.ctaSectionTitle}>Deploy in minutes, not weeks.</h2>
               <p className={styles.ctaSectionSub}>
-                MIT licensed. One binary, one config file, production-ready.
+                Apache 2.0 licensed. One binary, one config file, production-ready.
               </p>
             </div>
             <div className={styles.ctaLinks}>

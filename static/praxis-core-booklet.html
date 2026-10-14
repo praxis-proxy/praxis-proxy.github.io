@@ -47,7 +47,82 @@
   .part-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ink);background:var(--f1);padding:.25rem .7rem;border-radius:20px;margin-bottom:1rem}
   .divider{max-width:880px;margin:2rem auto;padding:0 1.6rem}
   .divider-inner{border-top:1px solid #ffffff18;padding-top:2.5rem;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--f1)}
-  footer{text-align:center;padding:4rem 1.6rem 5rem;color:var(--wire);font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.1em;border-top:1px solid #ffffff10;max-width:880px;margin:2rem auto 0}
+  /* Full site footer (matches docusaurus.config.ts) */
+  .site-footer{
+    margin-top:4rem;
+    padding:3rem 1.6rem 2.5rem;
+    background:#16161e;
+    color:#5c5c72;
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    border-top:1px solid #ffffff10;
+  }
+  .site-footer::before{
+    content:'';
+    display:block;
+    max-width:1100px;
+    margin:0 auto 3rem;
+    height:1px;
+    background:linear-gradient(90deg,transparent,#2f2f40 20%,#2f2f40 80%,transparent);
+  }
+  .site-footer__inner{max-width:1100px;margin:0 auto}
+  .site-footer__links{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:2rem;
+    margin:0 0 2rem;
+    padding:0;
+    list-style:none;
+  }
+  .site-footer__col{min-width:0}
+  .site-footer__title{
+    font-size:.7rem;
+    font-weight:600;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#8f8fa3;
+    margin:0 0 1rem;
+  }
+  .site-footer__items{list-style:none;margin:0;padding:0}
+  .site-footer__items li{margin:0 0 .5rem}
+  .site-footer__link{
+    font-size:.85rem;
+    font-weight:400;
+    color:#5c5c72;
+    text-decoration:none;
+    transition:color .2s cubic-bezier(.16,1,.3,1);
+  }
+  .site-footer__link:hover{color:#8b6cc7}
+  .footer-socials{display:flex;flex-direction:column;gap:1.25rem}
+  .footer-socials-row{display:flex;flex-wrap:wrap;align-items:center;gap:.85rem}
+  .footer-socials-row a{display:inline-flex;line-height:0;opacity:.85;transition:opacity .2s cubic-bezier(.16,1,.3,1)}
+  .footer-socials-row a:hover{opacity:1}
+  .footer-socials-row img{width:22px;height:22px;display:block}
+  .footer-cncf{display:flex;align-items:center;gap:.75rem;font-size:.8rem;line-height:1.35;color:#5c5c72}
+  .footer-cncf-logo{width:48px;height:auto;flex-shrink:0}
+  .footer-socials-cta .button-link{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:.45rem .9rem;border:1px solid #3f3f55;border-radius:4px;
+    font-size:.8rem;font-weight:500;color:#8f8fa3;
+    transition:color .2s cubic-bezier(.16,1,.3,1),border-color .2s cubic-bezier(.16,1,.3,1),background-color .2s cubic-bezier(.16,1,.3,1);
+  }
+  .footer-socials-cta a{text-decoration:none}
+  .footer-socials-cta a:hover .button-link{color:#ededf0;border-color:#8b6cc7;background:rgba(139,108,199,.1)}
+  .site-footer__bottom{
+    border-top:1px solid #2f2f40;
+    margin-top:2rem;
+    padding-top:1.5rem;
+    text-align:center;
+  }
+  .site-footer__logo{margin-bottom:1rem}
+  .site-footer__logo img{width:240px;max-width:60%;height:auto;margin-right:10px;opacity:.9}
+  .site-footer__copyright{font-size:.8rem;color:#5c5c72;line-height:1.6}
+  .site-footer__copyright a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  @media(max-width:996px) and (min-width:641px){
+    .site-footer__links{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:640px){
+    .site-footer__links{grid-template-columns:1fr}
+  }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -174,9 +249,79 @@
   <p>TCP filters cover <code>sni_router</code> (route by TLS SNI), <code>tcp_load_balancer</code>, and <code>tcp_access_log</code>. An <code>AnyFilter</code> wrapper lets HTTP and TCP filters coexist in one pipeline. <span class="hi">HTTP listeners accept both; TCP listeners accept only TCP filters.</span> Mismatches are caught at startup.</p>
 </section>
 
-<footer>
-  Praxis Core - MIT - a filter-first proxy framework on Pingora - diagrams are live simulations of the architecture
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <div class="site-footer__col">
+        <h3 class="site-footer__title">Documentation</h3>
+        <ul class="site-footer__items">
+          <li><a class="site-footer__link" href="/docs/getting-started/introduction">Getting Started</a></li>
+          <li><a class="site-footer__link" href="/docs/architecture/system-design">Architecture</a></li>
+          <li><a class="site-footer__link" href="/docs/grid/overview">Grid</a></li>
+        </ul>
+      </div>
+      <div class="site-footer__col">
+        <h3 class="site-footer__title">Community</h3>
+        <ul class="site-footer__items">
+          <li><a class="site-footer__link" href="https://github.com/praxis-proxy/praxis/discussions" target="_blank" rel="noreferrer noopener">Contact us</a></li>
+          <li><a class="site-footer__link" href="/docs/development/contributing">Contributing</a></li>
+          <li><a class="site-footer__link" href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md" target="_blank" rel="noreferrer noopener">Code of Conduct</a></li>
+        </ul>
+      </div>
+      <div class="site-footer__col">
+        <h3 class="site-footer__title">More</h3>
+        <ul class="site-footer__items">
+          <li><a class="site-footer__link" href="/blog">Blog</a></li>
+          <li><a class="site-footer__link" href="https://www.linuxfoundation.org/privacy" target="_blank" rel="noreferrer noopener">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="site-footer__col">
+        <h3 class="site-footer__title">Social</h3>
+        <div class="footer-socials" role="navigation" aria-label="Social links">
+          <div class="footer-socials-row">
+            <a href="https://github.com/praxis-proxy/praxis" target="_blank" rel="noreferrer noopener" aria-label="GitHub">
+              <img src="/img/social/github-mark-white.png" alt="GitHub" />
+            </a>
+            <a href="https://cloud-native.slack.com/archives/C0BK0RSP5RC" target="_blank" rel="noreferrer noopener" aria-label="Slack">
+              <img src="/img/social/slack-mark-white.png" alt="Slack" />
+            </a>
+            <a href="https://x.com/_praxis_ai" target="_blank" rel="noreferrer noopener" aria-label="X">
+              <img src="/img/social/x-mark-white.png" alt="X" />
+            </a>
+            <a href="https://www.linkedin.com/company/praxis-proxy/" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn">
+              <img src="/img/social/linkedin-mark-white.png" alt="LinkedIn" />
+            </a>
+            <a href="https://bsky.app/profile/praxis.fast" target="_blank" rel="noreferrer noopener" aria-label="Bluesky">
+              <img src="/img/social/bluesky-mark-white.svg" alt="Bluesky" />
+            </a>
+          </div>
+          <div class="footer-cncf">
+            <img class="footer-cncf-logo" src="/img/CNCF-logo.svg" alt="CNCF" />
+            <span>Praxis is a CNCF Sandbox project</span>
+          </div>
+          <div class="footer-socials-cta">
+            <a href="https://slack.cncf.io" target="_blank" rel="noreferrer noopener" aria-label="Join our Slack">
+              <span class="button-link">Join our Slack</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <div class="site-footer__logo">
+        <a href="https://cncf.io" target="_blank" rel="noreferrer noopener">
+          <img class="footer-logo" src="/img/cncf-white.png" alt="CNCF Logo" width="240" />
+        </a>
+      </div>
+      <div class="site-footer__copyright">
+        Copyright Praxis a Series of LF Projects, LLC. Apache 2.0 License.<br>
+        We are a Cloud Native Computing Foundation sandbox project.<br>
+        For website terms of use, trademark policy and other project policies please see <a href="https://lfprojects.org/policies/" target="_blank" rel="noreferrer noopener">https://lfprojects.org/policies/</a>
+      </div>
+    </div>
+  </div>
 </footer>
+
 
 <script>
 const rail=document.getElementById('rail');

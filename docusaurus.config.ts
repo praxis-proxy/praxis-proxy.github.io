@@ -126,49 +126,101 @@ const config: Config = {
       ],
     },
     footer: {
-      links: [
-        {
-          title: 'Getting Started',
-          items: [
-            {label: 'Introduction', to: '/docs/getting-started/introduction'},
-            {label: 'Quick Start', to: '/docs/getting-started/quickstart'},
-            {label: 'Installation', to: '/docs/getting-started/installation'},
-            {label: 'Examples', to: '/examples'},
-          ],
+      style: 'dark',
+      logo: {
+        alt: 'CNCF Logo',
+        src: 'img/cncf-color.svg',
+        srcDark: 'img/cncf-white.png',
+        href: 'https://cncf.io',
+        target: '_blank',
+        width: 240,
+        className: 'footer-logo',
+        style: {
+          marginRight: '10px',
         },
+      },
+      links: [
         {
           title: 'Documentation',
           items: [
-            {label: 'Architecture', to: '/docs/architecture/system-design'},
-            {label: 'Configuration', to: '/docs/configuration/overview'},
-            {label: 'Filters', to: '/docs/filters/filter-model'},
-            {label: 'Protocols', to: '/docs/protocols/tls'},
-            {label: 'Security', to: '/docs/security/hardening'},
-            {label: 'Grid', to: '/docs/grid/overview'},
+            {
+              html: '<a href="/docs/getting-started/introduction" class="footer__link-item">Getting Started</a>',
+            },
+            {
+              html: '<a href="/docs/architecture/system-design" class="footer__link-item">Architecture</a>',
+            },
+            {
+              html: '<a href="/docs/grid/overview" class="footer__link-item">Grid</a>',
+            },
           ],
         },
         {
           title: 'Community',
           items: [
-            {label: 'GitHub', href: 'https://github.com/praxis-proxy/praxis'},
-            {label: 'Discussions', href: 'https://github.com/praxis-proxy/praxis/discussions'},
-            {label: 'Issues', href: 'https://github.com/praxis-proxy/praxis/issues'},
-            {label: 'Contributing', to: '/docs/development/contributing'},
+            {
+              html: '<a href="https://github.com/praxis-proxy/praxis/discussions" class="footer__link-item" target="_blank" rel="noreferrer noopener">Contact us</a>',
+            },
+            {
+              html: '<a href="/docs/development/contributing" class="footer__link-item">Contributing</a>',
+            },
+            {
+              html: '<a href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md" class="footer__link-item" target="_blank" rel="noreferrer noopener">Code of Conduct</a>',
+            },
           ],
         },
         {
-          title: 'Resources',
+          title: 'More',
           items: [
-            {label: 'Blog', to: '/blog'},
-            {label: 'Benchmarks', to: '/docs/development/benchmarks'},
-            {label: 'Releases', href: 'https://github.com/praxis-proxy/praxis/releases'},
-            {label: 'Core Visual Guide', href: 'pathname:///praxis-core-booklet.html'},
-            {label: 'AI Visual Guide', href: 'pathname:///praxis-ai-booklet.html'},
-            {label: 'Grid Visual Guide', href: 'pathname:///praxis-grid-booklet.html'},
+            {
+              html: '<a href="/blog" class="footer__link-item">Blog</a>',
+            },
+            {
+              label: 'Privacy Policy',
+              href: 'https://www.linuxfoundation.org/privacy',
+            },
+          ],
+        },
+        {
+          title: 'Social',
+          items: [
+            {
+              html: `
+                <div class="footer-socials" role="navigation" aria-label="Social links">
+                  <div class="footer-socials-row">
+                    <a href="https://github.com/praxis-proxy/praxis" target="_blank" rel="noreferrer noopener" aria-label="GitHub">
+                      <img src="/img/social/github-mark-white.png" alt="GitHub" />
+                    </a>
+                    <a href="https://cloud-native.slack.com/archives/C0BK0RSP5RC" target="_blank" rel="noreferrer noopener" aria-label="Slack">
+                      <img src="/img/social/slack-mark-white.png" alt="Slack" />
+                    </a>
+                    <a href="https://x.com/_praxis_ai" target="_blank" rel="noreferrer noopener" aria-label="X">
+                      <img src="/img/social/x-mark-white.png" alt="X" />
+                    </a>
+                    <a href="https://www.linkedin.com/company/praxis-proxy/" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn">
+                      <img src="/img/social/linkedin-mark-white.png" alt="LinkedIn" />
+                    </a>
+                    <a href="https://bsky.app/profile/praxis.fast" target="_blank" rel="noreferrer noopener" aria-label="Bluesky">
+                      <img src="/img/social/bluesky-mark.svg" alt="Bluesky" />
+                    </a>
+                  </div>
+                  <div class="footer-cncf">
+                    <img class="footer-cncf-logo" src="/img/CNCF-logo.svg" alt="CNCF" />
+                    <span>Praxis is a CNCF Sandbox project</span>
+                  </div>
+                  <div class="footer-socials-cta">
+                    <a href="https://slack.cncf.io" target="_blank" rel="noreferrer noopener" aria-label="Join our Slack">
+                      <span class="button-link">Join our Slack</span>
+                    </a>
+                  </div>
+                </div>
+              `,
+            },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Praxis Contributors. MIT License.`,
+      copyright: `Copyright Praxis a Series of LF Projects, LLC. Apache 2.0 License.<br />\
+        We are a Cloud Native Computing Foundation sandbox project.<br />\
+        For website terms of use, trademark policy and other project policies please see <a href="https://lfprojects.org/policies/" target="_blank" rel="noreferrer noopener">https://lfprojects.org/policies/</a>`,
     },
     prism: {
       theme: themes.vsLight,
