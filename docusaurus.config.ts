@@ -49,7 +49,23 @@ const config: Config = {
       tagName: 'link',
       attributes: {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'apple-touch-icon',
+        href: '/img/apple-touch-icon.png',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/img/favicon-32x32.png',
       },
     },
   ],
@@ -91,6 +107,7 @@ const config: Config = {
   ],
 
   themeConfig: {
+    image: 'img/og-image.png',
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: false,
@@ -98,6 +115,14 @@ const config: Config = {
     },
     navbar: {
       title: 'Praxis',
+      logo: {
+        alt: 'Praxis',
+        src: 'img/horizontal/black/praxis-horizontal-black.svg',
+        srcDark: 'img/horizontal/white/praxis-horizontal-white.svg',
+        href: '/',
+        width: 128,
+        height: 50,
+      },
       items: [
         {
           type: 'docSidebar',

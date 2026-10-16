@@ -7,7 +7,7 @@
 .title {
   font-family: var(--praxis-font-display);
   font-size: 2.25rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.04em;
   color: var(--praxis-text-primary);
   margin-bottom: 8px;
@@ -181,7 +181,7 @@
 .overlayName {
   font-family: var(--praxis-font-display);
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--praxis-text-primary);
   margin-right: 12px;
 }

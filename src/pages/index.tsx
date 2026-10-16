@@ -150,6 +150,17 @@ export default function Home(): React.JSX.Element {
           <div className={styles.heroOrbit} aria-hidden="true" />
           <div className={styles.heroSplit}>
             <div className={styles.heroContent}>
+              <div className={styles.heroBrand}>
+                <img
+                  className={styles.heroBrandIcon}
+                  src="/img/icon/color/praxis-icon-color.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={72}
+                  height={80}
+                />
+                <span className={styles.heroBrandWordmark}>praxis</span>
+              </div>
               <h1 className={styles.heroTitle}>
                 The proxy built for<br />
                 <span className={styles.heroAccent}>AI infrastructure</span>
