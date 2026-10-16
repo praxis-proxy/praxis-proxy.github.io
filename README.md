@@ -23,6 +23,11 @@ Generates static output in `build/`.
 
 The site is deployed automatically via GitHub Actions on push to `main`.
 
+Pull requests run CI (typecheck + build) and publish a [Netlify](https://www.netlify.com/) Deploy Preview. Add these repository secrets:
+
+- `NETLIFY_AUTH_TOKEN` — personal access token from Netlify user settings
+- `NETLIFY_SITE_ID` — Site ID from the Netlify site’s Site configuration
+
 ## Structure
 
 ```
