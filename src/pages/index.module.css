@@ -209,10 +209,40 @@
   z-index: 0;
 }
 
+.heroBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: revealUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.heroBrandIcon {
+  width: clamp(52px, 8vw, 72px);
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+}
+
+.heroBrandWordmark {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #17182f;
+  text-transform: lowercase;
+}
+
+[data-theme='dark'] .heroBrandWordmark {
+  color: #ededf0;
+}
+
 .heroTitle {
   font-family: var(--praxis-font-display);
   font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: -0.045em;
   color: var(--praxis-text-primary);
   margin-bottom: 20px;
@@ -503,7 +533,7 @@
 .featuresTitle {
   font-family: var(--praxis-font-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--praxis-text-primary);
   margin-bottom: 40px;
@@ -552,7 +582,7 @@
 .featureTitle {
   font-family: var(--praxis-font-display);
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--praxis-text-primary);
   margin-bottom: 10px;
   letter-spacing: -0.02em;
@@ -586,7 +616,7 @@
 .guidesTitle {
   font-family: var(--praxis-font-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--praxis-text-primary);
   margin-bottom: 8px;
@@ -629,7 +659,7 @@
 .guideCardTitle {
   font-family: var(--praxis-font-display);
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--praxis-text-primary);
   margin-bottom: 10px;
   letter-spacing: -0.02em;
@@ -697,7 +727,7 @@
 .ctaSectionTitle {
   font-family: var(--praxis-font-display);
   font-size: 1.75rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--praxis-text-primary);
   letter-spacing: -0.03em;
   margin: 0;

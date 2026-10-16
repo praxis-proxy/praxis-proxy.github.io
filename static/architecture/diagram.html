@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Praxis Proxy — Architecture</title>
+<link rel="icon" href="/img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <style>
 /* ---------------------------------------------------------------------------
    Custom Properties
@@ -70,10 +73,15 @@ body {
   height: 48px;
 }
 .nav-brand {
-  font-weight: 700; font-size: 14px; color: var(--c-text);
-  letter-spacing: -.02em;
+  display: flex;
+  align-items: center;
+  height: 28px;
 }
-.nav-brand span { color: var(--c-server); }
+.nav-brand img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
 .nav a {
   font-size: 13px; color: var(--c-text-secondary);
   text-decoration: none; font-weight: 500;
@@ -416,7 +424,7 @@ svg.dimmed .dep-line.highlighted { opacity: 1; }
 <!-- Navigation                                                              -->
 <!-- ======================================================================= -->
 <nav class="nav">
-  <div class="nav-brand"><span>&#9670;</span> Praxis</div>
+  <div class="nav-brand"><img src="/img/horizontal/white/praxis-horizontal-white.svg" alt="Praxis" height="28" /></div>
   <a href="#high-level" class="active">High-Level</a>
   <a href="#detailed">Detailed</a>
 </nav>
