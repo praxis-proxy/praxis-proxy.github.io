@@ -1,0 +1,64 @@
+{{- $page := . -}}
+{{- $darkMode := partialCached "dark-mode-config.html" "dark-mode-global" -}}
+{{- $praxisPrefix := "praxis/" | relURL -}}
+{{- $aiPrefix := "ai/" | relURL -}}
+{{- $policyPrefix := "policy/" | relURL -}}
+{{- $gridPrefix := "grid/" | relURL -}}
+{{- $communityURL := "community/" | relURL -}}
+{{- $blogURL := "blog/" | relURL -}}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $praxisActive := or (strings.HasPrefix $page.RelPermalink $praxisPrefix) (eq $page.Section "guides") -}}
+{{- $aiActive := strings.HasPrefix $page.RelPermalink $aiPrefix -}}
+{{- $policyActive := strings.HasPrefix $page.RelPermalink $policyPrefix -}}
+{{- $gridOverviewURL := "grid/" | relURL -}}
+{{- $gridActive := strings.HasPrefix $page.RelPermalink $gridPrefix -}}
+{{- $gridDocsActive := and $gridActive (ne $page.RelPermalink $gridOverviewURL) -}}
+{{- $communityActive := strings.HasPrefix $page.RelPermalink $communityURL -}}
+{{- $blogActive := strings.HasPrefix $page.RelPermalink $blogURL -}}
+<a class="visually-hidden-focusable praxis-skip-link" href="#main-content">Skip to content</a>
+{{- if partial "chrome-render.html" (dict "page" . "region" "navbar") -}}
+<nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll" aria-label="Main navigation">
+  <div class="td-navbar-container container-fluid">
+    <a class="navbar-brand" href="{{ .Site.Home.RelPermalink }}">
+      <img class="navbar-brand__logo navbar-brand__logo--light" src="{{ "images/branding/horizontal/black/praxis-horizontal-black.svg" | relURL }}" alt="{{ .Site.Title }}" width="128" height="50">
+      <img class="navbar-brand__logo navbar-brand__logo--dark" src="{{ "images/branding/horizontal/white/praxis-horizontal-white.svg" | relURL }}" alt="" width="128" height="50" aria-hidden="true">
+    </a>
+    <div class="praxis-navbar-tools">
+      <button class="nav-link praxis-search-trigger" type="button" aria-label="Search documentation" aria-haspopup="dialog" aria-controls="praxis-search-dialog" data-search-dialog-trigger>
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.6" stroke="currentColor" stroke-width="1.8"/><path d="m12.7 12.7 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Search</span>
+      </button>
+      {{- if $darkMode.showMenu -}}
+      {{ partial "praxis-theme-toggle.html" . }}
+      {{- end -}}
+      <button class="navbar-toggler praxis-navbar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#praxis-navbar-menu" aria-controls="praxis-navbar-menu" aria-expanded="false" aria-label="Toggle main menu">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse praxis-navbar-collapse" id="praxis-navbar-menu">
+      <ul class="navbar-nav align-items-lg-center">
+        <li class="nav-item dropdown">
+          {{- $productActive := or $praxisActive $aiActive $policyActive $gridActive -}}
+          <button class="nav-link dropdown-toggle{{ if $productActive }} active{{ end }}" id="products-menu" type="button" aria-expanded="false" aria-haspopup="true" data-bs-toggle="dropdown">Projects</button>
+          <div class="dropdown-menu praxis-products-menu" aria-labelledby="products-menu">
+            {{- range $id := slice "praxis" "ai" "policy" "grid" -}}
+              {{- $project := index $products $id -}}
+              {{- $href := printf "%s/%s/" $id $project.default | relURL -}}
+              {{- $active := or (and (eq $id "praxis") $praxisActive) (and (eq $id "ai") $aiActive) (and (eq $id "policy") $policyActive) (and (eq $id "grid") $gridDocsActive) -}}
+              <a class="dropdown-item{{ if $active }} active{{ end }}"{{ if $active }} aria-current="{{ if eq $page.RelPermalink $href }}page{{ else }}location{{ end }}"{{ end }} href="{{ $href }}">
+                <span class="praxis-products-menu__name">{{ $project.name }} <span aria-hidden="true">→</span></span>
+                <small>Documentation · {{ (index (where $project.versions "slug" $project.default) 0).label }}</small>
+              </a>
+            {{- end -}}
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link{{ if $blogActive }} active{{ end }}"{{ if $blogActive }} aria-current="{{ if eq $page.RelPermalink $blogURL }}page{{ else }}location{{ end }}"{{ end }} href="{{ $blogURL }}">Blog</a></li>
+        <li class="nav-item"><a class="nav-link{{ if $communityActive }} active{{ end }}"{{ if $communityActive }} aria-current="{{ if eq $page.RelPermalink $communityURL }}page{{ else }}location{{ end }}"{{ end }} href="{{ $communityURL }}">Community</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{{- else -}}
+  {{- $cover := and (.HasShortcode "blocks/cover") (not .Site.Params.ui.navbar_translucent_over_cover_disable) -}}
+  <div class="td-chrome-placeholder" data-chrome-donor="{{ .Site.Home.RelPermalink }}" data-chrome-region="navbar" data-canonical-path="{{ .RelPermalink }}" data-navbar-cover="{{ $cover }}"></div>
+{{- end -}}

@@ -1,0 +1,31 @@
+{{ define "main" }}
+<div class="praxis-blog-post">
+  <article>
+    <header class="praxis-blog-post__header">
+      <h1>{{ .Title }}</h1>
+      <p class="praxis-blog-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        <span aria-hidden="true">·</span>
+        <span>{{ .ReadingTime }} min read</span>
+      </p>
+      <p class="praxis-blog-author">
+        <img src="{{ "favicon.svg" | relURL }}" width="40" height="40" alt="">
+        <span>{{ .Params.author | default "Praxis contributors" }}</span>
+      </p>
+    </header>
+    <div class="praxis-blog-post__body td-content">{{ .Content }}</div>
+    {{- with .Params.tags }}
+    <footer class="praxis-blog-post__tags">
+      <h2>Tags</h2>
+      <ul class="praxis-blog-tags">
+        {{- range . }}<li><a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">{{ . }}</a></li>{{ end -}}
+      </ul>
+    </footer>
+    {{- end }}
+  </article>
+  <nav class="praxis-blog-pagination" aria-label="Blog post navigation">
+    {{- with .NextInSection }}<a href="{{ .RelPermalink }}"><small>Older post</small><span>« {{ .Title }}</span></a>{{ else }}<span></span>{{ end -}}
+    {{- with .PrevInSection }}<a href="{{ .RelPermalink }}"><small>Newer post</small><span>{{ .Title }} »</span></a>{{ else }}<a href="{{ "blog/" | relURL }}"><small>Back to the archive</small><span>All posts →</span></a>{{ end -}}
+  </nav>
+</div>
+{{ end }}

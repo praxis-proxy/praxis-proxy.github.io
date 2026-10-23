@@ -1,0 +1,84 @@
+{
+  "praxis": {
+    "examples/configs/traffic-management/basic-reverse-proxy.yaml": {
+      "featured": true,
+      "task": "Forward HTTP requests to an upstream",
+      "summary": "A minimal HTTP reverse proxy with one listener and one upstream cluster.",
+      "prerequisites": ["Praxis runtime", "An HTTP backend reachable from the proxy"],
+      "outcome": "Requests received on the configured listener are forwarded to the backend."
+    },
+    "examples/configs/traffic-management/path-based-routing.yaml": {
+      "featured": true,
+      "task": "Route requests by URL path",
+      "prerequisites": ["Praxis runtime", "Two HTTP backends reachable from the proxy"],
+      "outcome": "Requests matching configured path prefixes reach their selected backend."
+    },
+    "examples/configs/traffic-management/hostname-upstream.yaml": {
+      "featured": true,
+      "task": "Route requests by hostname",
+      "prerequisites": ["Praxis runtime", "HTTP backends for the configured hostnames"],
+      "outcome": "The request hostname selects the configured upstream."
+    },
+    "examples/configs/traffic-management/weighted-load-balancing.yaml": {
+      "featured": true,
+      "task": "Distribute requests across weighted backends",
+      "prerequisites": ["Praxis runtime", "At least two reachable HTTP backends"],
+      "outcome": "Requests are distributed across endpoints according to their configured weights."
+    },
+    "examples/configs/protocols/tls-termination.yaml": {
+      "featured": true,
+      "task": "Terminate TLS at the proxy",
+      "summary": "Accept HTTPS connections and forward decrypted requests to an HTTP backend.",
+      "prerequisites": ["Praxis runtime", "Generate ./localhost+1.pem and ./localhost+1-key.pem with mkcert; the source snapshot does not include them", "An HTTP backend"],
+      "outcome": "The listener accepts HTTPS and forwards the request to its configured upstream."
+    },
+    "examples/configs/traffic-management/rate-limiting.yaml": {
+      "featured": true,
+      "task": "Limit request rates",
+      "prerequisites": ["Praxis runtime", "An HTTP backend"],
+      "outcome": "Requests within the configured limit are forwarded; excess requests are rejected."
+    },
+    "examples/configs/protocols/tcp-proxy.yaml": {
+      "featured": true,
+      "task": "Forward raw TCP connections",
+      "prerequisites": ["Praxis runtime", "A TCP backend reachable from the proxy", "A TCP client for verification"],
+      "outcome": "Bytes flow bidirectionally between the listener and configured backend."
+    },
+    "examples/configs/operations/hot-reload.yaml": {
+      "featured": true,
+      "task": "Apply configuration changes without restarting",
+      "prerequisites": ["Praxis runtime", "A writable configuration file", "An HTTP backend"],
+      "outcome": "A valid file change replaces the active configuration while the process stays running."
+    }
+  },
+  "ai": {
+    "examples/configs/openai/responses/responses-proxy.yaml": {
+      "featured": true,
+      "task": "Proxy OpenAI Responses API requests",
+      "summary": "Forward Responses API traffic through a Praxis AI listener to a compatible backend.",
+      "prerequisites": ["Praxis AI runtime", "A compatible Responses API backend", "Provider credentials when required"],
+      "outcome": "Responses API requests are forwarded to the configured backend."
+    },
+    "examples/configs/openai/responses/responses-to-chat-completions.yaml": {
+      "featured": true,
+      "task": "Translate Responses API requests for a Chat Completions backend",
+      "summary": "Translate the Responses API shape for an OpenAI-compatible Chat Completions backend.",
+      "prerequisites": ["Praxis AI runtime", "An OpenAI-compatible Chat Completions backend", "Provider credentials when required"],
+      "outcome": "Responses API requests are translated for the configured Chat Completions backend."
+    },
+    "examples/configs/intelligent-route-inference.yaml": {
+      "featured": true,
+      "task": "Route inference requests by model",
+      "summary": "Use model identity to select the matching inference backend.",
+      "prerequisites": ["Praxis AI runtime", "A model-to-header mapping", "Reachable inference backends", "Provider credentials when required"],
+      "outcome": "The configured model identity selects an inference backend."
+    },
+    "examples/configs/token-rate-limit.yaml": {
+      "featured": true,
+      "task": "Limit inference traffic by estimated token cost",
+      "summary": "Apply token-aware rate limiting to inference requests and reconcile reported usage.",
+      "prerequisites": ["Praxis AI runtime", "A compatible inference backend", "Provider credentials when required"],
+      "outcome": "Requests reserve token budget before forwarding and reconcile it with reported usage."
+    }
+  }
+}

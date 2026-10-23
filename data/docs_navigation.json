@@ -1,0 +1,1688 @@
+{
+  "products": {
+    "praxis": {
+      "start": "docs/quickstart.md",
+      "groups": [
+        "How-to",
+        "Tutorial",
+        "Reference",
+        "Explanation"
+      ],
+      "topic_order": [
+        "First Proxy",
+        "Operating",
+        "Core Concepts",
+        "Filter System",
+        "Http Traffic Management",
+        "Http Transformation",
+        "Http Security",
+        "Http Payload Processing",
+        "Http Observability",
+        "Tcp Traffic Management",
+        "Tcp Observability",
+        "Architecture",
+        "Developing",
+        "Development Principles",
+        "Dependency Governance",
+        "Type Design"
+      ],
+      "articles": {
+        "docs/README.md": {
+          "source_path": "docs/README.md",
+          "reader_need": "Overview",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/architecture/body-buffering.md": {
+          "source_path": "docs/architecture/body-buffering.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 10,
+          "related": []
+        },
+        "docs/architecture/connection-lifecycle.md": {
+          "source_path": "docs/architecture/connection-lifecycle.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 20,
+          "related": [],
+          "summary": "Follow a client connection through accept, TLS setup, HTTP decoding, filter execution, and response delivery."
+        },
+        "docs/architecture/crate-layout.md": {
+          "source_path": "docs/architecture/crate-layout.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 30,
+          "related": []
+        },
+        "docs/architecture/http-correctness.md": {
+          "source_path": "docs/architecture/http-correctness.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 40,
+          "related": []
+        },
+        "docs/architecture/life-of-a-request.md": {
+          "source_path": "docs/architecture/life-of-a-request.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 50,
+          "related": []
+        },
+        "docs/architecture/overview.md": {
+          "source_path": "docs/architecture/overview.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/operating/configuration.md"
+          ],
+          "order": 60,
+          "summary": "How Praxis combines protocol handling, filter pipelines, and upstream binding to build a configurable proxy."
+        },
+        "docs/architecture/payload-processing.md": {
+          "source_path": "docs/architecture/payload-processing.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 70,
+          "related": []
+        },
+        "docs/architecture/pingora-handler-lifecycle.md": {
+          "source_path": "docs/architecture/pingora-handler-lifecycle.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 80,
+          "related": []
+        },
+        "docs/architecture/pipeline-concepts.md": {
+          "source_path": "docs/architecture/pipeline-concepts.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 90,
+          "related": []
+        },
+        "docs/architecture/tcp-proxy.md": {
+          "source_path": "docs/architecture/tcp-proxy.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 100,
+          "related": []
+        },
+        "docs/architecture/upstream-binding.md": {
+          "source_path": "docs/architecture/upstream-binding.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 110,
+          "related": []
+        },
+        "docs/benchmarks.md": {
+          "source_path": "docs/benchmarks.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": [],
+          "summary": "Praxis benchmark suites measure proxy throughput and latency alongside the cost of filter pipeline operations."
+        },
+        "docs/developing/adding-filters.md": {
+          "source_path": "docs/developing/adding-filters.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 10,
+          "related": []
+        },
+        "docs/developing/adding-protocols.md": {
+          "source_path": "docs/developing/adding-protocols.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 20,
+          "related": []
+        },
+        "docs/developing/conventions.md": {
+          "source_path": "docs/developing/conventions.md",
+          "reader_need": "Explanation",
+          "topic": "Development Principles",
+          "order": 10,
+          "related": []
+        },
+        "docs/developing/dependencies.md": {
+          "source_path": "docs/developing/dependencies.md",
+          "reader_need": "Explanation",
+          "topic": "Dependency Governance",
+          "order": 10,
+          "related": []
+        },
+        "docs/developing/getting-started.md": {
+          "source_path": "docs/developing/getting-started.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 30,
+          "related": []
+        },
+        "docs/developing/type-design.md": {
+          "source_path": "docs/developing/type-design.md",
+          "reader_need": "Explanation",
+          "topic": "Type Design",
+          "order": 10,
+          "related": []
+        },
+        "docs/features.md": {
+          "source_path": "docs/features.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/README.md": {
+          "source_path": "docs/filters/README.md",
+          "reader_need": "Overview",
+          "topic": "Filter System",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/branch-chains.md": {
+          "source_path": "docs/filters/branch-chains.md",
+          "reader_need": "Explanation",
+          "topic": "Filter System",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/extensions.md": {
+          "source_path": "docs/filters/extensions.md",
+          "reader_need": "Explanation",
+          "topic": "Filter System",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http-filter-tutorial.md": {
+          "source_path": "docs/filters/http-filter-tutorial.md",
+          "reader_need": "Tutorial",
+          "topic": "Filter System",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/filters/extensions.md"
+          ],
+          "order": 10
+        },
+        "docs/filters/http/observability/access_log.md": {
+          "source_path": "docs/filters/http/observability/access_log.md",
+          "reader_need": "Reference",
+          "topic": "Http Observability",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/http/observability/cloud_events.md": {
+          "source_path": "docs/filters/http/observability/cloud_events.md",
+          "reader_need": "Reference",
+          "topic": "Http Observability",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http/observability/request_id.md": {
+          "source_path": "docs/filters/http/observability/request_id.md",
+          "reader_need": "Reference",
+          "topic": "Http Observability",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/http/observability/trace_context.md": {
+          "source_path": "docs/filters/http/observability/trace_context.md",
+          "reader_need": "Reference",
+          "topic": "Http Observability",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/http/payload_processing/compression.md": {
+          "source_path": "docs/filters/http/payload_processing/compression.md",
+          "reader_need": "Reference",
+          "topic": "Http Payload Processing",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/http/payload_processing/grpc_web.md": {
+          "source_path": "docs/filters/http/payload_processing/grpc_web.md",
+          "reader_need": "Reference",
+          "topic": "Http Payload Processing",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http/payload_processing/json_body.md": {
+          "source_path": "docs/filters/http/payload_processing/json_body.md",
+          "reader_need": "Reference",
+          "topic": "Http Payload Processing",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/http/payload_processing/json_body_field.md": {
+          "source_path": "docs/filters/http/payload_processing/json_body_field.md",
+          "reader_need": "Reference",
+          "topic": "Http Payload Processing",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/http/payload_processing/json_rpc.md": {
+          "source_path": "docs/filters/http/payload_processing/json_rpc.md",
+          "reader_need": "Reference",
+          "topic": "Http Payload Processing",
+          "order": 50,
+          "related": []
+        },
+        "docs/filters/http/security/basic_auth.md": {
+          "source_path": "docs/filters/http/security/basic_auth.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/http/security/cors.md": {
+          "source_path": "docs/filters/http/security/cors.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http/security/credential_injection.md": {
+          "source_path": "docs/filters/http/security/credential_injection.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/http/security/csrf.md": {
+          "source_path": "docs/filters/http/security/csrf.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/http/security/forwarded_headers.md": {
+          "source_path": "docs/filters/http/security/forwarded_headers.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 50,
+          "related": []
+        },
+        "docs/filters/http/security/guardrails.md": {
+          "source_path": "docs/filters/http/security/guardrails.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 60,
+          "related": []
+        },
+        "docs/filters/http/security/ip_acl.md": {
+          "source_path": "docs/filters/http/security/ip_acl.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 70,
+          "related": []
+        },
+        "docs/filters/http/security/peer_identity_trust.md": {
+          "source_path": "docs/filters/http/security/peer_identity_trust.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 80,
+          "related": []
+        },
+        "docs/filters/http/security/policy.md": {
+          "source_path": "docs/filters/http/security/policy.md",
+          "reader_need": "Reference",
+          "topic": "Http Security",
+          "order": 90,
+          "related": [],
+          "summary": "Embeds the Policy Engine to enforce identity checks and APL rules, exchange tokens, redact fields, track session taint, and emit audit events."
+        },
+        "docs/filters/http/traffic_management/circuit_breaker.md": {
+          "source_path": "docs/filters/http/traffic_management/circuit_breaker.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/endpoint_selector.md": {
+          "source_path": "docs/filters/http/traffic_management/endpoint_selector.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/grpc_detection.md": {
+          "source_path": "docs/filters/http/traffic_management/grpc_detection.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/grpc_timeout.md": {
+          "source_path": "docs/filters/http/traffic_management/grpc_timeout.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/iterative_request_router.md": {
+          "source_path": "docs/filters/http/traffic_management/iterative_request_router.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 50,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/load_balancer.md": {
+          "source_path": "docs/filters/http/traffic_management/load_balancer.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 60,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/rate_limit.md": {
+          "source_path": "docs/filters/http/traffic_management/rate_limit.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 70,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/redirect.md": {
+          "source_path": "docs/filters/http/traffic_management/redirect.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 80,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/router.md": {
+          "source_path": "docs/filters/http/traffic_management/router.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 90,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/static_response.md": {
+          "source_path": "docs/filters/http/traffic_management/static_response.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 100,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/sticky_sessions.md": {
+          "source_path": "docs/filters/http/traffic_management/sticky_sessions.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 110,
+          "related": []
+        },
+        "docs/filters/http/traffic_management/timeout.md": {
+          "source_path": "docs/filters/http/traffic_management/timeout.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 120,
+          "related": []
+        },
+        "docs/filters/http/transformation/grpc_status.md": {
+          "source_path": "docs/filters/http/transformation/grpc_status.md",
+          "reader_need": "Reference",
+          "topic": "Http Transformation",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/http/transformation/headers.md": {
+          "source_path": "docs/filters/http/transformation/headers.md",
+          "reader_need": "Reference",
+          "topic": "Http Transformation",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/http/transformation/path_rewrite.md": {
+          "source_path": "docs/filters/http/transformation/path_rewrite.md",
+          "reader_need": "Reference",
+          "topic": "Http Transformation",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/http/transformation/url_rewrite.md": {
+          "source_path": "docs/filters/http/transformation/url_rewrite.md",
+          "reader_need": "Reference",
+          "topic": "Http Transformation",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/reference.md": {
+          "source_path": "docs/filters/reference.md",
+          "reader_need": "Reference",
+          "topic": "Filter System",
+          "related": [
+            "docs/filters/README.md",
+            "docs/architecture/overview.md"
+          ],
+          "order": 10
+        },
+        "docs/filters/tcp/observability/tcp_access_log.md": {
+          "source_path": "docs/filters/tcp/observability/tcp_access_log.md",
+          "reader_need": "Reference",
+          "topic": "Tcp Observability",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/tcp/traffic_management/sni_router.md": {
+          "source_path": "docs/filters/tcp/traffic_management/sni_router.md",
+          "reader_need": "Reference",
+          "topic": "Tcp Traffic Management",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/tcp/traffic_management/tcp_load_balancer.md": {
+          "source_path": "docs/filters/tcp/traffic_management/tcp_load_balancer.md",
+          "reader_need": "Reference",
+          "topic": "Tcp Traffic Management",
+          "order": 20,
+          "related": []
+        },
+        "docs/operating/build-features.md": {
+          "source_path": "docs/operating/build-features.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 10,
+          "related": []
+        },
+        "docs/operating/capacity-planning.md": {
+          "source_path": "docs/operating/capacity-planning.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 20,
+          "related": [],
+          "summary": "Estimate file descriptor use from client and upstream connections, subrequests, DNS lookups, and configured connection limits before deployment."
+        },
+        "docs/operating/configuration.md": {
+          "source_path": "docs/operating/configuration.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/architecture/overview.md"
+          ],
+          "order": 30,
+          "summary": "Configure listeners, filter chains, upstream clusters, limits, administration, and runtime behavior with Praxis’s YAML file."
+        },
+        "docs/operating/fips.md": {
+          "source_path": "docs/operating/fips.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 40,
+          "related": []
+        },
+        "docs/operating/health-checking.md": {
+          "source_path": "docs/operating/health-checking.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 50,
+          "related": []
+        },
+        "docs/operating/load-balancing.md": {
+          "source_path": "docs/operating/load-balancing.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 60,
+          "related": []
+        },
+        "docs/operating/observability.md": {
+          "source_path": "docs/operating/observability.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 70,
+          "related": []
+        },
+        "docs/operating/security-hardening.md": {
+          "source_path": "docs/operating/security-hardening.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 80,
+          "related": []
+        },
+        "docs/operating/tls.md": {
+          "source_path": "docs/operating/tls.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 90,
+          "related": [],
+          "summary": "Configure downstream and upstream TLS for common listener and backend scenarios."
+        },
+        "docs/quickstart.md": {
+          "source_path": "docs/quickstart.md",
+          "reader_need": "Tutorial",
+          "topic": "Developing",
+          "related": [
+            "docs/operating/configuration.md",
+            "docs/architecture/overview.md"
+          ],
+          "order": 10,
+          "summary": "Build Praxis from source for local development, then route a request to an upstream backend."
+        },
+        "docs/release.md": {
+          "source_path": "docs/release.md",
+          "reader_need": "Release",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        }
+      }
+    },
+    "ai": {
+      "start": "docs/quickstart.md",
+      "groups": [
+        "How-to",
+        "Tutorial",
+        "Reference",
+        "Explanation"
+      ],
+      "topic_order": [
+        "AI Gateway",
+        "Core Concepts",
+        "Store",
+        "AI Filters",
+        "OpenAI Compatibility",
+        "Anthropic Messages",
+        "Conformance",
+        "Architecture",
+        "Developing",
+        "Type Design"
+      ],
+      "articles": {
+        "docs/README.md": {
+          "source_path": "docs/README.md",
+          "reader_need": "Overview",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/anthropic-messages.md": {
+          "source_path": "docs/anthropic-messages.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/architecture/ai-inference.md"
+          ],
+          "order": 10
+        },
+        "docs/architecture/agentic-protocols.md": {
+          "source_path": "docs/architecture/agentic-protocols.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 10,
+          "related": []
+        },
+        "docs/architecture/ai-inference.md": {
+          "source_path": "docs/architecture/ai-inference.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/architecture/agentic-protocols.md"
+          ],
+          "order": 20
+        },
+        "docs/architecture/opentelemetry.md": {
+          "source_path": "docs/architecture/opentelemetry.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 30,
+          "related": [],
+          "summary": "Add Praxis AI routing decisions to the OpenTelemetry request traces exported by Praxis core."
+        },
+        "docs/architecture/outbound-callouts.md": {
+          "source_path": "docs/architecture/outbound-callouts.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 40,
+          "related": []
+        },
+        "docs/architecture/postgres-cryptographic-boundary.md": {
+          "source_path": "docs/architecture/postgres-cryptographic-boundary.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 50,
+          "related": []
+        },
+        "docs/architecture/response-store.md": {
+          "source_path": "docs/architecture/response-store.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 60,
+          "related": []
+        },
+        "docs/conformance/openresponses-translation.md": {
+          "source_path": "docs/conformance/openresponses-translation.md",
+          "reader_need": "Reference",
+          "topic": "Conformance",
+          "order": 10,
+          "related": []
+        },
+        "docs/developing/adding-filters.md": {
+          "source_path": "docs/developing/adding-filters.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 10,
+          "related": [],
+          "summary": "Add a built-in Praxis AI filter by following the filter contract and registering it with the product."
+        },
+        "docs/developing/cli-vllm-through-praxis.md": {
+          "source_path": "docs/developing/cli-vllm-through-praxis.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/architecture/ai-inference.md"
+          ],
+          "order": 20,
+          "summary": "Connect Codex or Claude Code through a local Praxis AI gateway to inference served by vLLM."
+        },
+        "docs/developing/fips.md": {
+          "source_path": "docs/developing/fips.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 30,
+          "related": []
+        },
+        "docs/developing/getting-started.md": {
+          "source_path": "docs/developing/getting-started.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 40,
+          "related": []
+        },
+        "docs/developing/type-design.md": {
+          "source_path": "docs/developing/type-design.md",
+          "reader_need": "Explanation",
+          "topic": "Type Design",
+          "order": 10,
+          "related": []
+        },
+        "docs/features.md": {
+          "source_path": "docs/features.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/README.md": {
+          "source_path": "docs/filters/README.md",
+          "reader_need": "Overview",
+          "topic": "AI Filters",
+          "order": 10,
+          "related": [],
+          "summary": "Browse Praxis AI filters and open their generated configuration reference."
+        },
+        "docs/filters/a2a.md": {
+          "source_path": "docs/filters/a2a.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/ai_guardrails.md": {
+          "source_path": "docs/filters/ai_guardrails.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/anthropic_messages_format.md": {
+          "source_path": "docs/filters/anthropic_messages_format.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/anthropic_messages_protocol.md": {
+          "source_path": "docs/filters/anthropic_messages_protocol.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/anthropic_messages_to_chat_completions.md": {
+          "source_path": "docs/filters/anthropic_messages_to_chat_completions.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/anthropic_messages_to_chat_completions_stream.md": {
+          "source_path": "docs/filters/anthropic_messages_to_chat_completions_stream.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/anthropic_validate.md": {
+          "source_path": "docs/filters/anthropic_validate.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 50,
+          "related": []
+        },
+        "docs/filters/anthropic_web_search.md": {
+          "source_path": "docs/filters/anthropic_web_search.md",
+          "reader_need": "Reference",
+          "topic": "Anthropic Messages",
+          "order": 60,
+          "related": []
+        },
+        "docs/filters/aws_sigv4_sign.md": {
+          "source_path": "docs/filters/aws_sigv4_sign.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/azure_ad.md": {
+          "source_path": "docs/filters/azure_ad.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/callout_credentials.md": {
+          "source_path": "docs/filters/callout_credentials.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 50,
+          "related": []
+        },
+        "docs/filters/credential_inject.md": {
+          "source_path": "docs/filters/credential_inject.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 60,
+          "related": []
+        },
+        "docs/filters/extensions.md": {
+          "source_path": "docs/filters/extensions.md",
+          "reader_need": "Explanation",
+          "topic": "AI Filters",
+          "order": 10,
+          "related": [],
+          "summary": "Extend Praxis AI with custom filters using the Praxis core filter interfaces and registration model."
+        },
+        "docs/filters/external_metering.md": {
+          "source_path": "docs/filters/external_metering.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 70,
+          "related": []
+        },
+        "docs/filters/gcp_adc.md": {
+          "source_path": "docs/filters/gcp_adc.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 80,
+          "related": []
+        },
+        "docs/filters/http_callout.md": {
+          "source_path": "docs/filters/http_callout.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 90,
+          "related": []
+        },
+        "docs/filters/identity_header_guard.md": {
+          "source_path": "docs/filters/identity_header_guard.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 100,
+          "related": []
+        },
+        "docs/filters/intelligent_route.md": {
+          "source_path": "docs/filters/intelligent_route.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 110,
+          "related": []
+        },
+        "docs/filters/llmisvc_model_provider_resolver.md": {
+          "source_path": "docs/filters/llmisvc_model_provider_resolver.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 120,
+          "related": []
+        },
+        "docs/filters/mcp.md": {
+          "source_path": "docs/filters/mcp.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 130,
+          "related": [],
+          "summary": "Extracts MCP JSON-RPC method, tool, resource, prompt, version, and session metadata into filter-visible request fields."
+        },
+        "docs/filters/model_to_header.md": {
+          "source_path": "docs/filters/model_to_header.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 140,
+          "related": []
+        },
+        "docs/filters/openai_agentic_loop.md": {
+          "source_path": "docs/filters/openai_agentic_loop.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 10,
+          "related": []
+        },
+        "docs/filters/openai_chat_completions_to_azureai_chat_completions.md": {
+          "source_path": "docs/filters/openai_chat_completions_to_azureai_chat_completions.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/openai_chat_completions_to_vertexai_gemini.md": {
+          "source_path": "docs/filters/openai_chat_completions_to_vertexai_gemini.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 30,
+          "related": []
+        },
+        "docs/filters/openai_client_tool_compat.md": {
+          "source_path": "docs/filters/openai_client_tool_compat.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 40,
+          "related": []
+        },
+        "docs/filters/openai_conversations.md": {
+          "source_path": "docs/filters/openai_conversations.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 50,
+          "related": [],
+          "summary": "Serve OpenAI Conversations API endpoints locally through the configured response store."
+        },
+        "docs/filters/openai_doc_extract.md": {
+          "source_path": "docs/filters/openai_doc_extract.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 60,
+          "related": []
+        },
+        "docs/filters/openai_file_resolve.md": {
+          "source_path": "docs/filters/openai_file_resolve.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 70,
+          "related": []
+        },
+        "docs/filters/openai_file_search_callout.md": {
+          "source_path": "docs/filters/openai_file_search_callout.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 80,
+          "related": []
+        },
+        "docs/filters/openai_mcp_dispatch.md": {
+          "source_path": "docs/filters/openai_mcp_dispatch.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 90,
+          "related": []
+        },
+        "docs/filters/openai_mcp_tool_resolve.md": {
+          "source_path": "docs/filters/openai_mcp_tool_resolve.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 100,
+          "related": []
+        },
+        "docs/filters/openai_operation.md": {
+          "source_path": "docs/filters/openai_operation.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 110,
+          "related": []
+        },
+        "docs/filters/openai_response_store.md": {
+          "source_path": "docs/filters/openai_response_store.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 120,
+          "related": []
+        },
+        "docs/filters/openai_responses_compact.md": {
+          "source_path": "docs/filters/openai_responses_compact.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 130,
+          "related": []
+        },
+        "docs/filters/openai_responses_format.md": {
+          "source_path": "docs/filters/openai_responses_format.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 140,
+          "related": []
+        },
+        "docs/filters/openai_responses_model_rewrite.md": {
+          "source_path": "docs/filters/openai_responses_model_rewrite.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 150,
+          "related": []
+        },
+        "docs/filters/openai_responses_proxy.md": {
+          "source_path": "docs/filters/openai_responses_proxy.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 160,
+          "related": []
+        },
+        "docs/filters/openai_responses_rehydrate.md": {
+          "source_path": "docs/filters/openai_responses_rehydrate.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 170,
+          "related": []
+        },
+        "docs/filters/openai_responses_request.md": {
+          "source_path": "docs/filters/openai_responses_request.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 180,
+          "related": []
+        },
+        "docs/filters/openai_responses_validate.md": {
+          "source_path": "docs/filters/openai_responses_validate.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 190,
+          "related": []
+        },
+        "docs/filters/openai_stream_events.md": {
+          "source_path": "docs/filters/openai_stream_events.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 200,
+          "related": []
+        },
+        "docs/filters/openai_tool_parse.md": {
+          "source_path": "docs/filters/openai_tool_parse.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 210,
+          "related": []
+        },
+        "docs/filters/openai_web_search.md": {
+          "source_path": "docs/filters/openai_web_search.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 220,
+          "related": []
+        },
+        "docs/filters/project_state_owner_headers.md": {
+          "source_path": "docs/filters/project_state_owner_headers.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 150,
+          "related": []
+        },
+        "docs/filters/prompt_enrich.md": {
+          "source_path": "docs/filters/prompt_enrich.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 160,
+          "related": []
+        },
+        "docs/filters/provider_route.md": {
+          "source_path": "docs/filters/provider_route.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 170,
+          "related": []
+        },
+        "docs/filters/reference.md": {
+          "source_path": "docs/filters/reference.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "related": [
+            "docs/filters/README.md",
+            "docs/architecture/ai-inference.md"
+          ],
+          "order": 180
+        },
+        "docs/filters/responses_to_chat_completions.md": {
+          "source_path": "docs/filters/responses_to_chat_completions.md",
+          "reader_need": "Reference",
+          "topic": "OpenAI Compatibility",
+          "order": 230,
+          "related": []
+        },
+        "docs/filters/state_owner.md": {
+          "source_path": "docs/filters/state_owner.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 190,
+          "related": []
+        },
+        "docs/filters/stream_usage_inject.md": {
+          "source_path": "docs/filters/stream_usage_inject.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 200,
+          "related": []
+        },
+        "docs/filters/time_to_first_token.md": {
+          "source_path": "docs/filters/time_to_first_token.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 210,
+          "related": []
+        },
+        "docs/filters/token_ceiling.md": {
+          "source_path": "docs/filters/token_ceiling.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 220,
+          "related": []
+        },
+        "docs/filters/token_count.md": {
+          "source_path": "docs/filters/token_count.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 230,
+          "related": []
+        },
+        "docs/filters/token_rate_limit.md": {
+          "source_path": "docs/filters/token_rate_limit.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 240,
+          "related": []
+        },
+        "docs/filters/token_usage_headers.md": {
+          "source_path": "docs/filters/token_usage_headers.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 250,
+          "related": []
+        },
+        "docs/fips.md": {
+          "source_path": "docs/fips.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/quickstart.md": {
+          "source_path": "docs/quickstart.md",
+          "reader_need": "Tutorial",
+          "topic": "Developing",
+          "related": [
+            "docs/filters/reference.md",
+            "docs/architecture/ai-inference.md"
+          ],
+          "order": 10,
+          "summary": "Build Praxis AI from source for local development, then route a Responses API request to an AI backend."
+        },
+        "docs/release.md": {
+          "source_path": "docs/release.md",
+          "reader_need": "Release",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/store/schema-migration.md": {
+          "source_path": "docs/store/schema-migration.md",
+          "reader_need": "How-to",
+          "topic": "Store",
+          "order": 10,
+          "summary": "Replace the disposable v3 response store with a fresh v4 database before starting current releases; startup creates the required schema.",
+          "related": []
+        },
+        "docs/store/legacy-item-position-repair.md": {
+          "source_path": "docs/store/legacy-item-position-repair.md",
+          "reader_need": "How-to",
+          "topic": "Store",
+          "order": 20,
+          "related": []
+        },
+        "docs/capacity-planning.md": {
+          "source_path": "docs/capacity-planning.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/migrating-to-0.2.md": {
+          "source_path": "docs/migrating-to-0.2.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 30,
+          "related": []
+        },
+        "docs/conformance/README.md": {
+          "source_path": "docs/conformance/README.md",
+          "reader_need": "Overview",
+          "topic": "Conformance",
+          "order": 20,
+          "related": []
+        },
+        "docs/conformance/openai-responses-state-conformance.md": {
+          "source_path": "docs/conformance/openai-responses-state-conformance.md",
+          "reader_need": "Reference",
+          "topic": "Conformance",
+          "order": 20,
+          "related": []
+        },
+        "docs/filters/ai_operation.md": {
+          "source_path": "docs/filters/ai_operation.md",
+          "reader_need": "Reference",
+          "topic": "AI Filters",
+          "order": 25,
+          "related": []
+        },
+        "docs/developing/flow-visualizers.md": {
+          "source_path": "docs/developing/flow-visualizers.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 10,
+          "related": []
+        },
+        "docs/developing/gpu-nightly-suite.md": {
+          "source_path": "docs/developing/gpu-nightly-suite.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 20,
+          "related": []
+        },
+        "docs/developing/llmd-integration-testing.md": {
+          "source_path": "docs/developing/llmd-integration-testing.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 30,
+          "related": []
+        },
+        "docs/developing/project-management.md": {
+          "source_path": "docs/developing/project-management.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 40,
+          "related": []
+        },
+        "docs/developing/vllm-qualification.md": {
+          "source_path": "docs/developing/vllm-qualification.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 50,
+          "related": []
+        },
+        "docs/anthropic-messages-replay-test-plan.md": {
+          "source_path": "docs/anthropic-messages-replay-test-plan.md",
+          "reader_need": "Explanation",
+          "topic": "Developing",
+          "order": 60,
+          "summary": "Defines the Anthropic Messages API request and response shapes Praxis AI should cover across replay, passthrough, and translation tests.",
+          "related": []
+        }
+      }
+    },
+    "policy": {
+      "start": "docs/content/quickstart.md",
+      "groups": [
+        "How-to",
+        "Tutorial",
+        "Reference",
+        "Explanation"
+      ],
+      "topic_order": [
+        "Core Concepts",
+        "Configuration",
+        "APL"
+      ],
+      "articles": {
+        "docs/content/apl/apl-grammar.md": {
+          "source_path": "docs/content/apl/apl-grammar.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "related": [
+            "docs/content/quickstart.md",
+            "docs/content/configuration.md"
+          ],
+          "order": 10
+        },
+        "docs/content/apl/attributes.md": {
+          "source_path": "docs/content/apl/attributes.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 20,
+          "related": []
+        },
+        "docs/content/apl/delegation.md": {
+          "source_path": "docs/content/apl/delegation.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 30,
+          "related": []
+        },
+        "docs/content/apl/effects.md": {
+          "source_path": "docs/content/apl/effects.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 40,
+          "related": []
+        },
+        "docs/content/apl/elicitation.md": {
+          "source_path": "docs/content/apl/elicitation.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 50,
+          "related": []
+        },
+        "docs/content/apl/identity.md": {
+          "source_path": "docs/content/apl/identity.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 60,
+          "related": []
+        },
+        "docs/content/apl/index.md": {
+          "source_path": "docs/content/apl/index.md",
+          "reader_need": "Overview",
+          "topic": "APL",
+          "order": 10,
+          "related": []
+        },
+        "docs/content/apl/pdp.md": {
+          "source_path": "docs/content/apl/pdp.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 70,
+          "related": []
+        },
+        "docs/content/apl/restrict.md": {
+          "source_path": "docs/content/apl/restrict.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 80,
+          "related": []
+        },
+        "docs/content/apl/tainting.md": {
+          "source_path": "docs/content/apl/tainting.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 90,
+          "related": [],
+          "summary": "Carry sensitivity labels across requests in a session, then deny later operations that would expose tainted data."
+        },
+        "docs/content/assertions.md": {
+          "source_path": "docs/content/assertions.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/content/benchmarks.md": {
+          "source_path": "docs/content/benchmarks.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/content/builtins.md": {
+          "source_path": "docs/content/builtins.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 30,
+          "related": []
+        },
+        "docs/content/cmf-extensions.md": {
+          "source_path": "docs/content/cmf-extensions.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": [],
+          "summary": "Map typed Common Message Format extensions into the attribute bag that APL policies inspect."
+        },
+        "docs/content/cmf.md": {
+          "source_path": "docs/content/cmf.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/content/configuration.md": {
+          "source_path": "docs/content/configuration.md",
+          "reader_need": "Reference",
+          "topic": "Configuration",
+          "related": [
+            "docs/content/apl/apl-grammar.md",
+            "docs/content/overview.md"
+          ],
+          "order": 10
+        },
+        "docs/content/crates.md": {
+          "source_path": "docs/content/crates.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 40,
+          "related": []
+        },
+        "docs/content/deployment.md": {
+          "source_path": "docs/content/deployment.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/content/extensions.md": {
+          "source_path": "docs/content/extensions.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 30,
+          "related": []
+        },
+        "docs/content/http-routing.md": {
+          "source_path": "docs/content/http-routing.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 20,
+          "related": []
+        },
+        "docs/content/identity-claim-mapping.md": {
+          "source_path": "docs/content/identity-claim-mapping.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 30,
+          "related": []
+        },
+        "docs/content/identity-delegation.md": {
+          "source_path": "docs/content/identity-delegation.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "related": [
+            "docs/content/apl/delegation.md",
+            "docs/content/configuration.md"
+          ],
+          "order": 40
+        },
+        "docs/content/index.md": {
+          "source_path": "docs/content/index.md",
+          "reader_need": "Overview",
+          "topic": "Core Concepts",
+          "order": 10,
+          "related": []
+        },
+        "docs/content/overview.md": {
+          "source_path": "docs/content/overview.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "related": [
+            "docs/content/quickstart.md",
+            "docs/content/threat-model.md"
+          ],
+          "order": 40,
+          "summary": "Understand how PPE evaluates identity and APL policy for each operation, then applies effects before allowing it to reach a backend."
+        },
+        "docs/content/patterns.md": {
+          "source_path": "docs/content/patterns.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 50,
+          "related": []
+        },
+        "docs/content/pipeline.md": {
+          "source_path": "docs/content/pipeline.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 50,
+          "related": []
+        },
+        "docs/content/quickstart.md": {
+          "source_path": "docs/content/quickstart.md",
+          "reader_need": "Tutorial",
+          "topic": "Core Concepts",
+          "related": [
+            "docs/content/overview.md",
+            "docs/content/apl/apl-grammar.md"
+          ],
+          "order": 10
+        },
+        "docs/content/testing.md": {
+          "source_path": "docs/content/testing.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 60,
+          "related": []
+        },
+        "docs/content/threat-model.md": {
+          "source_path": "docs/content/threat-model.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "related": [
+            "docs/content/deployment.md",
+            "docs/content/overview.md"
+          ],
+          "order": 60
+        },
+        "docs/content/upgrade-apl.md": {
+          "source_path": "docs/content/upgrade-apl.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 70,
+          "related": []
+        },
+        "docs/content/use-cases.md": {
+          "source_path": "docs/content/use-cases.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 70,
+          "related": [],
+          "summary": "Explore end-to-end PPE deployments for AI gateways, identity providers, delegated credentials, and policy enforcement."
+        },
+        "docs/content/vision.md": {
+          "source_path": "docs/content/vision.md",
+          "reader_need": "Explanation",
+          "topic": "Core Concepts",
+          "order": 80,
+          "related": [],
+          "summary": "PPE acts as a reference monitor between an agent and the tools, agents, and data it can access."
+        }
+      }
+    },
+    "grid": {
+      "start": "docs/README.md",
+      "groups": [
+        "How-to",
+        "Tutorial",
+        "Reference",
+        "Explanation"
+      ],
+      "topic_order": [
+        "Overview",
+        "Installation",
+        "Architecture",
+        "Routing",
+        "API Reference",
+        "Configuration",
+        "Security",
+        "Operations",
+        "Observability",
+        "Development"
+      ],
+      "articles": {
+        "docs/README.md": {
+          "reader_need": "Overview",
+          "topic": "Overview",
+          "order": 10
+        },
+        "docs/adding-provider.md": {
+          "reader_need": "How-to",
+          "topic": "Operations",
+          "order": 10
+        },
+        "docs/architecture/auth.md": {
+          "reader_need": "Explanation",
+          "topic": "Security",
+          "order": 10
+        },
+        "docs/architecture/ci-kind-e2e.md": {
+          "reader_need": "Reference",
+          "topic": "Development",
+          "order": 10
+        },
+        "docs/architecture/consumer-config.md": {
+          "reader_need": "How-to",
+          "topic": "Configuration",
+          "order": 10
+        },
+        "docs/architecture/crds.md": {
+          "reader_need": "Reference",
+          "topic": "API Reference",
+          "order": 10,
+          "related": ["docs/architecture/overview.md", "docs/architecture/auth.md", "docs/architecture/scoring.md", "docs/routing.md"]
+        },
+        "docs/architecture/enrollment.md": {
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 10
+        },
+        "docs/architecture/external-ingress.md": {
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 20
+        },
+        "docs/architecture/opentelemetry.md": {
+          "reader_need": "How-to",
+          "topic": "Observability",
+          "order": 10
+        },
+        "docs/architecture/operations.md": {
+          "reader_need": "How-to",
+          "topic": "Operations",
+          "order": 20
+        },
+        "docs/architecture/overview.md": {
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 30,
+          "related": ["docs/architecture/crds.md", "docs/architecture/scoring.md", "docs/architecture/auth.md"]
+        },
+        "docs/architecture/polling-metrics.md": {
+          "reader_need": "Reference",
+          "topic": "Observability",
+          "order": 20
+        },
+        "docs/architecture/prefix-affinity.md": {
+          "reader_need": "How-to",
+          "topic": "Routing",
+          "order": 10
+        },
+        "docs/architecture/provider-draining.md": {
+          "reader_need": "How-to",
+          "topic": "Operations",
+          "order": 30
+        },
+        "docs/architecture/routing.md": {
+          "reader_need": "Explanation",
+          "topic": "Routing",
+          "order": 20,
+          "summary": "Describes how Grid renders, versions, distributes, and secures routing state for Praxis gateways."
+        },
+        "docs/architecture/scoring.md": {
+          "reader_need": "Explanation",
+          "topic": "Routing",
+          "order": 30
+        },
+        "docs/architecture/signals.md": {
+          "reader_need": "Reference",
+          "topic": "Observability",
+          "order": 30
+        },
+        "docs/conventions.md": {
+          "reader_need": "Explanation",
+          "topic": "Development",
+          "order": 20
+        },
+        "docs/developing/conventions.md": {
+          "reader_need": "Explanation",
+          "topic": "Development",
+          "order": 30,
+          "summary": "Points to the canonical Grid development conventions for code, tests, documentation, and pull requests."
+        },
+        "docs/developing/forge.md": {
+          "reader_need": "How-to",
+          "topic": "Development",
+          "order": 40,
+          "summary": "Install and use the pinned praxis-forge CLI for Grid topology validation and qualification workflows."
+        },
+        "docs/developing/type-design.md": {
+          "reader_need": "Explanation",
+          "topic": "Development",
+          "order": 50
+        },
+        "docs/developing/unicode-audit.md": {
+          "reader_need": "Reference",
+          "topic": "Development",
+          "order": 60
+        },
+        "docs/development.md": {
+          "reader_need": "How-to",
+          "topic": "Development",
+          "order": 70
+        },
+        "docs/fips.md": {
+          "reader_need": "How-to",
+          "topic": "Security",
+          "order": 20
+        },
+        "docs/installation/README.md": {
+          "reader_need": "Overview",
+          "topic": "Installation",
+          "order": 10,
+          "summary": "Introduces Grid installation paths for existing Kubernetes clusters, site enrollment, and AWS deployments."
+        },
+        "docs/installation/aws.md": {
+          "reader_need": "How-to",
+          "topic": "Installation",
+          "order": 20,
+          "summary": "Plan multi-site Grid deployments on AWS, including private connectivity, load balancers, and chart settings."
+        },
+        "docs/installation/enrollment.md": {
+          "reader_need": "How-to",
+          "topic": "Installation",
+          "order": 30
+        },
+        "docs/installation/existing-clusters.md": {
+          "reader_need": "How-to",
+          "topic": "Installation",
+          "order": 40
+        },
+        "docs/installation/migration-0.3.x.md": {
+          "reader_need": "How-to",
+          "topic": "Installation",
+          "order": 50
+        },
+        "docs/metrics.md": {
+          "reader_need": "Reference",
+          "topic": "Observability",
+          "order": 40
+        },
+        "docs/release.md": {
+          "reader_need": "Reference",
+          "topic": "Development",
+          "order": 80
+        },
+        "docs/routing.md": {
+          "reader_need": "How-to",
+          "topic": "Routing",
+          "order": 40
+        },
+        "docs/site-selection.md": {
+          "reader_need": "How-to",
+          "topic": "Routing",
+          "order": 50
+        },
+        "docs/technical-preview-scope.md": {
+          "reader_need": "Explanation",
+          "topic": "Overview",
+          "order": 20,
+          "related": ["docs/installation/existing-clusters.md", "docs/architecture/overview.md"]
+        }
+      }
+    }
+  }
+}

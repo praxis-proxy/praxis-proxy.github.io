@@ -1,0 +1,29 @@
+{{- $docs := index hugo.Data.docs_build_versions.products "policy" -}}
+{{- $pages := where (where site.RegularPages "Params.product" "policy") "Params.version" $docs.default -}}
+{{- $quickstart := index (where $pages "Params.source_path" "docs/content/quickstart.md") 0 -}}
+<section class="home-section project-spotlight project-spotlight--policy" aria-labelledby="policy-spotlight-title" data-motion-scene>
+  <div class="project-spotlight__inner">
+    <div class="project-spotlight__copy">
+      <p class="home-section__eyebrow">03 / PRAXIS POLICY ENGINE · ENFORCEMENT</p>
+      <h2 id="policy-spotlight-title">Decide what runs.<br>Control what returns.</h2>
+      <p>Praxis Policy Engine is a separate policy runtime for tools, data, and APIs. Use verified identity and configured rules to authorize an operation, transform its result, or deny it.</p>
+      <div class="project-spotlight__actions">
+        <a class="project-spotlight__link" href="{{ printf "policy/%s/" $docs.default | relURL }}">Explore Policy docs <span aria-hidden="true">↗</span></a>
+        {{- with $quickstart }}<a class="project-spotlight__secondary" href="{{ .RelPermalink }}">Start with a policy <span aria-hidden="true">→</span></a>{{- end }}
+      </div>
+    </div>
+    <div class="project-spotlight__visual project-bento project-bento--policy">
+      <figure class="project-spotlight__feature decision-board">
+        <div class="project-spotlight__visual-header"><span>ONE OPERATION</span><span>EXPLICIT DECISION</span></div>
+        <div class="decision-board__request"><small>INCOMING CALL</small><strong>Caller + operation</strong></div>
+        <div class="decision-board__engine"><small>PRAXIS POLICY ENGINE</small><strong>Identity + rules</strong><span>Evaluate the configured policy</span></div>
+        <figcaption>The decision depends on the caller, operation, and policy you configure.</figcaption>
+      </figure>
+      <ul class="decision-board__outcomes" aria-label="Possible policy outcomes">
+        <li><span>01 / AUTHORIZE</span><strong>Allow</strong></li>
+        <li><span>02 / TRANSFORM</span><strong>Redact</strong></li>
+        <li><span>03 / STOP</span><strong>Deny</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>

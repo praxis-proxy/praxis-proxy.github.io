@@ -1,0 +1,22 @@
+{{- $target := .Params.redirect_target -}}
+{{- if not (strings.HasPrefix $target "https://") }}{{ $target = $target | absURL }}{{ end -}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moved documentation | Praxis</title>
+  <link rel="canonical" href="{{ $target }}">
+  <meta name="robots" content="noindex, follow">
+  <meta http-equiv="refresh" content="0; url={{ $target }}">
+</head>
+<body>
+  <h1>This page has moved</h1>
+  <p><a href="{{ $target }}">Open the current guide</a>.</p>
+  <script>
+    const target = new URL({{ $target }});
+    if (!target.hash && location.hash) target.hash = location.hash;
+    location.replace(target.href);
+  </script>
+</body>
+</html>

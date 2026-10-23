@@ -1,0 +1,14 @@
+# Approvers can /approve and /lgtm; reviewers can /lgtm. Prow reads this file
+# from the base branch, never from a pull request, so a PR cannot grant itself
+# approvers. One reviewer per pull request is also requested from these lists
+# (blunderbuss in .github/prow.yaml).
+# https://github.com/cncf/prow-github-actions/blob/main/docs/commands.md
+approvers:
+  - davidgs
+  - leseb
+  - rikatz
+
+reviewers:
+  - davidgs
+  - leseb
+  - rikatz

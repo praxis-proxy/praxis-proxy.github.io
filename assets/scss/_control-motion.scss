@@ -1,0 +1,288 @@
+/* One motion language: quick interactions, generous entrances, flowing traffic. */
+:root {
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+  --motion-quick: 220ms;
+}
+
+/* All content remains visible without JavaScript or animation support. */
+.network-packet { opacity: 0; stroke-dasharray: 8 108; stroke-dashoffset: 12; }
+.network-orbit { opacity: .3; stroke-dasharray: 12 88; }
+.network-core-rim { opacity: .6; stroke-dasharray: 14 86; }
+.gateway-loop { padding-top: 1.4rem; }
+.gateway-loop__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+  color: var(--praxis-muted);
+  font: .61rem/1.5 'IBM Plex Mono', monospace;
+  letter-spacing: .1em;
+}
+.gateway-loop__heading > span:last-child { color: var(--praxis-accent); font-size: 1.1rem; }
+.gateway-loop__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .4rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.gateway-loop__steps > li { display: grid; min-width: 0; gap: .3rem; }
+.gateway-loop__symbol {
+  display: grid;
+  place-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  margin-bottom: .4rem;
+  border: 1px solid var(--praxis-border);
+  border-radius: .5rem;
+  background: var(--praxis-bg);
+  color: var(--praxis-accent);
+  font: 1rem 'IBM Plex Mono', monospace;
+}
+.gateway-loop__steps strong { font-size: .72rem; font-weight: 600; }
+.gateway-loop__steps li > span:last-child { color: var(--praxis-muted); font-size: .61rem; line-height: 1.5; }
+.gateway-loop__symbol--stream { display: flex; align-items: center; gap: 2px; }
+.gateway-loop__symbol--stream i { width: 2px; height: 11px; border-radius: 2px; background: currentColor; }
+.gateway-loop__symbol--stream i:nth-child(even) { height: 6px; }
+.gateway-loop__track { height: 2px; margin-top: 1rem; overflow: hidden; background: var(--praxis-border); }
+.gateway-loop__track > span { display: block; width: 100%; height: 100%; background: var(--praxis-accent); transform-origin: left; }
+.page-progress {
+  position: fixed;
+  z-index: 1040;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  background: var(--praxis-accent);
+  transform: scaleX(var(--reading-progress, 0));
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  :where(.btn, .td-navbar .nav-link, .docs-sidebar-item > a, .praxis-footer__group a, .praxis-footer__slack-cta,
+    .task-card, .docs-directory-card, .docs-need-product,
+    .product-journey-group, .praxis-blog-card,
+    .protocol-row) {
+    transition: transform 420ms var(--motion-ease), box-shadow 420ms var(--motion-ease),
+      border-color var(--motion-quick) ease, background-color var(--motion-quick) ease,
+      color var(--motion-quick) ease;
+  }
+  .btn > span, .task-card__action > span,
+  .gateway-spotlight__link > span, .task-card__icon {
+    display: inline-block;
+    transition: transform 500ms var(--motion-ease);
+  }
+  .navbar-brand__logo {
+    transition: transform 500ms var(--motion-ease);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn:hover > span, .task-card__action:hover > span, .gateway-spotlight__link:hover > span { transform: translate(3px, -2px); }
+  .navbar-brand:hover .navbar-brand__logo--light,
+  [data-bs-theme='dark'] .navbar-brand:hover .navbar-brand__logo--dark { transform: rotate(-7deg) scale(1.08); }
+  .td-navbar .nav-link:not(.dropdown-toggle) {
+    background-image: linear-gradient(var(--praxis-accent), var(--praxis-accent));
+    background-repeat: no-repeat;
+    background-position: 50% calc(100% - 5px);
+    background-size: 0 1px;
+    transition: background-size 350ms var(--motion-ease), color var(--motion-quick) ease;
+  }
+  .td-navbar .navbar-nav > .nav-item > a.nav-link:not(.dropdown-toggle):hover {
+    background-size: calc(100% - 1rem) 1px;
+    text-decoration: none;
+  }
+  .praxis-footer__group a { display: inline-block; }
+  .praxis-footer__group a:hover, .docs-sidebar-item > a:hover { transform: translateX(3px); }
+
+  /* Ambient layers are small, bounded, and independent of document layout. */
+  .home-hero--control::before {
+    inset: -72px;
+    animation: praxis-grid 22s linear infinite;
+  }
+  .home-hero--control::after {
+    position: absolute;
+    z-index: -1;
+    top: 5%;
+    right: -10%;
+    width: min(85vw, 1000px);
+    aspect-ratio: 1.4;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, #4338ca23, #342b7510 45%, transparent 70%);
+    content: '';
+    pointer-events: none;
+    animation: praxis-light 12s ease-in-out infinite alternate;
+  }
+  .home-hero--control .home-hero__eyebrow > span { animation: praxis-beacon 3.6s ease-out infinite; }
+  .home-hero--control .home-hero__topline { animation: praxis-enter 900ms var(--motion-ease) both; }
+  .home-hero--control .home-hero__eyebrow { animation: praxis-enter 900ms 80ms var(--motion-ease) both; }
+  .home-hero--control .home-hero__line { animation: praxis-title 1100ms 150ms var(--motion-ease) both; }
+  .home-hero--control .home-hero__line + .home-hero__line { animation-delay: 280ms; }
+  .home-hero--control .home-hero__lede { animation: praxis-enter 1000ms 380ms var(--motion-ease) both; }
+  .home-hero--control .home-hero__actions { animation: praxis-enter 1000ms 480ms var(--motion-ease) both; }
+  .home-hero--control .home-hero__signature { animation: praxis-enter 1000ms 560ms var(--motion-ease) both; }
+  .home-hero--control h1 em {
+    background: linear-gradient(110deg, #bcb4ff 25%, #f6f7ff 45%, #bcb4ff 65%);
+    background-size: 250% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: praxis-type-light 9s 1.4s ease-in-out infinite;
+  }
+  @supports (background-clip: text) {
+    .home-hero--control h1 em { color: transparent; }
+  }
+  .hero-network { animation: praxis-enter 1400ms 200ms var(--motion-ease) both; }
+  .hero-network__diagram {
+    transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 800ms var(--motion-ease);
+  }
+  .network-aura { transform-origin: 324px 255px; animation: praxis-aura 7.2s ease-in-out infinite; }
+  .network-orbit { animation: praxis-orbit 18s linear infinite; }
+  .network-core-rim { animation: praxis-orbit 7.2s linear infinite; }
+  .network-core { animation: praxis-core 7.2s ease-in-out infinite; }
+  .network-packet { animation: praxis-packet 7.2s linear infinite; }
+  .network-packet--2 { animation-delay: 240ms; }
+  .network-packet--3 { animation-delay: 480ms; }
+  .network-packet--4 { animation-delay: 2.3s; }
+  .network-packet--5 { animation-delay: 2.54s; }
+  .network-packet--6 { animation-delay: 2.78s; }
+  .network-extensions { animation: praxis-dashes 2.4s linear infinite; }
+  .network-policy, .network-ai { animation: praxis-node 7.2s ease-in-out infinite; }
+  .network-policy { animation-delay: 600ms; }
+  .network-ai { animation-delay: 1.3s; }
+  .home-signal-rail > li {
+    animation: praxis-enter 900ms calc(640ms + var(--rail-order, 0) * 80ms) var(--motion-ease) backwards;
+  }
+  .home-signal-rail > li:nth-child(2) { --rail-order: 1; }
+  .home-signal-rail > li:nth-child(3) { --rail-order: 2; }
+  .home-signal-rail > li:nth-child(4) { --rail-order: 3; }
+
+  /* The four beats are a conceptual tool loop, not measured live traffic. */
+  .gateway-loop__steps li { --beat: 0s; }
+  .gateway-loop__steps li:nth-child(2) { --beat: 2s; }
+  .gateway-loop__steps li:nth-child(3) { --beat: 4s; }
+  .gateway-loop__steps li:nth-child(4) { --beat: 6s; }
+  .gateway-loop__symbol { animation: praxis-workflow 8s var(--beat) ease-in-out infinite; }
+  .gateway-loop__track > span { animation: praxis-progress 8s linear infinite; }
+  .gateway-loop__symbol--stream i { animation: praxis-stream 1s ease-in-out infinite alternate; }
+  .gateway-loop__symbol--stream i:nth-child(2) { animation-delay: -200ms; }
+  .gateway-loop__symbol--stream i:nth-child(3) { animation-delay: -600ms; }
+  .gateway-loop__symbol--stream i:nth-child(4) { animation-delay: -400ms; }
+  .gateway-loop__symbol--stream i:nth-child(5) { animation-delay: -800ms; }
+  .hero-network__mobile-core { animation: praxis-mobile-core 7.2s ease-in-out infinite; }
+  .hero-network__mobile-core::before, .hero-network__mobile-core::after {
+    position: absolute;
+    left: calc(50% - 1px);
+    width: 2px;
+    height: 18px;
+    background: linear-gradient(transparent, #bcb4ff);
+    content: '';
+    animation: praxis-mobile-packet 2.4s ease-in-out infinite;
+  }
+  .hero-network__mobile-core::before { bottom: calc(100% + 5px); }
+  .hero-network__mobile-core::after { top: calc(100% + 5px); animation-delay: 1.2s; }
+  .hero-network__mobile-projects > div { animation: praxis-mobile-node 7.2s 1.3s ease-in-out infinite; }
+
+  /* Pause recurring work when the scene leaves the viewport or the tab is hidden. */
+  .home-hero--control::before, .home-hero--control::after,
+  .home-hero--control .home-hero__eyebrow > span, .home-hero--control h1 em,
+  .network-aura, .network-orbit, .network-core-rim, .network-core, .network-packet,
+  .network-extensions, .network-policy, .network-ai,
+  .gateway-loop__symbol, .gateway-loop__track > span, .gateway-loop__symbol--stream i,
+  .hero-network__mobile-core, .hero-network__mobile-core::before,
+  .hero-network__mobile-core::after, .hero-network__mobile-projects > div {
+    animation-play-state: var(--motion-play, var(--scene-play, running));
+  }
+
+  .motion-enter { animation: praxis-enter 850ms var(--enter-delay, 0ms) var(--motion-ease) both; }
+  .motion-surface {
+    background-image: radial-gradient(400px circle at var(--light-x, 50%) var(--light-y, 0%),
+      color-mix(in srgb, var(--praxis-accent) 7%, transparent), transparent 70%);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .task-card:hover, .docs-directory-card:hover,
+    .product-journey-group:hover, .praxis-blog-card:not(.praxis-blog-card--featured):hover {
+      transform: translateY(-7px);
+      box-shadow: 0 18px 48px color-mix(in srgb, var(--praxis-accent) 9%, transparent);
+    }
+    .task-card:hover .task-card__icon { transform: translateY(-3px) rotate(-6deg) scale(1.06); }
+    .protocol-row:hover { transform: translateX(4px); }
+  }
+}
+
+@keyframes praxis-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes praxis-title {
+  from { opacity: 0; transform: translate3d(0, 35px, 0) rotate(1deg); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); }
+}
+@keyframes praxis-grid { to { transform: translate3d(72px, 72px, 0); } }
+@keyframes praxis-light { to { transform: translate3d(-12%, 10%, 0) scale(1.13); opacity: .6; } }
+@keyframes praxis-beacon {
+  0%, 100% { box-shadow: 0 0 0 4px #bcb4ff12; }
+  45% { box-shadow: 0 0 0 9px #bcb4ff00; }
+}
+@keyframes praxis-type-light {
+  0%, 20% { background-position: 100% 50%; }
+  60%, 100% { background-position: 0% 50%; }
+}
+@keyframes praxis-aura {
+  0%, 100% { opacity: .65; transform: scale(.94); }
+  42% { opacity: 1; transform: scale(1.08); }
+}
+@keyframes praxis-orbit { to { stroke-dashoffset: -100; } }
+@keyframes praxis-packet {
+  0% { stroke-dashoffset: 12; opacity: 0; }
+  3% { opacity: 1; }
+  31% { stroke-dashoffset: -104; opacity: 1; }
+  33%, 100% { stroke-dashoffset: -104; opacity: 0; }
+}
+@keyframes praxis-core {
+  0%, 16%, 76%, 100% { filter: drop-shadow(0 0 2px #bcb4ff10); }
+  38%, 48% { filter: drop-shadow(0 0 13px #bcb4ff50); }
+}
+@keyframes praxis-node {
+  0%, 12%, 65%, 100% { stroke: #565c82; }
+  28%, 42% { stroke: #bcb4ff; }
+}
+@keyframes praxis-dashes { to { stroke-dashoffset: -16; } }
+@keyframes praxis-workflow {
+  0%, 24%, 100% { border-color: var(--praxis-border); transform: translateY(0); box-shadow: none; }
+  5%, 19% { border-color: var(--praxis-accent); transform: translateY(-3px); box-shadow: 0 0 18px color-mix(in srgb, var(--praxis-accent) 15%, transparent); }
+}
+@keyframes praxis-progress {
+  0% { transform: scaleX(0); opacity: 1; }
+  92% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+@keyframes praxis-stream { to { transform: scaleY(.35); } }
+@keyframes praxis-mobile-core {
+  0%, 100% { box-shadow: 0 6px 0 #1b2030, 0 7px 0 #565c82; }
+  40% { box-shadow: 0 6px 0 #1b2030, 0 7px 0 #bcb4ff, 0 0 32px #bcb4ff20; }
+}
+@keyframes praxis-mobile-packet {
+  0% { transform: translateY(-5px) scaleY(.4); opacity: 0; }
+  35% { opacity: 1; }
+  100% { transform: translateY(6px) scaleY(1); opacity: 0; }
+}
+@keyframes praxis-mobile-node {
+  0%, 100% { border-color: #565c82; }
+  40% { border-color: #bcb4ff; }
+}
+
+@media (max-width: 480px) {
+  .gateway-loop__steps { gap: .25rem; }
+  .gateway-loop__steps strong { font-size: .65rem; }
+  .gateway-loop__steps li > span:last-child { font-size: .58rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .motion-enter { opacity: 1; transform: none; }
+  .hero-network__diagram { transform: none; }
+  .page-progress { display: none; }
+}

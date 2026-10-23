@@ -1,0 +1,23 @@
+.git
+.cache
+node_modules
+public
+resources/_gen
+sources
+.hugo_build.lock
+__pycache__/
+.playwright-cli/
+/output/
+
+# Local planning, review, and evidence files. Keep the route map and explanation as build inputs/docs.
+/docs/*
+!/docs/original-route-mapping.json
+!/docs/original-route-mapping.md
+
+# Local agent state and installed skills; keep GitHub workflows and other project config.
+/.impeccable/
+/.agents/skills/
+/.codex/skills/
+/.claude/skills/
+/.github/skills/
+/skills/

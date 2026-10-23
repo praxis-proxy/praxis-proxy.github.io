@@ -1,0 +1,23 @@
+services:
+  website:
+    build:
+      context: .
+    working_dir: /project
+    volumes:
+      - .:/project
+      - npm-modules:/project/node_modules
+    ports:
+      - "1313:1313"
+    environment:
+      HOME: /tmp
+      GOMODCACHE: /project/.cache/go/pkg/mod
+      GOPATH: /project/.cache/go
+      GOCACHE: /project/.cache/go/build
+      # The Hugo image pins GOTOOLCHAIN=local; go.mod requires a newer Go.
+      GOTOOLCHAIN: auto
+      HUGO_CACHEDIR: /project/.cache/hugo
+      npm_config_cache: /project/.cache/npm
+      HUGO_BASEURL: ${HUGO_BASEURL:-https://praxis.fast/}
+
+volumes:
+  npm-modules:

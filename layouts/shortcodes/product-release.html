@@ -1,0 +1,16 @@
+{{- $productID := .Get "product" -}}
+{{- $product := index hugo.Data.docs_build_versions.products $productID -}}
+{{- if not $product }}{{ errorf "product-release: unknown product %q" $productID }}{{ end -}}
+{{- $release := index (where $product.versions "slug" $product.default) 0 -}}
+{{- if not $release }}{{ errorf "product-release: missing default release for %q" $productID }}{{ end -}}
+{{- if .Inner -}}
+  {{- $tag := strings.TrimPrefix "v" $release.tag -}}
+  {{- $image := printf "ghcr.io/praxis-proxy/%s:%s" $productID $tag -}}
+  {{- $commands := strings.TrimSpace .Inner -}}
+  {{- $commands = replace $commands "@VERSION@" $release.tag -}}
+  {{- $commands = replace $commands "@IMAGE@" $image -}}
+  {{- $commands = replace $commands "@FIPS_IMAGE@" (printf "%s-fips" $image) -}}
+  {{ highlight $commands "console" }}
+{{- else -}}
+  {{- $release.tag -}}
+{{- end -}}

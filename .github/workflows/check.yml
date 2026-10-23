@@ -1,0 +1,31 @@
+name: Check
+
+on:
+  pull_request:
+  # started by update-docs.yml on the docs pull request branch, which
+  # github.token cannot trigger through pull_request
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-versions:
+    name: Release version freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: make check-doc-versions
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          submodules: true
+          persist-credentials: false
+      - run: make check

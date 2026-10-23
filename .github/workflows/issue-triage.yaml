@@ -27,6 +27,10 @@ jobs:
         with:
           app-id: ${{ secrets.PRAXIS_BOT_APP_ID }}
           private-key: ${{ secrets.PRAXIS_BOT_APP_PRIVATE_KEY }}
+          # Scope the installation token to only what the triage steps need
+          # (gh issue edit --add-label/--remove-label) so it does not inherit
+          # the app's blanket installation permissions.
+          permission-issues: write
 
       - name: Add triage/needs-triage on new issue
         if: github.event.action == 'opened' && !github.event.issue.milestone

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="480" viewBox="0 0 1120 480" role="img" aria-labelledby="ai-overview-title ai-overview-desc">
+  <title id="ai-overview-title">Praxis AI routes inference and agent traffic by request type</title>
+  <desc id="ai-overview-desc">OpenAI and Anthropic clients and MCP or A2A traffic enter Praxis AI filters within the Praxis proxy runtime. Filters route inference requests to inference providers and MCP or A2A traffic to matching backends. Separate optional connections can reach tool servers, search or file services, and response storage; these integrations are not required stages in every inference request.</desc>
+  <defs>
+    <marker id="ai-overview-arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 12 12"><path d="M0 0 12 6 0 12Z" fill="#586579"/></marker>
+    <marker id="ai-overview-optional-arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 12 12"><path d="M0 0 12 6 0 12Z" fill="#4338ca"/></marker>
+  </defs>
+  <rect width="1120" height="480" rx="16" fill="#f5f7fb"/>
+  <g font-family="IBM Plex Sans, Arial, sans-serif">
+    <text x="40" y="43" fill="#182230" font-size="25" font-weight="600">Praxis AI routes requests to the appropriate upstream</text>
+    <text x="40" y="74" fill="#586579" font-size="17">Inference and agent requests route to matching backends.</text>
+
+    <g fill="#fff" stroke="#dce2eb" stroke-width="2">
+      <rect x="40" y="156" width="215" height="118" rx="10"/>
+      <rect x="845" y="156" width="235" height="118" rx="10"/>
+    </g>
+    <text x="58" y="193" fill="#182230" font-size="20" font-weight="600">Clients</text>
+    <g fill="#586579" font-size="17">
+      <text x="58" y="223">OpenAI / Anthropic</text>
+      <text x="58" y="249">MCP / A2A traffic</text>
+    </g>
+    <text x="863" y="193" fill="#182230" font-size="20" font-weight="600">Routed upstream</text>
+    <g fill="#586579" font-size="17">
+      <text x="863" y="223">Inference provider</text>
+      <text x="863" y="249">MCP / A2A backend</text>
+    </g>
+
+    <rect x="300" y="116" width="500" height="196" rx="12" fill="#eef0ff" stroke="#4338ca" stroke-width="2"/>
+    <text x="322" y="146" fill="#30279f" font-size="19" font-weight="600">Praxis proxy runtime</text>
+    <rect x="324" y="164" width="452" height="124" rx="9" fill="#fff" stroke="#c7c9f4" stroke-width="2"/>
+    <text x="346" y="200" fill="#182230" font-size="21" font-weight="600">Praxis AI filters</text>
+    <g fill="#586579" font-size="17">
+      <text x="346" y="231">classify · translate · route</text>
+      <text x="346" y="258">handle AI and agent protocols</text>
+    </g>
+
+    <g fill="none" stroke="#586579" stroke-width="2.5" marker-end="url(#ai-overview-arrow)">
+      <path d="M255 215H324"/>
+      <path d="M776 215H845"/>
+    </g>
+
+    <rect x="250" y="346" width="620" height="108" rx="10" fill="#fff" stroke="#c7c9f4" stroke-width="2" stroke-dasharray="7 5"/>
+    <text x="270" y="375" fill="#30279f" font-size="19" font-weight="600">Optional side integrations</text>
+    <g fill="#eef0ff" stroke="#d7d5f8" stroke-width="1.5">
+      <rect x="270" y="392" width="172" height="44" rx="7"/>
+      <rect x="464" y="392" width="172" height="44" rx="7"/>
+      <rect x="658" y="392" width="192" height="44" rx="7"/>
+    </g>
+    <g fill="#182230" font-size="17">
+      <text x="356" y="420" text-anchor="middle">Tool servers</text>
+      <text x="550" y="420" text-anchor="middle">Search / files</text>
+      <text x="754" y="420" text-anchor="middle">Response store</text>
+    </g>
+    <path d="M550 288V346" fill="none" stroke="#4338ca" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#ai-overview-optional-arrow)"/>
+    <text x="570" y="326" fill="#30279f" font-size="17">optional</text>
+  </g>
+</svg>

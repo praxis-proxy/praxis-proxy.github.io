@@ -1,0 +1,10 @@
+{{- with .File -}}
+  {{- $repo := $.Site.Params.github_repo -}}
+  {{- $branch := $.Site.Params.github_branch | default "main" -}}
+  {{- $path := strings.TrimPrefix (add hugo.WorkingDir "/") .Filename -}}
+  {{- if and $repo $path -}}
+<nav class="landing-contribution" aria-label="Edit this page">
+  <a href="{{ printf "%s/edit/%s/%s" $repo $branch $path }}">Suggest an edit to this page</a>
+</nav>
+  {{- end -}}
+{{- end -}}

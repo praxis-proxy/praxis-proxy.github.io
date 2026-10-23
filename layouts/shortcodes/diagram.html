@@ -1,0 +1,6 @@
+<figure class="guide-figure guide-figure--flow">
+  <div class="guide-figure__scroll" role="region" aria-label="Scrollable diagram: {{ .Get "label" }}" tabindex="0">
+    <img src="{{ .Get "src" | relURL }}" width="{{ .Get "width" }}" height="{{ .Get "height" }}" alt="{{ .Get "alt" }}" loading="lazy">
+  </div>
+  <figcaption>{{ .Get "caption" }}<span class="guide-figure__hint"> Scroll horizontally to follow the diagram on a narrow screen.</span></figcaption>
+</figure>

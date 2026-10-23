@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="430" viewBox="0 0 1120 430" role="img" aria-labelledby="core-composition-title core-composition-desc">
+  <title id="core-composition-title">Listener chains become a pipeline that selects an endpoint</title>
+  <desc id="core-composition-desc">A listener names reusable filter chains. Praxis concatenates the listener's chains into one flat, ordered runtime pipeline. A router selects a cluster, then a load balancer selects one endpoint in that cluster.</desc>
+  <defs>
+    <marker id="composition-arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 12 12"><path d="M0 0 12 6 0 12Z" fill="#586579"/></marker>
+  </defs>
+  <rect width="1120" height="430" rx="16" fill="#f5f7fb"/>
+  <g font-family="IBM Plex Sans, Arial, sans-serif">
+    <text x="40" y="43" fill="#182230" font-size="25" font-weight="600">Configuration becomes a per-listener route</text>
+    <text x="40" y="74" fill="#586579" font-size="17">Named chains organize filters; runtime execution uses one ordered list.</text>
+
+    <g fill="#fff" stroke="#dce2eb" stroke-width="2">
+      <rect x="40" y="122" width="150" height="112" rx="10"/>
+      <rect x="230" y="122" width="190" height="112" rx="10"/>
+      <rect x="480" y="122" width="190" height="112" rx="10" stroke="#4338ca"/>
+      <rect x="730" y="122" width="145" height="112" rx="10"/>
+      <rect x="925" y="122" width="155" height="112" rx="10"/>
+      <rect x="941" y="164" width="123" height="60" rx="7" fill="#eef0ff" stroke="#c7c9f4" stroke-width="1.5"/>
+    </g>
+    <g fill="#182230">
+      <text x="56" y="158" font-size="20" font-weight="600">Listener</text>
+      <text x="246" y="158" font-size="20" font-weight="600">Named chains</text>
+      <text x="496" y="158" font-size="20" font-weight="600">One pipeline</text>
+      <text x="746" y="158" font-size="20" font-weight="600">Router</text>
+      <text x="941" y="158" font-size="20" font-weight="600">Cluster</text>
+    </g>
+    <g fill="#586579" font-size="17">
+      <text x="56" y="190">bound address</text>
+      <text x="56" y="216">HTTP or TCP</text>
+      <text x="246" y="190">Security chain</text>
+      <text x="246" y="216">Routing chain</text>
+      <text x="496" y="190">filters keep</text>
+      <text x="496" y="216">same order</text>
+      <text x="746" y="190">selects a</text>
+      <text x="746" y="216">cluster</text>
+      <text x="1002" y="188" text-anchor="middle" fill="#30279f">Endpoint</text>
+      <text x="1002" y="212" text-anchor="middle" fill="#586579">one address</text>
+    </g>
+
+    <g fill="none" stroke="#586579" stroke-width="2.5">
+      <path d="M190 178H230" marker-end="url(#composition-arrow)"/>
+      <path d="M420 178H480" marker-end="url(#composition-arrow)"/>
+      <path d="M670 178H730" marker-end="url(#composition-arrow)"/>
+      <path d="M875 178H925" marker-end="url(#composition-arrow)"/>
+    </g>
+
+    <path d="M40 286H1080" stroke="#dce2eb" stroke-width="2"/>
+    <g fill="#182230" font-size="18" font-weight="600">
+      <text x="40" y="326">Listener</text>
+      <text x="310" y="326">Chain</text>
+      <text x="580" y="326">Pipeline</text>
+      <text x="850" y="326">Endpoint</text>
+    </g>
+    <g fill="#586579" font-size="17">
+      <text x="40" y="356">where traffic enters</text>
+      <text x="310" y="356">reusable filter list</text>
+      <text x="580" y="356">flat at runtime</text>
+      <text x="850" y="356">one backend address</text>
+    </g>
+    <text x="40" y="402" fill="#586579" font-size="17">The router names the backend group; the load balancer chooses its concrete endpoint.</text>
+  </g>
+</svg>

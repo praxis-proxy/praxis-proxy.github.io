@@ -1,0 +1,32 @@
+name: zizmor
+
+permissions: {}
+
+# no paths filter: the check must report on every pull request to be required
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  zizmor:
+    name: github actions security audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: run zizmor
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        with:
+          # the SARIF upload exits 0 on findings, so it could never fail the
+          # job; annotations make a finding fail the check
+          advanced-security: false
+          annotations: true

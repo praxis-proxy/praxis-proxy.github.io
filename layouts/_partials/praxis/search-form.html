@@ -1,0 +1,40 @@
+{{- $page := .page -}}
+{{- $mode := .mode -}}
+{{- $queryID := printf "praxis-search-%s-query" $mode -}}
+<form class="praxis-search__form" role="search" aria-label="Search documentation by project, version, and documentation form" action="{{ "search/" | relURL }}" method="get" data-praxis-search-form data-praxis-search-mode="{{ $mode }}">
+  <label class="praxis-search__query-label" for="{{ $queryID }}">Search</label>
+  <div class="praxis-search__query-row">
+    <input id="{{ $queryID }}"
+      type="search" name="q" autocomplete="off" placeholder="Search documentation"
+      data-praxis-query required>
+    <button type="submit">Search</button>
+  </div>
+  <div class="praxis-search__filters">
+    <label>Project
+      <select name="product" data-praxis-product>
+        <option value="all">All projects</option>
+        {{- range slice "praxis" "ai" "policy" "grid" }}
+        {{- $slug := . -}}
+        {{- $product := index hugo.Data.docs_build_versions.products $slug -}}
+        <option value="{{ $slug }}">{{ $product.name }}</option>
+        {{- end }}
+      </select>
+    </label>
+    <label data-praxis-version-wrap>Version
+      <select name="version" data-praxis-version disabled><option value="">Default release</option></select>
+    </label>
+    <label>Documentation form
+      <select name="form" data-praxis-form>
+        <option value="">All forms</option>
+        <option value="Tutorial">Tutorial</option>
+        <option value="How-to">How-to guide</option>
+        <option value="Reference">Reference</option>
+        <option value="Explanation">Explanation</option>
+      </select>
+    </label>
+  </div>
+  <p class="praxis-search__status" role="status" aria-live="polite" data-praxis-status>Enter a search term.</p>
+  <button type="button" class="praxis-search__retry" data-praxis-retry hidden>Retry</button>
+  <ol class="praxis-search__results" data-praxis-results></ol>
+  <button type="button" class="praxis-search__more" data-praxis-more hidden>Show 10 more results</button>
+</form>

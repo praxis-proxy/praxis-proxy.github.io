@@ -1,0 +1,62 @@
+baseURL = "https://praxis.fast/"
+title = "Praxis"
+enableGitInfo = false
+
+[module]
+  proxy = "direct"
+
+  [[module.imports]]
+    path = "github.com/docsy/docsy/theme"
+
+  [[module.mounts]]
+    source = "content"
+    target = "content"
+
+  [[module.mounts]]
+    source = ".cache/docs"
+    target = "content"
+
+  [[module.mounts]]
+    source = "data"
+    target = "data"
+
+  [[module.mounts]]
+    source = ".cache/docs-data"
+    target = "data"
+
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+
+  [[module.mounts]]
+    source = ".cache/docs-static"
+    target = "static"
+
+  [module.hugoVersion]
+    extended = true
+    min = "0.166.0"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[params]
+  description = "Run and configure the Praxis proxy, connect AI services with Praxis AI, and enforce access with Praxis Policy Engine."
+  offlineSearch = false
+  images = ["images/praxis-social.png"]
+  github_repo = "https://github.com/praxis-proxy/praxis-proxy.github.io"
+  github_branch = "main"
+  github_project_repo = "https://github.com/praxis-proxy/praxis-proxy.github.io"
+
+[params.ui]
+  navbar_logo = true
+  navbar_translucent_over_cover_disable = true
+  sidebar_menu_compact = true
+  sidebar_menu_foldable = true
+  showLightDarkModeMenu = true
+
+[params.docsy.plugins.mermaid]
+  version = "11.17.2"
+
+# GA4 — loads only for production builds via layouts/_partials/head.html
+[services.googleAnalytics]
+  id = "G-C7WVKSX8LD"

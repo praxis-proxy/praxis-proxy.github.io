@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="450" viewBox="0 0 1120 450" role="img" aria-labelledby="core-outcomes-title core-outcomes-desc">
+  <title id="core-outcomes-title">Request and response paths through filter outcomes</title>
+  <desc id="core-outcomes-desc">The request moves from the client through its listener and ordered request filters to the selected upstream. Continue advances to the next filter. Terminal ends request-filter traversal and proceeds to upstream handling; it does not mean the final response was sent. Reject returns an error response to the client. The upstream response passes in reverse order through only the filters that ran.</desc>
+  <defs>
+    <marker id="outcomes-arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 12 12"><path d="M0 0 12 6 0 12Z" fill="#586579"/></marker>
+    <marker id="outcomes-return-arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 12 12"><path d="M0 0 12 6 0 12Z" fill="#4338ca"/></marker>
+  </defs>
+  <rect width="1120" height="450" rx="16" fill="#f5f7fb"/>
+  <g font-family="IBM Plex Sans, Arial, sans-serif">
+    <text x="40" y="43" fill="#182230" font-size="25" font-weight="600">A filter outcome controls the request path</text>
+    <text x="40" y="74" fill="#586579" font-size="17">Request filters move forward. A response returns only through filters that ran.</text>
+
+    <g fill="#fff" stroke="#dce2eb" stroke-width="2">
+      <rect x="40" y="108" width="150" height="92" rx="10"/>
+      <rect x="260" y="108" width="180" height="92" rx="10"/>
+      <rect x="510" y="108" width="215" height="92" rx="10" stroke="#4338ca"/>
+      <rect x="835" y="108" width="220" height="92" rx="10"/>
+    </g>
+    <g fill="#182230">
+      <text x="56" y="142" font-size="19" font-weight="600">Client</text>
+      <text x="276" y="142" font-size="19" font-weight="600">Listener</text>
+      <text x="526" y="142" font-size="19" font-weight="600">Request filters</text>
+      <text x="851" y="142" font-size="19" font-weight="600">Upstream</text>
+    </g>
+    <g fill="#586579" font-size="17">
+      <text x="56" y="174">HTTP request</text>
+      <text x="276" y="174">selects protocol</text>
+      <text x="526" y="174">configured order</text>
+      <text x="851" y="174">selected backend</text>
+    </g>
+    <g fill="none" stroke="#586579" stroke-width="2.5">
+      <path d="M190 154H260" marker-end="url(#outcomes-arrow)"/>
+      <path d="M440 154H510" marker-end="url(#outcomes-arrow)"/>
+      <path d="M725 154H835" marker-end="url(#outcomes-arrow)"/>
+    </g>
+
+    <g fill="#fff" stroke="#dce2eb" stroke-width="2">
+      <rect x="40" y="210" width="180" height="64" rx="9"/>
+      <rect x="365" y="210" width="330" height="64" rx="9" stroke="#4338ca"/>
+      <rect x="850" y="210" width="230" height="64" rx="9"/>
+    </g>
+    <g fill="#182230" font-size="19" font-weight="600">
+      <text x="56" y="237">Client</text>
+      <text x="381" y="237">Response filters</text>
+      <text x="866" y="237">Upstream response</text>
+    </g>
+    <g fill="#586579" font-size="17">
+      <text x="56" y="262">receives response</text>
+      <text x="381" y="262">reverse order; only filters that ran</text>
+      <text x="866" y="262">starts the return path</text>
+    </g>
+    <g fill="none" stroke="#4338ca" stroke-width="2.5" marker-end="url(#outcomes-return-arrow)">
+      <path d="M850 242H695"/>
+      <path d="M365 242H220"/>
+    </g>
+
+    <g fill="#fff" stroke="#dce2eb" stroke-width="2">
+      <rect x="40" y="278" width="330" height="140" rx="10"/>
+      <rect x="395" y="278" width="330" height="140" rx="10" stroke="#4338ca"/>
+      <rect x="750" y="278" width="330" height="140" rx="10"/>
+    </g>
+    <g fill="#182230" font-size="20" font-weight="600">
+      <text x="58" y="309">Continue</text>
+      <text x="413" y="309">Terminal</text>
+      <text x="768" y="309">Reject</text>
+    </g>
+    <g fill="#586579" font-size="17">
+      <text x="58" y="335">Advance to the next filter.</text>
+      <text x="413" y="335">End request filtering.</text>
+      <text x="768" y="335">Return an error response.</text>
+    </g>
+    <g fill="#fff" stroke="#c7ced9" stroke-width="1.5">
+      <rect x="58" y="354" width="102" height="46" rx="7"/>
+      <rect x="218" y="354" width="134" height="46" rx="7"/>
+      <rect x="413" y="354" width="102" height="46" rx="7"/>
+      <rect x="573" y="354" width="134" height="46" rx="7"/>
+      <rect x="768" y="354" width="74" height="46" rx="7"/>
+      <rect x="872" y="354" width="100" height="46" rx="7"/>
+      <rect x="1002" y="354" width="62" height="46" rx="7"/>
+    </g>
+    <g fill="#182230" font-size="17">
+      <text x="109" y="383" text-anchor="middle">Filter</text>
+      <text x="285" y="383" text-anchor="middle">Next filter</text>
+      <text x="464" y="383" text-anchor="middle">Filter</text>
+      <text x="640" y="383" text-anchor="middle">Upstream</text>
+      <text x="805" y="383" text-anchor="middle">Filter</text>
+      <text x="922" y="383" text-anchor="middle">Error</text>
+      <text x="1033" y="383" text-anchor="middle">Client</text>
+    </g>
+    <g fill="none" stroke="#586579" stroke-width="2" marker-end="url(#outcomes-arrow)">
+      <path d="M160 377H218"/>
+      <path d="M515 377H573"/>
+      <path d="M842 377H872"/>
+      <path d="M972 377H1002"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,54 @@
+{{- $documents := slice -}}
+{{- $scopeProduct := .scopeProduct -}}
+{{- $scopeVersion := .scopeVersion -}}
+{{- range hugo.Sites -}}
+  {{- range .Pages -}}
+    {{- $page := . -}}
+    {{- $indexable := or $page.IsPage (and $page.IsSection (gt (len $page.RawContent) 0)) (eq $page.Kind "home") -}}
+    {{- $product := .Params.product | default "" -}}
+    {{- $version := .Params.version | default "" -}}
+    {{- $include := false -}}
+    {{- if eq $scopeProduct "all" -}}
+      {{- if not $product -}}
+        {{- $include = true -}}
+      {{- else if not $version -}}
+        {{- $include = true -}}
+      {{- else -}}
+        {{- $productConfig := index $.products $product -}}
+        {{- $include = eq $version $productConfig.default -}}
+      {{- end -}}
+    {{- else if eq $product $scopeProduct -}}
+      {{- $include = or (not $version) (eq $version $scopeVersion) -}}
+    {{- end -}}
+    {{- if and $indexable $include (ne $page.Params.exclude_search true) -}}
+      {{- $headings := slice -}}
+      {{- range findRE `(?s)<a[^>]*>.*?</a>` $page.TableOfContents -}}
+        {{- $heading := . | plainify | htmlUnescape | strings.TrimSpace -}}
+        {{- $headings = $headings | append $heading -}}
+      {{- end -}}
+      {{- $body := $page.Plain | htmlUnescape -}}
+      {{- if $page.Params.example_category -}}
+        {{- $body = delimit ($page.Params.example_search | default (slice $page.Description)) " " -}}
+        {{- $headings = slice ($page.Params.example_task | default "Configuration example") ($page.Params.example_category | default "") -}}
+      {{- else if or $page.Params.example_catalog $page.Params.example_catalog_category -}}
+        {{- $body = $page.Description -}}
+        {{- $headings = slice -}}
+      {{- end -}}
+      {{- $doc := dict
+        "ref" $page.RelPermalink
+        "title" $page.Title
+        "description" ($page.Description | default "")
+        "body" $body
+        "headings" $headings
+        "product" $product
+        "product_name" (cond (ne $product "") (index (index $.products $product) "name") "Praxis ecosystem")
+        "version" $version
+        "version_label" ($page.Params.version_label | default "")
+        "reader_need" ($page.Params.reader_need | default "")
+        "topic" ($page.Params.topic | default "")
+      -}}
+      {{- $documents = $documents | append $doc -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $documents | jsonify -}}

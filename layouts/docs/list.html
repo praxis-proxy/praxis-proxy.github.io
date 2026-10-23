@@ -1,0 +1,51 @@
+{{ define "main" }}
+{{- $praxisOverview := and (eq .Params.product "praxis") (eq .Params.source_path "docs/README.md") -}}
+{{- if $praxisOverview -}}
+  {{- $product := index hugo.Data.docs_build_versions.products "praxis" -}}
+  {{- $quickstarts := where (where (where site.RegularPages "Params.product" "praxis") "Params.version" .Params.version) "Params.source_path" "docs/quickstart.md" -}}
+  <div class="td-content praxis-release-home">
+    <section class="praxis-release-hero" aria-labelledby="praxis-release-title" data-motion-scene>
+      {{ partial "praxis-docs-waves.html" . }}
+      <div class="praxis-release-hero__content">
+        <p class="praxis-release-hero__eyebrow">PRAXIS / {{ .Params.version_label }} DOCUMENTATION</p>
+        <h1 id="praxis-release-title">Praxis docs.<br><em>From setup to runtime.</em></h1>
+        <p class="praxis-release-hero__summary">Install, configure, and operate this release. Explore filters, architecture, and exact settings when you need them.</p>
+        <div class="praxis-release-hero__actions">
+          {{- if eq .Params.version $product.default -}}
+            <a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">↗</span></a>
+          {{- else -}}
+            {{- with index $quickstarts 0 -}}<a class="btn btn-primary" href="{{ .RelPermalink }}">Read this release's quickstart <span aria-hidden="true">↗</span></a>{{- end -}}
+          {{- end -}}
+          <a class="praxis-release-hero__browse" href="#release-index">Browse the release <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>
+    <div class="praxis-release-index" id="release-index">
+      <div class="praxis-release-index__topline"><span>Release index</span><span>{{ .Params.version_label }} / Source documentation</span></div>
+      {{ .Render "_td-content-after-header" -}}
+      {{ .Content }}
+      {{ partial "section-index.html" . -}}
+      {{ partial "feedback.html" . -}}
+      {{ if (.Site.Config.Services.Disqus.Shortname) -}}<br>{{ partial "disqus-comment.html" . -}}{{ end -}}
+      {{ partial "page-meta-lastmod.html" . -}}
+    </div>
+  </div>
+{{- else -}}
+  <div class="td-content">
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.description }}<div class="lead">{{ . | markdownify }}</div>{{ end }}
+    <header class="article-meta">
+      {{ partial "taxonomy_terms_article_wrapper.html" . -}}
+      {{ if (and (not .Params.hide_readingtime) (.Site.Params.ui.readingtime.enable)) -}}
+        {{ partial "reading-time.html" . -}}
+      {{ end -}}
+    </header>
+    {{ .Render "_td-content-after-header" -}}
+    {{ .Content }}
+    {{ partial "section-index.html" . -}}
+    {{ partial "feedback.html" . -}}
+    {{ if (.Site.Config.Services.Disqus.Shortname) -}}<br>{{ partial "disqus-comment.html" . -}}{{ end -}}
+    {{ partial "page-meta-lastmod.html" . -}}
+  </div>
+{{- end -}}
+{{ end -}}

@@ -1,0 +1,23 @@
+# Netlify GitHub integration: Deploy Previews for PRs.
+# Production hosting stays on GitHub Pages (.github/workflows/pages.yml).
+
+[build]
+  command = "git submodule update --init --recursive && make build-host"
+  publish = "public"
+
+[build.environment]
+  HUGO_VERSION = "0.168.0"
+  NODE_VERSION = "24"
+  PYTHON_VERSION = "3.12"
+  GO_VERSION = "1.27.3"
+
+[context.deploy-preview]
+  # Trailing slash required for Hugo baseURL; strip any existing then re-add.
+  command = "git submodule update --init --recursive && export HUGO_BASEURL=\"${DEPLOY_PRIME_URL%/}/\" && make build-host"
+
+[context.branch-deploy]
+  command = "git submodule update --init --recursive && export HUGO_BASEURL=\"${DEPLOY_PRIME_URL%/}/\" && make build-host"
+
+# GitHub Pages owns production; skip Netlify production publishes.
+[context.production]
+  ignore = "exit 0"

@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div class="site-page">
+  <article class="{{ .Params.body_class | default "start-page" }}">
+    {{- if .Params.product -}}
+    <header class="product-page-header">
+      <p class="home-eyebrow">Project overview</p>
+      <h1>{{ .Title }}</h1>
+      <p>{{ .Description }}</p>
+    </header>
+    {{- end -}}
+    {{ .Content }}
+    {{ partial "landing-contribution.html" . }}
+  </article>
+</div>
+{{ end }}

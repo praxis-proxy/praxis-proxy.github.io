@@ -1,20 +1,35 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /
+  # kind/dependencies satisfies the needs-kind rule in .github/prow.yaml.
+  - package-ecosystem: docker
+    directory: "/"
     schedule:
       interval: weekly
-      day: monday
+    labels: ["kind/dependencies"]
+    # supply-chain cooldown: skip releases newer than 7 days
     cooldown:
       default-days: 7
-    open-pull-requests-limit: 10
-    groups:
-      docusaurus:
-        patterns: ["@docusaurus/*"]
-  - package-ecosystem: github-actions
-    directory: /
+  - package-ecosystem: gomod
+    directory: "/"
     schedule:
       interval: weekly
-      day: monday
+    labels: ["kind/dependencies"]
+    # supply-chain cooldown: skip releases newer than 7 days
+    cooldown:
+      default-days: 7
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: ["kind/dependencies"]
+    # supply-chain cooldown: skip releases newer than 7 days
+    cooldown:
+      default-days: 7
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: ["kind/dependencies"]
+    # supply-chain cooldown: skip releases newer than 7 days
     cooldown:
       default-days: 7

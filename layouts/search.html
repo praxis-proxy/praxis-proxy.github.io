@@ -1,0 +1,10 @@
+{{ define "main" }}
+<section class="praxis-search-page">
+  <div class="container py-5">
+    <h1>{{ .Title }}</h1>
+    <div class="praxis-search-page__intro">{{ .Content }}</div>
+    {{ partial "praxis/search-form.html" (dict "page" . "mode" "page") }}
+    <noscript><p>Search needs JavaScript. <a href="{{ "docs/" | relURL }}">Browse the documentation</a>.</p></noscript>
+  </div>
+</section>
+{{ end }}
