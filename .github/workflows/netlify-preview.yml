@@ -1,0 +1,108 @@
+name: Netlify Preview
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: netlify-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    # Fork PRs do not receive repository secrets.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - name: Resolve preview URL
+        id: preview
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_NAME: ${{ vars.NETLIFY_SITE_NAME }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NETLIFY_AUTH_TOKEN:-}" ] || [ -z "${NETLIFY_SITE_ID:-}" ]; then
+            echo "::error::Set repository secrets NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID for Netlify PR previews."
+            exit 1
+          fi
+          site_name="${NETLIFY_SITE_NAME:-}"
+          if [ -z "$site_name" ]; then
+            site_name="$(npx --yes netlify-cli@23.11.0 api getSite --data "{\"site_id\":\"${NETLIFY_SITE_ID}\"}" | jq -r .name)"
+          fi
+          if [ -z "$site_name" ] || [ "$site_name" = "null" ]; then
+            echo "::error::Could not resolve Netlify site name; set repository variable NETLIFY_SITE_NAME."
+            exit 1
+          fi
+          alias="deploy-preview-${PR_NUMBER}"
+          base_url="https://${alias}--${site_name}.netlify.app/"
+          {
+            echo "alias=${alias}"
+            echo "base_url=${base_url}"
+            echo "site_name=${site_name}"
+          } >> "$GITHUB_OUTPUT"
+          echo "Preview base URL: ${base_url}"
+
+      - name: Build site for preview
+        run: make build
+        env:
+          HUGO_BASEURL: ${{ steps.preview.outputs.base_url }}
+
+      - name: Deploy preview to Netlify
+        id: deploy
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_ALIAS: ${{ steps.preview.outputs.alias }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          output="$(npx --yes netlify-cli@23.11.0 deploy \
+            --auth="${NETLIFY_AUTH_TOKEN}" \
+            --site="${NETLIFY_SITE_ID}" \
+            --dir=public \
+            --alias="${NETLIFY_ALIAS}" \
+            --no-build \
+            --message="PR #${PR_NUMBER} ${GITHUB_SHA}" \
+            --json)"
+          printf '%s\n' "${output}"
+          deploy_url="$(printf '%s' "${output}" | jq -r '.deploy_url // .ssl_url // .url // empty')"
+          if [ -z "${deploy_url}" ]; then
+            echo "::error::Netlify CLI did not return a deploy URL."
+            exit 1
+          fi
+          echo "deploy_url=${deploy_url}" >> "$GITHUB_OUTPUT"
+          echo "Deployed: ${deploy_url}"
+
+      - name: Comment preview URL on pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.deploy_url }}
+          BASE_URL: ${{ steps.preview.outputs.base_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          body="$(printf 'Netlify Deploy Preview: %s\n\nBuilt with `HUGO_BASEURL=%s`.' "${PREVIEW_URL}" "${BASE_URL}")"
+          # Replace prior preview comment from this workflow when present.
+          existing="$(gh api \
+            "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq '.[] | select(.user.type=="Bot" and (.body | startswith("Netlify Deploy Preview:"))) | .id' \
+            | head -n1 || true)"
+          if [ -n "${existing}" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${REPOSITORY}/issues/comments/${existing}" \
+              -f body="${body}"
+          else
+            gh pr comment "${PR_NUMBER}" --body "${body}"
+          fi
