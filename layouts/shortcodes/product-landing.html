@@ -1,0 +1,60 @@
+{{- $id := .Get "product" -}}
+{{- $product := index hugo.Data.docs_build_versions.products $id -}}
+{{- $default := index (where $product.versions "slug" $product.default) 0 -}}
+{{- $nav := index hugo.Data.docs_navigation.products $id -}}
+{{- $productPages := where (where site.RegularPages "Params.product" $id) "Params.version" $product.default -}}
+{{- $startPages := where $productPages "Params.source_path" $nav.start -}}
+{{- $architectureSources := dict "praxis" "docs/architecture/overview.md" "ai" "docs/architecture/ai-inference.md" "policy" "docs/content/index.md" -}}
+{{- $architecturePages := where $productPages "Params.source_path" (index $architectureSources $id) -}}
+{{- $icon := resources.Get (printf "icons/product-%s.svg" $id) -}}
+{{- $needs := slice "How-to" "Tutorial" "Reference" "Explanation" -}}
+<section class="product-overview" aria-label="{{ $product.name }} project overview">
+  <div class="product-overview__intro">
+    <div class="product-overview__copy">
+      <p>Default documentation: {{ $default.label }}</p>
+      {{- if eq $id "praxis" -}}
+      <p class="product-start-action"><a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy</a></p>
+      {{- else if eq $id "ai" -}}
+      <p class="product-start-action"><a class="btn btn-primary" href="{{ "ai/container-quickstart/" | relURL }}">Run Praxis AI</a></p>
+      {{- else -}}{{- with index $startPages 0 -}}
+      <p class="product-start-action"><a class="btn btn-primary" href="{{ .RelPermalink }}">Get started: {{ .Title }}</a></p>
+      {{- end -}}{{- end -}}
+      {{- with $product.status }}<p class="product-status">{{ . }}</p>{{ end -}}
+    </div>
+    <img class="product-overview__icon" src="{{ $icon.RelPermalink }}" alt="" width="80" height="80">
+  </div>
+  {{ partial "product-visual.html" (dict "productID" $id) }}
+  <nav class="project-task-paths" aria-label="{{ $product.name }} operator tasks">
+    {{- if eq $id "praxis" }}
+    <a href="{{ "guides/install/" | relURL }}">Install Praxis</a>
+    <a href="{{ "guides/use-filters/" | relURL }}">Configure filters</a>
+    <a href="{{ "guides/operate/" | relURL }}">Operate your proxy</a>
+    {{- end }}
+    {{- if ne $id "policy" }}<a href="{{ printf "%s/%s/examples/" $id $product.default | relURL }}">Configuration examples</a>{{ end }}
+    {{- if $architecturePages -}}
+      {{- with index $architecturePages 0 }}<a href="{{ .RelPermalink }}">Understand the architecture</a>{{ end -}}
+    {{- end }}
+  </nav>
+  {{- if eq $id "praxis" }}
+  <p><strong>For Rust developers:</strong> <a href="{{ "guides/extend/" | relURL }}">Extend Praxis with Rust</a></p>
+  {{- end }}
+  <section class="product-journeys" aria-labelledby="{{ $id }}-journeys-title">
+    <h2 id="{{ $id }}-journeys-title">Choose what you need</h2>
+    {{- range $need := $needs -}}
+      {{- $pages := where $productPages "Params.reader_need" $need -}}
+      {{- $pages = where $pages "Params.topic" "ne" "Examples" -}}
+      {{- $pages = first 3 (sort $pages "Params.order") -}}
+      {{- if gt (len $pages) 0 -}}
+      <section class="product-journey-group" aria-labelledby="{{ $id }}-{{ $need | urlize }}">
+        <h3 id="{{ $id }}-{{ $need | urlize }}">{{ if eq $need "How-to" }}How-to guides{{ else }}{{ $need }}{{ end }}</h3>
+        <ul>
+          {{- range $pages -}}
+          <li><a href="{{ .RelPermalink }}">{{ if eq .Params.source_path "docs/quickstart.md" }}Build from source{{ else }}{{ .Title }}{{ end }}</a>{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}</li>
+          {{- end -}}
+        </ul>
+      </section>
+      {{- end -}}
+    {{- end -}}
+  </section>
+  <p class="product-links"><a href="{{ $product.repo }}">Source repository</a><a href="{{ $product.issues }}">Report an issue</a><a href="{{ printf "%s/%s/" $id $product.default | relURL }}">Browse {{ $default.label }} documentation</a></p>
+</section>

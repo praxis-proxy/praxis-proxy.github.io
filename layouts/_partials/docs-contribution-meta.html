@@ -1,0 +1,38 @@
+{{- if .File -}}
+  {{- $page := . -}}
+  {{- $path := strings.TrimPrefix (add hugo.WorkingDir "/") $page.File.Filename -}}
+  {{- $repo := $page.Param "source_repo" | default ($page.Param "github_repo") -}}
+  {{- $branch := $page.Param "source_commit" | default ($page.Param "github_branch") -}}
+  {{- $base := $page.Param "path_base_for_github_subdir" -}}
+  {{- $rename := "" -}}
+  {{- if reflect.IsMap $base -}}
+    {{- $rename = $base.to -}}
+    {{- $base = $base.from -}}
+  {{- end -}}
+  {{- with $base -}}{{- $path = replaceRE . $rename $path -}}{{- end -}}
+  {{- if and $repo $branch $path -}}
+    {{- $sourceURL := printf "%s/blob/%s/%s" $repo $branch $path -}}
+    {{- $issueBase := $page.Param "issue_url" | default (printf "%s/issues" $repo) -}}
+    {{- $issueBase = strings.TrimSuffix "/new" $issueBase -}}
+    {{- $issueBase = strings.TrimSuffix "/" $issueBase -}}
+    {{- $issueBase = printf "%s/new" $issueBase -}}
+    {{- $product := $page.Param "product" | default "Website" -}}
+    {{- if ne $product "Website" -}}
+      {{- with index hugo.Data.docs_build_versions.products $product -}}{{- $product = .name -}}{{- end -}}
+    {{- end -}}
+    {{- $version := $page.Param "version_label" | default $branch -}}
+    {{- $issueTitle := printf "Docs: %s" $page.Title -}}
+    {{- $issueBody := printf "Project: %s\nVersion: %s\nSource: %s" $product $version $sourceURL -}}
+    {{- $issueQuery := querify "title" $issueTitle "body" $issueBody | safeURL -}}
+    {{- $editURL := $page.Param "edit_url" -}}
+    {{- if and (not $editURL) (not ($page.Param "source_commit")) -}}
+      {{- $editURL = printf "%s/edit/%s/%s" $repo $branch $path -}}
+    {{- end -}}
+<nav class="docs-contribution-meta" aria-label="Documentation actions">
+  <a href="{{ $sourceURL }}" target="_blank" rel="noopener">View source<span class="visually-hidden"> (opens in a new tab)</span></a>
+  {{- with $editURL }}<a href="{{ . }}" target="_blank" rel="noopener">Edit this page<span class="visually-hidden"> (opens in a new tab)</span></a>{{ end }}
+  <a href="{{ $issueBase }}?{{ $issueQuery }}" target="_blank" rel="noopener">Report an issue<span class="visually-hidden"> (opens in a new tab)</span></a>
+  <span class="docs-source-revision">{{ $version }}{{ with $page.Param "source_commit" }} · {{ printf "%.12s" . }}{{ end }}</span>
+</nav>
+  {{- end -}}
+{{- end -}}

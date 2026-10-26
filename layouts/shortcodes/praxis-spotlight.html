@@ -1,0 +1,35 @@
+{{- $docs := index hugo.Data.docs_build_versions.products "praxis" -}}
+<section class="home-section project-spotlight project-spotlight--praxis" aria-labelledby="praxis-spotlight-title" data-motion-scene>
+  <div class="project-spotlight__inner">
+    <div class="project-spotlight__copy">
+      <p class="home-section__eyebrow">01 / PRAXIS · PROXY FOUNDATION</p>
+      <h2 id="praxis-spotlight-title">One proxy.<br>Two paths.</h2>
+      <p>Praxis is a configurable HTTP reverse proxy and TCP forwarder. Compose filters for HTTP requests, handle TCP connections through their own hooks, and extend the framework in Rust.</p>
+      <div class="project-spotlight__actions">
+        <a class="project-spotlight__link" href="{{ printf "praxis/%s/" $docs.default | relURL }}">Explore Praxis docs <span aria-hidden="true">↗</span></a>
+        <a class="project-spotlight__secondary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="project-spotlight__visual project-bento project-bento--praxis">
+      <figure class="project-spotlight__feature route-board">
+        <div class="project-spotlight__visual-header"><span>THE HTTP REQUEST PATH</span><span>PRAXIS / PROXY</span></div>
+        <ol class="route-board__path">
+          <li><small>01 / RECEIVE</small><strong>Client request</strong><span>Enter the proxy</span></li>
+          <li><small>02 / COMPOSE</small><strong>Filters + routing</strong><span>Shape the request path</span></li>
+          <li><small>03 / DELIVER</small><strong>Upstream service</strong><span>Forward the request</span></li>
+        </ol>
+        <figcaption>Compose HTTP filters and routing before forwarding to an upstream service.</figcaption>
+      </figure>
+      <div class="project-spotlight__tile route-board__tcp">
+        <span class="project-spotlight__tile-label">PARALLEL PATH / TCP</span>
+        <h3>Connections have their own lifecycle.</h3>
+        <ol aria-label="TCP connection path"><li>Accept</li><li>Filter</li><li>Forward</li></ol>
+      </div>
+      <div class="project-spotlight__tile route-board__rust">
+        <span class="project-spotlight__tile-label">EXTEND / RUST</span>
+        <h3>Build beyond the defaults.</h3>
+        <p>Extend the proxy framework with your own Rust filters.</p>
+      </div>
+    </div>
+  </div>
+</section>

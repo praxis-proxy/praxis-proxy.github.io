@@ -1,0 +1,165 @@
+name: Prow
+
+# ------------------------------------------------------------------------------
+# Workflow Settings
+# ------------------------------------------------------------------------------
+#
+# Prow chat-ops from cncf/prow-github-actions, run as a direct action step
+# with job-scoped permissions: no pull_request_target and no actions: write,
+# so the workflow needs no broad write ceiling. Label families and the merge
+# gate are configured in .github/prow.yaml; reviewers and approvers are listed
+# in the root OWNERS file. Nothing here checks out or runs pull request code;
+# the action only calls the GitHub API, and commands are authorized against
+# the OWNERS file before anything is applied.
+#
+# /retest, /test and /ok-to-test run in their own job, the only one with
+# actions: write, and only for comments containing those commands. /ok-to-test
+# is OWNERS-gated like /lgtm; the ok-to-test label it applies also lets the
+# sweep job approve later pushes. /label and
+# /remove-label are not enabled either: there is no labels.labels list in
+# .github/prow.yaml, so they would only fail.
+#
+# Pull requests from forks (including this repository's fork-based
+# contributors) get a read-only token on pull_request events, so their
+# needs-* labels, reviewer requests, and approval are handled by the sweep job
+# within its five-minute interval. Comment commands (/lgtm, /approve) run as
+# soon as the comment is posted for every pull request. GitHub sends no
+# check_suite event for checks run by Actions, so expect up to five minutes
+# of delay from the sweep wherever an event does not fire.
+#
+# Prow does not merge yet. It runs with the default github.token, and a merge
+# made with GITHUB_TOKEN fires no push events, so Publish Pages (pages.yml)
+# would not run. A maintainer merges once the gate (/lgtm, /approve, checks)
+# is satisfied, which fires push as usual. The action has no switch for this,
+# so .github/prow.yaml requires a label nothing applies, and the jobs below
+# keep contents: read. Follow-up, restoring Prow merges with the praxis-bot
+# app token: https://github.com/praxis-proxy/website/issues/25
+#
+# After changing .github/prow.yaml, the label-sync job creates the new labels
+# on the push that lands the change (a maintainer merge fires it); it can also
+# be run manually (Actions -> Prow -> Run workflow). Label commands only apply
+# labels that exist.
+on:
+  issues:
+    types: [opened, reopened, labeled, unlabeled]
+  # Chat-ops: Prow commands arrive as comments. Safe usage: no comment
+  # content is ever interpolated (only the numeric comment.id in the
+  # concurrency group below), and commands are authorized against the
+  # OWNERS file.
+  issue_comment: # zizmor: ignore[dangerous-triggers]
+    types: [created]
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted, dismissed]
+  check_suite:
+    types: [completed]
+  # the sweep for fork pull requests and the lgtm backstop; */5 is the
+  # shortest interval GitHub runs
+  schedule:
+    - cron: '*/5 * * * *'
+  # label-sync: run once after installing, then whenever .github/prow.yaml changes
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/prow.yaml]
+
+permissions: {}
+
+# One run per comment (commands are never collapsed); per event, action and
+# label for everything else, so a labeled run for one label never replaces a
+# pending labeled run for another (a labeled lgtm binds the head commit).
+# Never cancel a run that may be merging.
+concurrency:
+  group: prow-${{ github.event_name }}-${{ github.event.action }}-${{ github.event.label.name }}-${{ github.event.comment.id || github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  # commands, needs-* labels, OWNERS labels and reviewers, approval, merging
+  prow:
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      # reading OWNERS files
+      contents: read
+      # labeling issues and pull requests
+      issues: write
+      # comments, reviews, requesting reviewers
+      pull-requests: write
+      # binding lgtm to the reviewed commit (prow/lgtm commit status)
+      statuses: write
+    steps:
+      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+        with:
+          github-token: ${{ github.token }}
+          # remove- aliases (/remove-kind, /unhold, ...) come with their base
+          # command; /retest and /test are in the retest job
+          prow-commands: >-
+            /lgtm /approve /hold /assign /unassign /cc /uncc
+            /close /reopen /retitle /milestone
+            /kind /lifecycle
+            /help /good-first-issue
+          # drops a stale lgtm label when a pull request gets new commits
+          jobs: lgtm
+
+  # /retest and /test re-run failed workflow runs, and /ok-to-test approves held
+  # ones, which needs actions: write. Only comments containing those commands get
+  # this job, so the write token exists for them alone, and the action's OWNERS
+  # check decides who may run them. The comment text is only used in this
+  # condition, never in a shell.
+  retest:
+    if: github.event_name == 'issue_comment' && (contains(github.event.comment.body, '/retest') || contains(github.event.comment.body, '/test') || contains(github.event.comment.body, '/ok-to-test'))
+    runs-on: ubuntu-latest
+    permissions:
+      # reading OWNERS files
+      contents: read
+      # reactions and comments on the triggering comment
+      issues: write
+      # reactions and comments on pull requests
+      pull-requests: write
+      # re-running failed workflow runs on the head commit
+      actions: write
+    steps:
+      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+        with:
+          github-token: ${{ github.token }}
+          prow-commands: /retest /test /ok-to-test
+
+  # fork pull requests updated within sweep.lookback (default 1h), plus the
+  # lgtm backstop for events GitHub dropped. Approves held workflow runs for
+  # pull requests labelled ok-to-test; anyone with triage access can apply that
+  # label, and the approval does not check who applied it.
+  sweep:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      # reading OWNERS files; contents: write returns with Prow merges (#25)
+      contents: read
+      # labeling issues and pull requests
+      issues: write
+      # comments, reviews, requesting reviewers
+      pull-requests: write
+      # binding lgtm to the reviewed commit (prow/lgtm commit status)
+      statuses: write
+      # approving held workflow runs for ok-to-test pull requests
+      actions: write
+    steps:
+      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+        with:
+          github-token: ${{ github.token }}
+          jobs: sweep lgtm
+
+  # creates the labels configured in .github/prow.yaml
+  label-sync:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      # reading .github/prow.yaml
+      contents: read
+      # creating labels
+      issues: write
+    steps:
+      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+        with:
+          github-token: ${{ github.token }}
+          jobs: label-sync

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" role="img" aria-labelledby="title desc">
+  <title id="title">Praxis request and response path</title>
+  <desc id="desc">Requests move from a client through a named listener and ordered filter pipeline to an upstream pool. Responses travel back through filters in reverse order.</desc>
+  <rect x="1" y="1" width="898" height="248" rx="18" fill="#F5F7FB" stroke="#DCE2EB"/>
+  <text x="34" y="39" fill="#586579" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600">Requests flow forward · responses flow in reverse</text>
+  <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle">
+    <rect x="36" y="81" width="145" height="72" rx="12" fill="#FFFFFF" stroke="#DCE2EB" stroke-width="2"/>
+    <text x="108" y="123" fill="#182230" font-size="17" font-weight="600">Client</text>
+    <rect x="244" y="81" width="160" height="72" rx="12" fill="#FFFFFF" stroke="#4338CA" stroke-width="2"/>
+    <text x="324" y="113" fill="#182230" font-size="17" font-weight="600">Named</text>
+    <text x="324" y="136" fill="#182230" font-size="17" font-weight="600">listener</text>
+    <rect x="468" y="81" width="190" height="72" rx="12" fill="#EEF0FF" stroke="#4338CA" stroke-width="2"/>
+    <text x="563" y="113" fill="#4338CA" font-size="17" font-weight="600">Filter pipeline</text>
+    <text x="563" y="136" fill="#586579" font-size="13">routing · security · more</text>
+    <rect x="723" y="81" width="143" height="72" rx="12" fill="#FFFFFF" stroke="#DCE2EB" stroke-width="2"/>
+    <text x="794" y="123" fill="#182230" font-size="17" font-weight="600">Upstream</text>
+  </g>
+  <g fill="none" stroke="#4338CA" stroke-width="2.5" stroke-linecap="round">
+    <path d="M185 117h49"/><path d="m226 110 8 7-8 7"/>
+    <path d="M408 117h49"/><path d="m449 110 8 7-8 7"/>
+    <path d="M662 117h49"/><path d="m703 110 8 7-8 7"/>
+  </g>
+  <path d="M794 169v29q0 15-15 15H124q-16 0-16-15v-29" fill="none" stroke="#80608D" stroke-width="2" stroke-dasharray="5 6"/>
+  <path d="m101 181 7-8 7 8" fill="none" stroke="#80608D" stroke-width="2"/>
+  <text x="450" y="226" fill="#80608D" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Response hooks pass through the same filters in reverse</text>
+</svg>

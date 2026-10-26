@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" role="img" aria-labelledby="title desc">
+  <title id="title">Praxis AI inference processing</title>
+  <desc id="desc">An inference request passes through body classification and format filters, then branch chains and routing select an upstream provider.</desc>
+  <rect x="1" y="1" width="898" height="248" rx="18" fill="#F5F7FB" stroke="#DCE2EB"/>
+  <text x="34" y="39" fill="#586579" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600">Inference requests flow through Praxis filters</text>
+  <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle">
+    <rect x="34" y="81" width="148" height="74" rx="12" fill="#FFFFFF" stroke="#DCE2EB" stroke-width="2"/>
+    <text x="108" y="124" fill="#182230" font-size="16" font-weight="600">Request body</text>
+    <rect x="221" y="81" width="165" height="74" rx="12" fill="#F0EAF3" stroke="#80608D" stroke-width="2"/>
+    <text x="303" y="113" fill="#182230" font-size="16" font-weight="600">Classifier</text>
+    <text x="303" y="136" fill="#586579" font-size="13">format · model · stream</text>
+    <rect x="425" y="81" width="173" height="74" rx="12" fill="#F0EAF3" stroke="#80608D" stroke-width="2"/>
+    <text x="511" y="113" fill="#182230" font-size="16" font-weight="600">AI filters</text>
+    <text x="511" y="136" fill="#586579" font-size="13">validate · translate · enrich</text>
+    <rect x="637" y="81" width="116" height="74" rx="12" fill="#FFFFFF" stroke="#4338CA" stroke-width="2"/>
+    <text x="695" y="124" fill="#182230" font-size="16" font-weight="600">Router</text>
+    <rect x="790" y="81" width="78" height="74" rx="12" fill="#FFFFFF" stroke="#DCE2EB" stroke-width="2"/>
+    <text x="829" y="113" fill="#182230" font-size="14" font-weight="600">Model</text>
+    <text x="829" y="133" fill="#182230" font-size="14" font-weight="600">provider</text>
+  </g>
+  <g fill="none" stroke="#80608D" stroke-width="2.5" stroke-linecap="round">
+    <path d="M186 118h28"/><path d="m206 111 8 7-8 7"/>
+    <path d="M390 118h28"/><path d="m410 111 8 7-8 7"/>
+    <path d="M602 118h28"/><path d="m622 111 8 7-8 7"/>
+    <path d="M757 118h27"/><path d="m776 111 8 7-8 7"/>
+  </g>
+  <text x="450" y="207" fill="#586579" font-family="IBM Plex Sans, sans-serif" font-size="14" text-anchor="middle">The gateway is built on Praxis; provider selection and AI behavior stay composable.</text>
+</svg>

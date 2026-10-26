@@ -1,0 +1,23 @@
+{{- $id := .productID -}}
+{{- $product := index hugo.Data.docs_build_versions.products $id -}}
+{{- $sourcePaths := dict "praxis" "docs/architecture/overview.md" "ai" "docs/architecture/ai-inference.md" "policy" "docs/content/index.md" -}}
+{{- $alt := dict "praxis" "Requests pass through a named listener and ordered Praxis filter pipeline to an upstream; response hooks run in reverse." "ai" "An inference request is classified, processed by AI filters, and routed to a model provider." "policy" "Agent operations pass through policy, effects, plugins, and enforcement, with identity and session state at the boundary." -}}
+{{- $captions := dict "praxis" "A listener assembles filters into a pipeline. Read the default-release architecture overview." "ai" "Praxis AI classifies and enriches inference requests before provider routing. Read the inference architecture." "policy" "PPE checks verified identity, evaluates policy, applies effects, and enforces the result. Read the default-release overview." -}}
+{{- $productPages := where (where site.RegularPages "Params.product" $id) "Params.version" $product.default -}}
+{{- $sourcePage := index (where $productPages "Params.source_path" (index $sourcePaths $id)) 0 -}}
+{{- $image := "" -}}
+{{- if eq $id "policy" -}}
+  {{- $image = printf "%s/%s/_assets/docs/images/ppe_overview.svg" $id $product.default | relURL -}}
+{{- else -}}
+  {{- $image = printf "images/product-%s.svg" $id | relURL -}}
+{{- end -}}
+{{- $target := printf "%s/%s/" $id $product.default | relURL -}}
+{{- with $sourcePage }}{{ $target = .RelPermalink }}{{ end -}}
+{{- $height := 250 -}}
+{{- if eq $id "policy" }}{{ $height = 358 }}{{ end -}}
+<figure class="product-visual">
+  <div class="product-visual__scroll" role="region" aria-label="Scrollable {{ $product.name }} diagram" tabindex="0">
+    <a class="product-visual__frame" href="{{ $target }}"><img src="{{ $image }}" alt="{{ index $alt $id }}" width="900" height="{{ $height }}" loading="lazy"></a>
+  </div>
+  <figcaption>{{ index $captions $id }} <a href="{{ $target }}">Read the explanation<span class="visually-hidden"> for {{ $product.name }}</span></a></figcaption>
+</figure>

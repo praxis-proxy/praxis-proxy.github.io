@@ -1,0 +1,201 @@
+{
+  "products": {
+    "praxis": {
+      "name": "Praxis",
+      "description": "A configurable HTTP and TCP proxy for routing traffic and applying built-in filters.",
+      "content_root": "docs",
+      "default": "v0.7.2",
+      "development": {
+        "ref": "main",
+        "sha": "f3ae62426387f63f793f5596416c80f57c44f14c"
+      },
+      "exclude": [
+        "docs/proposals/**"
+      ],
+      "required": [
+        "docs/README.md",
+        "docs/quickstart.md",
+        "docs/features.md",
+        "docs/filters/reference.md"
+      ],
+      "indexes": [
+        "docs/README.md",
+        "docs/filters/README.md"
+      ],
+      "releases": [
+        {
+          "version": "v0.7.2",
+          "label": "v0.7.2",
+          "tag": "v0.7.2",
+          "sha": "1de023cba3fee967f828c9ff35f27596f8f6792c",
+          "default": true
+        },
+        {
+          "version": "v0.7.1",
+          "label": "v0.7.1",
+          "tag": "v0.7.1",
+          "sha": "1c782fcaa2bc6ebc5276994e279f53727bc878c4",
+          "default": false
+        },
+        {
+          "version": "v0.5.4",
+          "label": "v0.5.4",
+          "tag": "v0.5.4",
+          "sha": "12ee8b430af498ca0a9f5066f61716d8c0a9fc94",
+          "default": false
+        },
+        {
+          "version": "v0.5.3",
+          "label": "v0.5.3",
+          "tag": "v0.5.3",
+          "sha": "7c6cef76a9b8449c3617dacfa597ee6d7ac9d82e",
+          "default": false
+        }
+      ]
+    },
+    "ai": {
+      "name": "Praxis AI",
+      "description": "An AI gateway built on the Praxis proxy runtime.",
+      "content_root": "docs",
+      "default": "v0.8.0",
+      "development": {
+        "ref": "main",
+        "sha": "1046f2aeff3e9092013871f848eef5e55e1e15c0"
+      },
+      "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
+      "extra_assets": [
+        "assets/praxis-ai-architecture.svg"
+      ],
+      "exclude": [],
+      "required": [
+        "docs/README.md",
+        "docs/quickstart.md",
+        "docs/features.md",
+        "docs/filters/reference.md"
+      ],
+      "indexes": [
+        "docs/README.md",
+        "docs/filters/README.md",
+        "docs/conformance/README.md"
+      ],
+      "releases": [
+        {
+          "version": "v0.8.0",
+          "label": "v0.8.0 (alpha)",
+          "tag": "v0.8.0",
+          "sha": "c39f7198932d408b12f35cd57a2457067e67d0cf",
+          "default": true
+        },
+        {
+          "version": "v0.7.0",
+          "label": "v0.7.0 (alpha)",
+          "tag": "v0.7.0",
+          "sha": "6f058ec9d4037441b42530da4d9e54a05e5a6d34",
+          "default": false
+        },
+        {
+          "version": "v0.5.0",
+          "label": "v0.5.0 (alpha)",
+          "tag": "v0.5.0",
+          "sha": "2f8732c1389b889660bcb3495af4d4d28dd4e682",
+          "default": false
+        },
+        {
+          "version": "v0.4.1",
+          "label": "v0.4.1 (alpha)",
+          "tag": "v0.4.1",
+          "sha": "b9d6016764888e02dc049ec088496b10b7e886c1",
+          "default": false
+        },
+        {
+          "version": "v0.4.0",
+          "label": "v0.4.0 (alpha)",
+          "tag": "v0.4.0",
+          "sha": "ca3e760c790a34293c03d2314a3c7cfbf73836b3",
+          "default": false
+        }
+      ]
+    },
+    "policy": {
+      "name": "Praxis Policy Engine",
+      "description": "A policy runtime for authorization, identity, delegation, and data controls.",
+      "content_root": "docs/content",
+      "default": "v0.4.0",
+      "development": {
+        "ref": "main",
+        "sha": "223005869b4f8ecb477bc9739fe6391fcf80608a"
+      },
+      "status": "The public API is still evolving; breaking changes are documented in the changelog.",
+      "exclude": [],
+      "required": [
+        "docs/content/index.md",
+        "docs/content/quickstart.md",
+        "docs/content/apl/index.md"
+      ],
+      "indexes": [
+        "docs/content/index.md",
+        "docs/content/apl/index.md"
+      ],
+      "releases": [
+        {
+          "version": "v0.4.0",
+          "label": "v0.4.0",
+          "tag": "v0.4.0",
+          "sha": "fb94b2b81e5909b72949323921625de7ba7ce328",
+          "default": true
+        },
+        {
+          "version": "v0.3.1",
+          "label": "v0.3.1",
+          "tag": "v0.3.1",
+          "sha": "90e7f23c7d41e83f65f4c02cb18822fcd0024123",
+          "default": false
+        }
+      ]
+    },
+    "grid": {
+      "name": "Praxis Grid",
+      "description": "A Kubernetes control plane for multi-site AI inference routing.",
+      "content_root": "docs",
+      "default": "v0.2.2",
+      "development": {
+        "ref": "main",
+        "sha": "9ead9b27e7f8a1fdf3215d7f9d35d6ed9dfc5dd8"
+      },
+      "status": "Grid v0.2.2 is a technical preview; review its release-scoped deployment requirements and limitations.",
+      "exclude": [],
+      "required": [
+        "docs/README.md",
+        "docs/technical-preview-scope.md",
+        "docs/installation/existing-clusters.md",
+        "docs/architecture/overview.md"
+      ],
+      "indexes": [
+        "docs/README.md"
+      ],
+      "releases": [
+        {
+          "version": "v0.2.2",
+          "label": "v0.2.2 (technical preview)",
+          "tag": "v0.2.2",
+          "sha": "33cb906be2bb0ebdbaf253bd307939a44f41b37b",
+          "default": true
+        },
+        {
+          "version": "v0.2.1",
+          "label": "v0.2.1 (technical preview)",
+          "tag": "v0.2.1",
+          "sha": "5963265023d825d8410cfccbb52ea42334bb4e8c",
+          "default": false
+        },
+        {
+          "version": "v0.2.0",
+          "label": "v0.2.0",
+          "tag": "v0.2.0",
+          "sha": "a4a7d7168ec36e59f31bcb9be0d11d6dd69c4974",
+          "default": false
+        }
+      ]
+    }
+  }
+}

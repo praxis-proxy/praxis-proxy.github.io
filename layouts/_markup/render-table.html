@@ -1,0 +1,21 @@
+<table tabindex="0" aria-label="{{ .Page.Title }}, table {{ add .Ordinal 1 }}"
+  {{- range $key, $value := .Attributes }}
+    {{- if and $value (not (in (slice "tabindex" "aria-label") $key)) }}
+      {{- printf " %s=%q" $key $value | safeHTMLAttr }}
+    {{- end }}
+  {{- end }}>
+  {{- range slice (dict "tag" "thead" "cell" "th" "rows" .THead) (dict "tag" "tbody" "cell" "td" "rows" .TBody) }}
+  {{ printf "<%s>" .tag | safeHTML }}
+    {{- $cell := .cell -}}
+    {{- range .rows }}
+    <tr>
+      {{- range . }}
+        {{- $alignment := "" -}}
+        {{- with .Alignment }}{{ $alignment = printf " style=%q" (printf "text-align: %s" .) }}{{ end -}}
+        {{- printf "<%s%s>" $cell $alignment | safeHTML }}{{ .Text }}{{ printf "</%s>" $cell | safeHTML -}}
+      {{- end }}
+    </tr>
+    {{- end }}
+  {{ printf "</%s>" .tag | safeHTML }}
+  {{- end }}
+</table>

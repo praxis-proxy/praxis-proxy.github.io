@@ -1,0 +1,7 @@
+{{- $destination := .Destination -}}
+{{- $base := site.Home.RelPermalink -}}
+{{- if and (strings.HasPrefix $destination "/") (not (strings.HasPrefix $destination "//")) (not (strings.HasPrefix $destination $base)) -}}
+  {{- $destination = strings.TrimPrefix "/" $destination | relURL -}}
+{{- end -}}
+<a href="{{ $destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+{{- /* Keep punctuation next to inline links. */ -}}

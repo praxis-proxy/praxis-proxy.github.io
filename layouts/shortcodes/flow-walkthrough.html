@@ -1,0 +1,81 @@
+<section class="flow-walkthrough" aria-labelledby="flow-walkthrough-heading">
+  <h3 id="flow-walkthrough-heading">Compare the two outcomes</h3>
+  <p>The same configured request tries the primary first. Only a retryable primary status takes the fallback path.</p>
+  <details data-flow-walkthrough>
+    <summary>Open the paused route view</summary>
+    <div class="flow-walkthrough__view" role="region" aria-label="Scrollable AI route diagram" tabindex="0">
+      <svg width="1040" height="390" viewBox="0 0 1040 390" role="img" aria-labelledby="flow-view-title flow-view-desc" xmlns="http://www.w3.org/2000/svg">
+        <title id="flow-view-title">Responses request translated to Chat Completions with provider failover</title>
+        <desc id="flow-view-desc">A request is classified and translated, then routed to a primary Chat Completions backend with its configured credential. A primary success returns as a Responses response. Status 429, 502, 503, or 504 selects a second translation and credential step routed to the fallback backend.</desc>
+        <defs>
+          <marker id="flow-arrow" markerWidth="9" markerHeight="9" refX="9" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 9 4.5 0 9Z" fill="#586579"/></marker>
+          <marker id="flow-arrow-primary" markerWidth="9" markerHeight="9" refX="9" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 9 4.5 0 9Z" fill="#4338ca"/></marker>
+          <marker id="flow-arrow-alt" markerWidth="9" markerHeight="9" refX="9" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 9 4.5 0 9Z" fill="#7b4b00"/></marker>
+        </defs>
+        <rect width="1040" height="390" rx="12" fill="#f5f7fb"/>
+        <g font-family="IBM Plex Sans, sans-serif" fill="#182230" text-anchor="middle">
+          <g data-flow-node="client"><rect x="24" y="66" width="130" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="89" y="96" font-size="17" font-weight="600">Client</text><text x="89" y="121" fill="#586579" font-size="14">Responses API</text></g>
+          <g data-flow-node="classify"><rect x="188" y="66" width="180" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="278" y="96" font-size="17" font-weight="600">Classify + validate</text><text x="278" y="121" fill="#586579" font-size="14">request format and state</text></g>
+          <g data-flow-node="translate-primary"><rect x="402" y="66" width="190" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="497" y="96" font-size="17" font-weight="600">Translate + rewrite</text><text x="497" y="121" fill="#586579" font-size="14">Chat Completions path</text></g>
+          <g data-flow-node="route-primary"><rect x="626" y="66" width="190" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="721" y="96" font-size="17" font-weight="600">Route + credential</text><text x="721" y="121" fill="#586579" font-size="14">primary-backend</text></g>
+          <g data-flow-node="endpoint-primary"><rect x="850" y="66" width="166" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="933" y="96" font-size="17" font-weight="600">Primary endpoint</text><text x="933" y="121" fill="#586579" font-size="14">configured address</text></g>
+
+          <path d="M154 104H188" fill="none" stroke="#586579" stroke-width="2" marker-end="url(#flow-arrow)"/>
+          <path d="M368 104H402" fill="none" stroke="#586579" stroke-width="2" marker-end="url(#flow-arrow)"/>
+          <path d="M592 104H626" fill="none" stroke="#586579" stroke-width="2" marker-end="url(#flow-arrow)"/>
+          <path d="M816 104H850" fill="none" stroke="#586579" stroke-width="2" marker-end="url(#flow-arrow)"/>
+          <path data-flow-path="primary" d="M933 142V184H89V142" fill="none" stroke="#4338ca" stroke-width="2" marker-end="url(#flow-arrow-primary)"/>
+          <text x="534" y="172" fill="#4338ca" font-size="14">Success: translate the response back and return it</text>
+
+          <path data-flow-path="fallback" d="M1016 104H1028V224H497V246" fill="none" stroke="#7b4b00" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#flow-arrow-alt)"/>
+          <text x="780" y="213" fill="#7b4b00" font-size="14">Retry on 429 / 502 / 503 / 504</text>
+          <g data-flow-node="retry"><rect x="402" y="246" width="190" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="497" y="276" font-size="17" font-weight="600">Rebuild step state</text><text x="497" y="301" fill="#586579" font-size="14">translate + rewrite again</text></g>
+          <path d="M592 284H626" fill="none" stroke="#7b4b00" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#flow-arrow-alt)"/>
+          <g data-flow-node="route-fallback"><rect x="626" y="246" width="190" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="721" y="276" font-size="17" font-weight="600">Route + credential</text><text x="721" y="301" fill="#586579" font-size="14">fallback-backend</text></g>
+          <path d="M816 284H850" fill="none" stroke="#7b4b00" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#flow-arrow-alt)"/>
+          <g data-flow-node="endpoint-fallback"><rect x="850" y="246" width="166" height="76" rx="9" fill="#fff" stroke="#dce2eb" stroke-width="2"/><text x="933" y="276" font-size="17" font-weight="600">Fallback endpoint</text><text x="933" y="301" fill="#586579" font-size="14">configured address</text></g>
+          <path data-flow-path="fallback" d="M933 322V354H12V104H24" fill="none" stroke="#7b4b00" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#flow-arrow-alt)"/>
+          <text x="534" y="378" fill="#7b4b00" font-size="14">fallback: translate the response back and return it</text>
+        </g>
+      </svg>
+    </div>
+    <div class="flow-walkthrough__controls" data-flow-controls hidden>
+      <fieldset>
+        <legend>Choose a result</legend>
+        <label><input type="radio" name="flow-scenario" value="primary" checked> Primary succeeds</label>
+        <label><input type="radio" name="flow-scenario" value="fallback"> Primary returns a retryable status</label>
+      </fieldset>
+      <div class="flow-walkthrough__buttons">
+        <button type="button" data-flow-action="previous">Previous step</button>
+        <button type="button" data-flow-action="next">Next step</button>
+        <button type="button" data-flow-action="reset">Reset path</button>
+      </div>
+      <p data-flow-status role="status" aria-live="polite" aria-atomic="true"></p>
+    </div>
+  </details>
+
+  <section aria-labelledby="flow-primary-heading">
+    <h4 id="flow-primary-heading">Primary succeeds</h4>
+    <ol>
+      <li data-flow-step data-scenario="primary" data-index="0" data-flow-focus="client">The client sends an OpenAI Responses request to the configured listener.</li>
+      <li data-flow-step data-scenario="primary" data-index="1" data-flow-focus="classify">The outer format and validation filters classify the request and prepare its state.</li>
+      <li data-flow-step data-scenario="primary" data-index="2" data-flow-focus="translate-primary">The primary step classifies and validates again, translates the body to Chat Completions, and rewrites <code>/v1/responses</code> to <code>/v1/chat/completions</code>.</li>
+      <li data-flow-step data-scenario="primary" data-index="3" data-flow-focus="route-primary">The router selects <code>primary-backend</code>. Credential injection removes a client credential and adds that backend's configured credential; the load balancer selects the primary endpoint.</li>
+      <li data-flow-step data-scenario="primary" data-index="4" data-flow-focus="endpoint-primary">The response is translated back to the Responses API shape and returned to the client. The fallback step does not run.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="flow-fallback-heading">
+    <h4 id="flow-fallback-heading">Primary returns a retryable status</h4>
+    <ol>
+      <li data-flow-step data-scenario="fallback" data-index="0" data-flow-focus="client">The client sends an OpenAI Responses request to the configured listener.</li>
+      <li data-flow-step data-scenario="fallback" data-index="1" data-flow-focus="classify">The outer format and validation filters classify the request and prepare its state.</li>
+      <li data-flow-step data-scenario="fallback" data-index="2" data-flow-focus="translate-primary">The primary step reclassifies and validates, translates to Chat Completions, rewrites the path, and routes to the primary backend with its configured credential.</li>
+      <li data-flow-step data-scenario="fallback" data-index="3" data-flow-focus="retry">A primary status of 429, 502, 503, or 504 selects the fallback step.</li>
+      <li data-flow-step data-scenario="fallback" data-index="4" data-flow-focus="retry">The fallback step rebuilds its format and validation state, translates the request, and rewrites the path again.</li>
+      <li data-flow-step data-scenario="fallback" data-index="5" data-flow-focus="route-fallback">The router selects <code>fallback-backend</code>; credential injection uses that backend's configured credential.</li>
+      <li data-flow-step data-scenario="fallback" data-index="6" data-flow-focus="endpoint-fallback">The load balancer selects the fallback endpoint.</li>
+      <li data-flow-step data-scenario="fallback" data-index="7" data-flow-focus="endpoint-fallback">The fallback response is translated back to the Responses API shape and returned to the client.</li>
+    </ol>
+  </section>
+</section>

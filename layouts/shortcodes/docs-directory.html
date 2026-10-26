@@ -1,0 +1,21 @@
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $order := slice "praxis" "ai" "policy" "grid" -}}
+<div class="docs-directory-grid">
+  {{- range $id := $order -}}
+    {{- $product := index $products $id -}}
+    {{- $default := index (where $product.versions "slug" $product.default) 0 -}}
+    <section class="docs-directory-card" aria-labelledby="docs-product-{{ $id }}">
+      <h3 id="docs-product-{{ $id }}"><a href="{{ printf "%s/" $id | relURL }}">{{ $product.name }}</a></h3>
+      {{- if eq $id "praxis" }}
+      <p>Choose where requests go, change headers, and apply security checks with built-in filters.</p>
+      {{- else }}
+      <p>{{ $product.description }}</p>
+      {{- end }}
+      {{- if eq $id "praxis" }}
+      <p><a href="{{ "guides/use-filters/" | relURL }}">Choose and configure built-in filters</a></p>
+      {{- end }}
+      <p class="docs-directory-card__start"><a href="{{ printf "%s/%s/" $id $product.default | relURL }}">Browse {{ $default.label }} documentation</a></p>
+      <a class="product-card__action" href="{{ printf "%s/" $id | relURL }}">Project overview <span aria-hidden="true">→</span></a>
+    </section>
+  {{- end -}}
+</div>

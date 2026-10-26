@@ -1,0 +1,107 @@
+{{/* cSpell:ignore docsearch opengraph */ -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+{{ $darkMode := partialCached "dark-mode-config.html" "dark-mode-global" -}}
+{{ if $darkMode.enable -}}
+{{/* Browser hints before CSS loads */ -}}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f7fb">
+<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#11141d">
+
+{{/* Styles to set canvas colors and avoid transitions */ -}}
+<style>
+  {{/* Match the selected theme before the main stylesheet loads. */ -}}
+  html[data-bs-theme='light'] { color-scheme: light; background: #f5f7fb; color: #182230; }
+  html[data-bs-theme='dark'] { color-scheme: dark; background: #11141d; color: #eef1fa; }
+  {{/* Avoid transitions until theme CSS is loaded */ -}}
+  html[data-theme-init] * { transition: none !important; }
+</style>
+
+{{/* Set theme attribute before CSS loads to prevent flash */ -}}
+<script>
+  (function() {
+    const themeKey = 'td-color-theme';
+    let storedTheme;
+    try { storedTheme = localStorage.getItem(themeKey); } catch (_) {}
+    let theme = storedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    if (theme === 'auto') {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.removeAttribute('data-theme-init');
+    }, { once: true });
+  })();
+</script>
+{{ end -}}
+
+{{ range .AlternativeOutputFormats -}}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
+{{ end -}}
+{{/* llms.txt spec v2 discovery link. The alternates loop above can't supply
+  it: it lists this page's own formats, and LLMS is `notAlternative` (llms.txt
+  describes the site; it isn't a version of this page). */ -}}
+{{ with (partialCached "td/root-page.html" site site.Home.Permalink).OutputFormats.Get "LLMS" -}}
+<link rel="describedby" href="{{ .Permalink | safeURL }}">
+{{ end -}}
+
+{{ if partial "praxis-archived.html" . }}
+<meta name="robots" content="noindex, follow">
+{{ else if hugo.IsProduction }}
+<meta name="robots" content="index, follow">
+{{ else }}
+<meta name="robots" content="noindex, nofollow">
+{{ end }}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{ partialCached "favicons.html" . }}
+<title>
+  {{- if .IsHome -}}
+    {{ .Site.Title -}}
+  {{ else -}}
+    {{ with .Title }}{{ . }} | {{ end -}}
+    {{ .Site.Title -}}
+  {{ end -}}
+</title>
+<meta name="description" content="{{ partial "page-description.html" . }}">
+{{ partial "opengraph.html" . -}}
+{{ partial "schema.html" . -}}
+{{ partial "twitter_cards.html" . -}}
+{{ partialCached "head-css.html" . "head-css-cache-key" -}}
+{{ if .Site.Params.offlineSearch -}}
+<script defer
+  src="https://unpkg.com/lunr@2.3.9/lunr.min.js"
+  integrity="sha384-203J0SNzyqHby3iU6hzvzltrWi/M41wOP5Gu+BiJMz5nwKykbkUx8Kp7iti0Lpli"
+  crossorigin="anonymous"></script>
+{{ end -}}
+
+{{ if .Site.Params.prism_syntax_highlighting -}}
+<link rel="stylesheet" href="{{ "css/prism.css" | relURL }}"/>
+{{ end -}}
+
+{{ template "algolia/head" . -}}
+
+{{ partial "hooks/head-end.html" . -}}
+
+{{/* To comply with GDPR, cookie consent scripts places in head-end must execute before Google Analytics is enabled */ -}}
+{{ if hugo.IsProduction -}}
+  {{ partial "google_analytics.html" . -}}
+{{ end -}}
+
+{{ define "algolia/head" -}}
+
+{{ if and .Site.Params.search (isset .Site.Params.search "algolia") -}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3.9.0/dist/style.css"
+  integrity="sha512-8uug7D8NgT+v/d07sokt/vr2noql7IVBehApnrNrbfIHT4OzJ/0r61YC7C3eHJhJdqATQOEnVMnp6Ik7njsy5w=="
+  crossorigin="anonymous" />
+{{ end -}}
+
+{{ if ne .Site.Params.algolia_docsearch nil -}}
+{{ warnf `Config 'params.algolia_docsearch' is deprecated: use 'params.search.algolia'
+      For details, see https://www.docsy.dev/docs/content/search/#algolia-docsearch.` -}}
+{{ end -}}
+
+{{ end -}}

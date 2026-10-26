@@ -1,0 +1,23 @@
+# Publish directory for CLI deploys from .github/workflows/netlify-preview.yml.
+# All Netlify Git/App auto-builds are skipped; GitHub Actions uploads previews,
+# and GitHub Pages owns production (.github/workflows/pages.yml).
+
+[build]
+  publish = "public"
+  command = "make build-host"
+
+[build.environment]
+  HUGO_VERSION = "0.168.0"
+  NODE_VERSION = "24"
+  PYTHON_VERSION = "3.12"
+  GO_VERSION = "1.27.3"
+
+# Skip Netlify-hosted builds so they do not duplicate GitHub Actions / Pages.
+[context.production]
+  ignore = "exit 0"
+
+[context.deploy-preview]
+  ignore = "exit 0"
+
+[context.branch-deploy]
+  ignore = "exit 0"

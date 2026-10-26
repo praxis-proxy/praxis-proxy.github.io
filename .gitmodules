@@ -1,0 +1,12 @@
+[submodule "sources/praxis"]
+	path = sources/praxis
+	url = https://github.com/praxis-proxy/praxis.git
+[submodule "sources/ai"]
+	path = sources/ai
+	url = https://github.com/praxis-proxy/ai.git
+[submodule "sources/policy"]
+	path = sources/policy
+	url = https://github.com/praxis-proxy/policy.git
+[submodule "sources/grid"]
+	path = sources/grid
+	url = https://github.com/praxis-proxy/grid.git

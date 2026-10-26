@@ -1,0 +1,7 @@
+{{- $destination := .Destination -}}
+{{- $base := site.Home.RelPermalink -}}
+{{- if and (strings.HasPrefix $destination "/") (not (strings.HasPrefix $destination "//")) (not (strings.HasPrefix $destination $base)) -}}
+  {{- $destination = strings.TrimPrefix "/" $destination | relURL -}}
+{{- end -}}
+<img src="{{ $destination | safeURL }}" alt="{{ .PlainText }}"{{ with .Title }} title="{{ . }}"{{ end }}>
+{{- /* Keep inline images next to surrounding text. */ -}}

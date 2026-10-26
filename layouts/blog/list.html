@@ -1,0 +1,52 @@
+{{ define "main" }}
+{{- $posts := .RegularPages.ByDate.Reverse -}}
+{{- $pages := .Paginate $posts 10 -}}
+<div class="praxis-blog-list">
+  <h1 class="visually-hidden">Praxis blog</h1>
+  <div class="praxis-blog-grid">
+    {{- range $index, $post := $pages.Pages }}
+    {{- $featured := and (eq $pages.PageNumber 1) (eq $index 0) -}}
+    <article class="praxis-blog-card{{ if $featured }} praxis-blog-card--featured{{ end }}">
+      <header>
+        {{- if $featured }}<p class="praxis-blog-card__eyebrow">Latest post</p>{{ end -}}
+        <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
+        <p class="praxis-blog-meta">
+          <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "January 2, 2006" }}</time>
+          <span aria-hidden="true">·</span>
+          <span>{{ $post.ReadingTime }} min read</span>
+        </p>
+        <p class="praxis-blog-author">
+          <img src="{{ "favicon.svg" | relURL }}" width="32" height="32" alt="">
+          <span>{{ $post.Params.author | default "Praxis contributors" }}</span>
+        </p>
+      </header>
+      {{- with $post.Description | default $post.Summary }}
+      <p class="praxis-blog-card__excerpt">{{ . | plainify | truncate 200 }}</p>
+      {{- end }}
+      {{- with $post.Params.tags }}
+      <ul class="praxis-blog-tags" aria-label="Post tags">
+        {{- range . }}<li><a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">{{ . }}</a></li>{{ end -}}
+      </ul>
+      {{- end }}
+      <a class="praxis-blog-card__read-more" href="{{ $post.RelPermalink }}" aria-label="Read {{ $post.Title }}">Read more <span aria-hidden="true">→</span></a>
+    </article>
+    {{- else }}
+    <div class="praxis-blog-empty">
+      <p>No posts have been published yet.</p>
+    </div>
+    {{- end }}
+    {{- if eq (len $posts) 1 }}
+    <div class="praxis-blog-archive-note">
+      <p class="praxis-blog-card__eyebrow">Archive</p>
+      <p>No earlier posts yet.</p>
+    </div>
+    {{- end }}
+    {{- if or $pages.HasPrev $pages.HasNext }}
+    <nav class="praxis-blog-pagination" aria-label="Blog pages">
+      {{- with $pages.Prev }}<a href="{{ .URL }}"><small>Newer entries</small><span>« Previous page</span></a>{{ else }}<span></span>{{ end -}}
+      {{- with $pages.Next }}<a href="{{ .URL }}"><small>Older entries</small><span>Next page »</span></a>{{ end -}}
+    </nav>
+    {{- end }}
+  </div>
+</div>
+{{ end }}

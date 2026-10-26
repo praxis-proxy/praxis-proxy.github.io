@@ -1,0 +1,31 @@
+{{ define "main" }}
+{{- $aiDocs := index hugo.Data.docs_build_versions.products "ai" -}}
+{{- $gridDocs := index hugo.Data.docs_build_versions.products "grid" -}}
+<div class="praxis-home">
+  <section class="home-hero home-hero--control" aria-labelledby="home-title" data-motion-scene>
+    <div class="home-hero__topline"><span>PRAXIS / OPEN SOURCE INFRASTRUCTURE</span><span>PROXY · AI · POLICY · GRID</span></div>
+    <div class="home-hero__heading">
+      <div class="home-hero__copy">
+        <p class="home-hero__eyebrow"><span aria-hidden="true"></span>Built for the traffic ahead</p>
+        <h1 id="home-title"><span class="home-hero__line">Move fast.</span><span class="home-hero__line"><em>Stay in control.</em></span></h1>
+        <p class="home-hero__lede">A programmable proxy for your services. An AI gateway for your agents. Policy controls and multi-site inference routing for Kubernetes.</p>
+        <div class="home-hero__actions">
+          <a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">↗</span></a>
+          <a class="home-hero__secondary" href="{{ printf "ai/%s/" $aiDocs.default | relURL }}">Explore Praxis AI <span aria-hidden="true">→</span></a>
+          <a class="home-hero__secondary project-spotlight__secondary" href="{{ printf "grid/%s/" $gridDocs.default | relURL }}">Explore Praxis Grid <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="home-hero__signature">Rust at the core. YAML in your hands.</p>
+      </div>
+      {{ partial "hero-network.html" . }}
+    </div>
+    <ul class="home-signal-rail" aria-label="Platform capabilities">
+      <li><span class="home-signal-rail__index">01 / SPEED</span><strong>Native Rust execution</strong><span>Configurable pipelines, compiled filters</span></li>
+      <li><span class="home-signal-rail__index">02 / PROXY</span><strong>Your traffic. Your rules.</strong><span>HTTP reverse proxy + TCP forwarding</span></li>
+      <li><span class="home-signal-rail__index">03 / AI</span><strong>Models meet agents</strong><span>Responses, Messages, MCP + A2A</span></li>
+      <li><span class="home-signal-rail__index">04 / SAFETY</span><strong>Boundaries you define</strong><span>Identity, authorization + data controls</span></li>
+    </ul>
+  </section>
+  {{ .Content }}
+  {{ partial "landing-contribution.html" . }}
+</div>
+{{ end }}

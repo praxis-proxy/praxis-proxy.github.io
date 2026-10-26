@@ -1,0 +1,5 @@
+{{- $archived := or .Params.version_archive (eq .Params.version "dev") -}}
+{{- range .Ancestors -}}
+  {{- if or .Params.version_archive (eq .Params.version "dev") -}}{{- $archived = true -}}{{- end -}}
+{{- end -}}
+{{- return $archived -}}

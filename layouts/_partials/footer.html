@@ -1,0 +1,99 @@
+{{- if partial "chrome-render.html" (dict "page" . "region" "footer") -}}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $praxis := index $products "praxis" -}}
+<footer class="praxis-footer">
+  <div class="praxis-footer__inner">
+    <div class="praxis-footer__brand-block">
+      <a class="praxis-footer__brand" href="{{ .Site.Home.RelPermalink }}">
+        <img class="praxis-footer__brand-logo praxis-footer__brand-logo--light" src="{{ "images/branding/horizontal/black/praxis-horizontal-black.svg" | relURL }}" alt="Praxis" width="140" height="55">
+        <img class="praxis-footer__brand-logo praxis-footer__brand-logo--dark" src="{{ "images/branding/horizontal/white/praxis-horizontal-white.svg" | relURL }}" alt="" width="140" height="55" aria-hidden="true">
+      </a>
+      <p class="praxis-footer__summary">Proxy, AI gateway, policy, and multi-site AI routing.</p>
+    </div>
+    <nav class="praxis-footer__group" aria-label="Projects">
+      <h2>Projects</h2>
+      <ul>
+        {{- range $id := slice "praxis" "ai" "policy" "grid" -}}
+          {{- $project := index $products $id -}}
+          <li><a href="{{ printf "%s/%s/" $id $project.default | relURL }}">{{ $project.name }}</a></li>
+        {{- end -}}
+      </ul>
+    </nav>
+    <nav class="praxis-footer__group" aria-label="Documentation">
+      <h2>Documentation</h2>
+      <ul>
+        <li><a href="{{ "guides/first-proxy/" | relURL }}">First proxy tutorial</a></li>
+        {{- range $entry := slice (dict "id" "ai" "source" "docs/quickstart.md" "label" "Praxis AI quickstart") (dict "id" "policy" "source" "docs/content/quickstart.md" "label" "Policy quickstart") (dict "id" "grid" "source" "docs/installation/existing-clusters.md" "label" "Grid Kubernetes installation") -}}
+          {{- $project := index $products $entry.id -}}
+          {{- $pages := where (where (where site.RegularPages "Params.product" $entry.id) "Params.version" $project.default) "Params.source_path" $entry.source -}}
+          {{- with index $pages 0 -}}
+          <li><a href="{{ .RelPermalink }}">{{ $entry.label }}</a></li>
+          {{- else -}}
+            {{- errorf "footer: missing %s for %s default release %s" $entry.source $entry.id $project.default -}}
+          {{- end -}}
+        {{- end -}}
+        <li><a href="{{ printf "praxis/%s/examples/" $praxis.default | relURL }}">Praxis examples</a></li>
+      </ul>
+    </nav>
+    <nav class="praxis-footer__group" aria-label="Community and project">
+      <h2>Community</h2>
+      <ul>
+        <li><a href="{{ "blog/" | relURL }}">Blog</a></li>
+        <li><a href="{{ "community/" | relURL }}">Help and contribute</a></li>
+        {{- with .Site.Params.github_repo }}<li><a href="{{ . }}">Website repository</a></li>{{ end -}}
+        <li><a href="https://github.com/praxis-proxy/enhancements">Ecosystem proposals</a></li>
+        <li><a href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md" rel="noopener noreferrer" target="_blank">Code of Conduct</a></li>
+        <li><a href="https://www.linuxfoundation.org/privacy" rel="noopener noreferrer" target="_blank">Privacy Policy</a></li>
+      </ul>
+    </nav>
+    <div class="praxis-footer__group praxis-footer__social-block">
+      <h2>Social</h2>
+      <div class="praxis-footer__socials" role="navigation" aria-label="Social links">
+        <div class="praxis-footer__socials-row">
+          <a href="https://github.com/praxis-proxy/praxis" rel="noopener noreferrer" target="_blank" aria-label="GitHub">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--light" src="{{ "images/social/github-mark.svg" | relURL }}" alt="" width="22" height="22">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--dark" src="{{ "images/social/github-mark-white.svg" | relURL }}" alt="" width="22" height="22">
+          </a>
+          <a href="https://cloud-native.slack.com/archives/C0BK0RSP5RC" rel="noopener noreferrer" target="_blank" aria-label="Slack">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--light" src="{{ "images/social/slack-mark.svg" | relURL }}" alt="" width="22" height="22">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--dark" src="{{ "images/social/slack-mark-white.svg" | relURL }}" alt="" width="22" height="22">
+          </a>
+          <a href="https://x.com/_praxis_ai" rel="noopener noreferrer" target="_blank" aria-label="X">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--light" src="{{ "images/social/x-mark.svg" | relURL }}" alt="" width="22" height="22">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--dark" src="{{ "images/social/x-mark-white.svg" | relURL }}" alt="" width="22" height="22">
+          </a>
+          <a href="https://www.linkedin.com/company/praxis-proxy/" rel="noopener noreferrer" target="_blank" aria-label="LinkedIn">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--light" src="{{ "images/social/linkedin-mark.svg" | relURL }}" alt="" width="22" height="22">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--dark" src="{{ "images/social/linkedin-mark-white.svg" | relURL }}" alt="" width="22" height="22">
+          </a>
+          <a href="https://bsky.app/profile/praxis.fast" rel="noopener noreferrer" target="_blank" aria-label="Bluesky">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--light" src="{{ "images/social/bluesky-mark.svg" | relURL }}" alt="" width="22" height="22">
+            <img class="praxis-footer__social-icon praxis-footer__social-icon--dark" src="{{ "images/social/bluesky-mark-white.svg" | relURL }}" alt="" width="22" height="22">
+          </a>
+        </div>
+        <div class="praxis-footer__cncf-badge">
+          <img src="{{ "images/cncf/CNCF-logo.svg" | relURL }}" alt="" width="48" height="48">
+          <span>Praxis is a CNCF Sandbox project</span>
+        </div>
+        <p class="praxis-footer__socials-cta">
+          <a class="praxis-footer__slack-cta" href="https://slack.cncf.io" rel="noopener noreferrer" target="_blank">Join our Slack</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="praxis-footer__bottom">
+    <a class="praxis-footer__cncf-wordmark" href="https://www.cncf.io/" rel="noopener noreferrer" target="_blank">
+      <img class="praxis-footer__cncf-wordmark-img praxis-footer__cncf-wordmark-img--light" src="{{ "images/cncf/cncf-color.svg" | relURL }}" alt="Cloud Native Computing Foundation" width="240" height="40">
+      <img class="praxis-footer__cncf-wordmark-img praxis-footer__cncf-wordmark-img--dark" src="{{ "images/cncf/cncf-white.png" | relURL }}" alt="" width="240" height="40">
+    </a>
+    <p class="praxis-footer__copyright">
+      Copyright Praxis a Series of LF Projects, LLC. Apache 2.0 License.<br>
+      We are a Cloud Native Computing Foundation sandbox project.<br>
+      For website terms of use, trademark policy and other project policies please see
+      <a href="https://lfprojects.org/policies/" rel="noopener noreferrer" target="_blank">https://lfprojects.org/policies/</a>
+    </p>
+  </div>
+</footer>
+{{- else -}}
+<div class="td-chrome-placeholder" data-chrome-donor="{{ .Site.Home.RelPermalink }}" data-chrome-region="footer"></div>
+{{- end -}}

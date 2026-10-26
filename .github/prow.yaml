@@ -1,0 +1,96 @@
+# Prow configuration for this repository. Every key under `labels` is a
+# /<key> command; the label-sync job creates these labels. Reference:
+# https://github.com/cncf/prow-github-actions/blob/main/docs/configuration.md
+#
+# The merge gate is strict: a pull request needs both /lgtm and /approve from
+# the root OWNERS file (reviewers can /lgtm, approvers can issue both) and no
+# do-not-merge/*, needs-rebase or hold label. Soften later by setting
+# approve.lgtm_acts_as_approve to true. Prow does not merge yet: a maintainer
+# merges once the gate is satisfied (see tide below and issue #25).
+#
+# Upstream behavior, accepted: anyone can lift a hold (/unhold), and a hand
+# applied lgtm label from someone with triage access or above is bound to the
+# head commit without an OWNERS check. Branch protection on the prow/lgtm
+# status is what enforces the reviewed commit at merge time.
+
+labels:
+  # /kind <value>; multiple kind labels are allowed. Dependabot pull requests
+  # arrive pre-labeled kind/dependencies (.github/dependabot.yml).
+  kind:
+    - name: bug
+      color: e11d21
+      description: Categorizes issue or PR as related to a bug.
+    - name: cleanup
+      color: c5def5
+      description: Categorizes issue or PR as related to cleaning up code, process, or technical debt.
+    - name: dependencies
+      color: 0366d6
+      description: Categorizes issue or PR as related to dependency updates.
+    - name: documentation
+      color: c7def8
+      description: Categorizes issue or PR as related to documentation.
+    - name: feature
+      color: c7def8
+      description: Categorizes issue or PR as related to a new feature.
+
+  # /lifecycle <value>; a later /lifecycle replaces the current one
+  lifecycle:
+    values:
+      - name: frozen
+        color: d3e2f0
+        description: Indicates that an issue or PR should not be auto-closed due to staleness.
+      - name: stale
+        color: '795548'
+        description: Denotes an issue or PR has remained open with no activity and has become stale.
+      - name: rotten
+        color: '604460'
+        description: Denotes an issue or PR that has aged beyond stale and will be auto-closed.
+    exclusive: true
+
+  # the merge gate's deny list; /hold applies do-not-merge/hold
+  do-not-merge:
+    - name: hold
+      color: e11d21
+      description: Indicates that a PR should not merge because someone has issued a /hold command.
+    - name: work-in-progress
+      color: e11d21
+      description: Indicates that a PR should not merge because it is a work in progress.
+
+# nudge toward a kind label; advisory, it does not block merging. Dependabot
+# pull requests arrive pre-labeled. The weekly update-docs pull request fires
+# no events, so it is nudged by the five-minute sweep, not on creation.
+require_matching_label:
+  - regexp: ^kind/
+    missing_label: needs-kind
+    issues: true
+    prs: true
+    missing_comment: Please add a kind label with /kind <value> (bug, cleanup, dependencies, documentation, feature).
+
+# the merge gate; with the root OWNERS file, lgtm and approved come from people
+# listed there. Prow merges nothing yet: a merge made with github.token fires
+# no push event, so Publish Pages would not run. The action has no off switch
+# (merge_on_events: false only stops the event handlers; the cron still
+# merges), so the gate requires a label nothing ever applies. Remove it, and
+# restore contents: write in prow.yml, when the praxis-bot token lands (#25).
+tide:
+  labels: [lgtm, approved, prow/merge-enabled]
+  missing_labels: [do-not-merge/*, needs-rebase, hold]
+  merge_method: merge
+
+# request one reviewer per pull request from the OWNERS file, by coverage of
+# the changed files; drafts and Dependabot are skipped
+blunderbuss:
+  request_count: 1
+  ignore_drafts: true
+  ignore_authors: ['dependabot[bot]']
+
+# /lgtm records the reviewed commit as a prow/lgtm commit status and merges
+# only while the head still carries it (why the workflow grants statuses:
+# write). Approvers implicitly approve their own pull requests, but nobody
+# can /lgtm their own.
+lgtm:
+  bind_to_commit: true
+
+approve:
+  lgtm_acts_as_approve: false
+  require_self_approval: false

@@ -1,0 +1,9 @@
+{{- if not .Params.notoc -}}
+  {{- $toc := .TableOfContents -}}
+  {{- if and $toc (ne $toc `<nav id="TableOfContents"></nav>`) -}}
+<details class="docs-mobile-toc d-xl-none">
+  <summary>On this page</summary>
+  {{ replace $toc `id="TableOfContents"` `id="MobileTableOfContents"` | safeHTML }}
+</details>
+  {{- end -}}
+{{- end -}}

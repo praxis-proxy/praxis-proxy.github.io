@@ -23,10 +23,14 @@ jobs:
     steps:
       - name: Generate token
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.PRAXIS_BOT_APP_ID }}
           private-key: ${{ secrets.PRAXIS_BOT_APP_PRIVATE_KEY }}
+          # Scope the installation token to only what the triage steps need
+          # (gh issue edit --add-label/--remove-label) so it does not inherit
+          # the app's blanket installation permissions.
+          permission-issues: write
 
       - name: Add triage/needs-triage on new issue
         if: github.event.action == 'opened' && !github.event.issue.milestone

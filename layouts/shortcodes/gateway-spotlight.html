@@ -1,0 +1,35 @@
+{{- $docs := index hugo.Data.docs_build_versions.products "ai" -}}
+<section class="home-section project-spotlight project-spotlight--ai" aria-labelledby="gateway-title" data-motion-scene>
+  <div class="project-spotlight__inner">
+    <div class="project-spotlight__copy">
+      <p class="home-section__eyebrow">02 / PRAXIS AI · AGENT WORKFLOWS</p>
+      <h2 id="gateway-title">Your AI.<br><em>In full flow.</em></h2>
+      <p>Bring Codex, Claude Code, or your application to a gateway for supported OpenAI Responses and Anthropic Messages flows. Compose filters for model mapping, conversation state, tool calls, and guardrails around your chosen backends.</p>
+      <div class="project-spotlight__actions">
+        <a class="project-spotlight__link" href="{{ printf "ai/%s/" $docs.default | relURL }}">Explore Praxis AI docs <span aria-hidden="true">↗</span></a>
+        <a class="project-spotlight__secondary" href="{{ "ai/container-quickstart/" | relURL }}">Run Praxis AI <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="project-spotlight__visual project-bento project-bento--ai">
+      <figure class="project-spotlight__feature ai-flow">
+        <div class="project-spotlight__visual-header"><span>ONE GATEWAY</span><span>CLIENTS → BACKENDS</span></div>
+        <ol class="ai-flow__path">
+          <li><small>01 / CLIENTS</small><strong>Codex · Claude Code · apps</strong><span>Send supported API requests</span></li>
+          <li><small>02 / PRAXIS AI</small><strong>Compose the AI filter pipeline</strong><span>Map models · manage state · call tools · apply guardrails</span></li>
+          <li><small>03 / BACKENDS</small><strong>Your models and tools</strong><span>Route to configured providers and integrations</span></li>
+        </ol>
+        <figcaption>Capabilities depend on the filters, build features, and backend integrations you configure.</figcaption>
+      </figure>
+      <div class="project-spotlight__tile ai-flow__api">
+        <span class="project-spotlight__tile-label">INTERFACE / 01</span>
+        <h3>OpenAI Responses</h3>
+        <code>POST /v1/responses</code>
+      </div>
+      <div class="project-spotlight__tile ai-flow__api">
+        <span class="project-spotlight__tile-label">INTERFACE / 02</span>
+        <h3>Anthropic Messages</h3>
+        <code>POST /v1/messages</code>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+{{- $products := hugo.Data.docs_build_versions.products -}}
+<div class="example-index">
+{{- range $i, $id := slice "praxis" "ai" "policy" "grid" -}}
+  {{- $project := index $products $id -}}
+  {{- $pages := where (where site.RegularPages "Params.product" $id) "Params.version" $project.default -}}
+  {{- $examples := where $pages "Params.example_category" "!=" nil -}}
+  {{- $featured := sort (where $examples "Params.example_featured" true) "Params.example_order" -}}
+  <section class="example-index__section" aria-labelledby="examples-{{ $id }}">
+    <div class="example-index__head">
+      <span class="example-index__eyebrow" aria-hidden="true">{{ printf "%02d" (add $i 1) }}</span>
+      <h2 class="example-index__title" id="examples-{{ $id }}">{{ $project.name }}</h2>
+      <span class="example-index__meta">Selected documentation: {{ $project.default }}{{ with len $examples }} &middot; {{ . }} example{{ if ne . 1 }}s{{ end }}{{ end }}</span>
+    </div>
+    {{- if $featured -}}
+    <ul class="example-index__list">
+      {{- range $page := first 6 $featured -}}
+      {{- $task := $page.Params.example_task | default $page.Title -}}
+      <li class="example-index__row">
+        <a class="example-index__link" href="{{ $page.RelPermalink }}">
+          <span class="example-index__name">{{ $task }}</span>
+          {{- with $page.Description }}<span class="example-index__sep" aria-hidden="true">&middot;</span><span class="example-index__desc">{{ . }}</span>{{ end }}
+        </a>
+      </li>
+      {{- end -}}
+    </ul>
+    <p class="example-index__browse"><a href="{{ printf "%s/%s/examples/" $id $project.default | relURL }}">Browse all {{ $project.name }} examples <span aria-hidden="true">&rarr;</span></a></p>
+    {{- else if eq $id "policy" -}}
+    <p>Start with the policy quickstart and its included authorization and redaction scenario.</p>
+    {{- $start := index (where $pages "Params.source_path" "docs/content/quickstart.md") 0 -}}
+    {{- with $start }}<p class="example-index__browse"><a href="{{ .RelPermalink }}">Follow the Policy quickstart <span aria-hidden="true">&rarr;</span></a></p>{{ end -}}
+    {{- else if eq $id "grid" -}}
+    <p>Browse Grid's versioned Helm and gateway source examples.</p>
+    <p class="example-index__browse"><a href="{{ printf "%s/%s/examples/" $id $project.default | relURL }}">Browse all {{ $project.name }} examples <span aria-hidden="true">&rarr;</span></a></p>
+    {{- else -}}
+    <p>Browse the versioned {{ $project.name }} example files.</p>
+    <p class="example-index__browse"><a href="{{ printf "%s/%s/examples/" $id $project.default | relURL }}">Browse all {{ $project.name }} examples <span aria-hidden="true">&rarr;</span></a></p>
+    {{- end -}}
+  </section>
+{{- end -}}
+</div>

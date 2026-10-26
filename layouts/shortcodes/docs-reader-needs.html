@@ -1,0 +1,29 @@
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $order := slice "praxis" "ai" "policy" "grid" -}}
+{{- $needs := slice "How-to" "Tutorial" "Reference" "Explanation" -}}
+{{- $labels := dict "Tutorial" "Learn by following a guided example." "How-to" "Complete a concrete configuration or operations task." "Reference" "Look up exact options, filters, and language details." "Explanation" "Understand architecture, security, and design choices." -}}
+{{- $anchors := dict "Tutorial" "tutorials" "How-to" "how-to-guides" "Reference" "reference" "Explanation" "explanation" -}}
+{{- range $need := $needs -}}
+<section class="docs-need-section" aria-labelledby="{{ index $anchors $need }}">
+  <h2 id="{{ index $anchors $need }}">{{ if eq $need "How-to" }}How-to guides{{ else }}{{ $need }}{{ end }}</h2>
+  <p>{{ index $labels $need }}</p>
+  <div class="docs-need-products">
+    {{- range $id := $order -}}
+      {{- $product := index $products $id -}}
+      {{- $pages := where (where (where site.RegularPages "Params.product" $id) "Params.version" $product.default) "Params.reader_need" $need -}}
+      {{- $pages = where $pages "Params.topic" "ne" "Examples" -}}
+      {{- $pages = first 3 (sort $pages "Params.order") -}}
+      {{- if gt (len $pages) 0 -}}
+      <section class="docs-need-product" aria-label="{{ $product.name }} {{ $need }} documents">
+        <h3><a href="{{ printf "%s/" $id | relURL }}">{{ $product.name }}</a></h3>
+        <ul>
+          {{- range $pages -}}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}</li>
+          {{- end -}}
+        </ul>
+      </section>
+      {{- end -}}
+    {{- end -}}
+  </div>
+</section>
+{{- end -}}

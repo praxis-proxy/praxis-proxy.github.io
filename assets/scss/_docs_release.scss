@@ -1,0 +1,100 @@
+.praxis-release-home { padding-top: .25rem; }
+.praxis-release-hero {
+  --release-bg: #edf0ff;
+  --release-glow: #c9c2ff99;
+  --release-border: #c9cdf0;
+  --release-text: #182230;
+  --release-accent: #4338ca;
+  --release-summary: #45526b;
+  --release-button: #4338ca;
+  --release-button-hover: #3730a3;
+  --release-button-text: #fff;
+  --release-link: #27335a;
+  --release-link-underline: #8279dd;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: clamp(26rem, 44vw, 33rem);
+  align-items: center;
+  margin: 0 0 clamp(2rem, 4vw, 3.5rem);
+  padding: clamp(2rem, 5vw, 4rem);
+  overflow: hidden;
+  border: 1px solid var(--release-border);
+  border-radius: .65rem;
+  background: radial-gradient(ellipse at 87% 49%, var(--release-glow), transparent 57%), var(--release-bg);
+  color: var(--release-text);
+}
+[data-bs-theme='dark'] .praxis-release-hero {
+  --release-bg: #101625;
+  --release-glow: #342b7559;
+  --release-border: #353d60;
+  --release-text: #f6f7ff;
+  --release-accent: #bcb4ff;
+  --release-summary: #c5cde0;
+  --release-button: #bcb4ff;
+  --release-button-hover: #d3ceff;
+  --release-button-text: #111528;
+  --release-link: #e9edff;
+  --release-link-underline: #7379a9;
+}
+.praxis-release-hero::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, var(--release-bg) 3%, color-mix(in srgb, var(--release-bg) 91%, transparent) 45%, color-mix(in srgb, var(--release-bg) 13%, transparent) 100%);
+  content: '';
+  pointer-events: none;
+}
+.praxis-release-hero__waves { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; opacity: .82; pointer-events: none; }
+[data-bs-theme='light'] .praxis-release-hero__waves stop { stop-color: #4338ca; }
+.praxis-release-hero__content { position: relative; z-index: 1; max-width: 41rem; }
+.praxis-release-hero__eyebrow { margin: 0 0 clamp(2rem, 5vw, 4rem); color: var(--release-accent); font: .69rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .13em; }
+.praxis-release-home .praxis-release-hero h1 { margin: 0; color: var(--release-text); font-size: clamp(3rem, 5vw, 4.65rem); font-weight: 600; letter-spacing: -.065em; line-height: 1.06; text-wrap: balance; }
+.praxis-release-hero h1 em { color: var(--release-accent); font-style: normal; }
+.praxis-release-hero__summary { max-width: 43ch; margin: 1.4rem 0 0; color: var(--release-summary); font-size: clamp(1rem, 1.35vw, 1.1rem); line-height: 1.6; }
+.praxis-release-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: 2rem; }
+.praxis-release-hero__actions .btn-primary { --bs-btn-color: var(--release-button-text); --bs-btn-bg: var(--release-button); --bs-btn-border-color: var(--release-button); --bs-btn-hover-color: var(--release-button-text); --bs-btn-hover-bg: var(--release-button-hover); --bs-btn-hover-border-color: var(--release-button-hover); min-height: 46px; padding-inline: 1rem; font-weight: 600; }
+.praxis-release-hero__actions .btn span { padding-left: .3rem; }
+.praxis-release-hero__browse { color: var(--release-link); font-size: .9rem; font-weight: 600; text-decoration: underline; text-decoration-color: var(--release-link-underline); text-underline-offset: .35rem; }
+.praxis-release-hero__browse:hover { color: var(--release-accent); }
+.praxis-release-hero__browse span { padding-left: .3rem; }
+.praxis-release-hero :focus-visible { outline: 3px solid var(--release-accent); outline-offset: 3px; }
+.praxis-release-index { scroll-margin-top: 6rem; }
+.praxis-release-index__topline { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; padding-bottom: .9rem; border-bottom: 1px solid var(--praxis-border); color: var(--praxis-muted); font: .7rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+.praxis-release-index__topline span:first-child { color: var(--praxis-accent); }
+.praxis-release-index .docs-version-control { display: grid; grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem); gap: 1rem; margin: 1.5rem 0 2rem; padding: 1rem 1.25rem; border: 1px solid var(--praxis-border); border-radius: .45rem; background: var(--praxis-panel); }
+.praxis-release-index .docs-version-control label { align-self: center; margin: 0; font-size: .88rem; }
+.praxis-release-index .docs-version-control select { width: 100%; min-height: 44px; padding-inline: .7rem; border: 1px solid var(--praxis-border); border-radius: .3rem; background-color: var(--praxis-bg); color: var(--praxis-text); }
+.praxis-release-index > p { max-width: 68ch; color: var(--praxis-muted); font-size: 1rem; line-height: 1.7; }
+.praxis-release-index > h2 { margin: clamp(3rem, 5vw, 4rem) 0 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--praxis-border); font-size: clamp(1.6rem, 2.5vw, 2rem); letter-spacing: -.04em; }
+.praxis-release-index > h2 + ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: 0; padding: 0; list-style: none; }
+.praxis-release-index > h2 + ul li { min-width: 0; max-width: none; margin: 0; padding: 1rem 1.1rem; border: 1px solid var(--praxis-border); border-radius: .4rem; background: var(--praxis-panel); color: var(--praxis-muted); font-size: .9rem; line-height: 1.55; }
+.praxis-release-index > h2 + ul li a { color: var(--praxis-text); font-weight: 600; text-decoration: none; }
+.praxis-release-index > h2 + ul li a:hover { color: var(--praxis-accent); text-decoration: underline; text-underline-offset: .2em; }
+.praxis-release-index > h2:first-of-type + ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.praxis-release-index > h2:first-of-type + ul li { padding: 0; border-top: 2px solid var(--praxis-accent); }
+.praxis-release-index > h2:first-of-type + ul li a { display: flex; min-height: 4.5rem; align-items: center; justify-content: space-between; gap: .5rem; padding: 1rem 1.1rem; }
+.praxis-release-index > h2:first-of-type + ul li a::after { content: '↗'; color: var(--praxis-accent); font-weight: 400; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .praxis-release-hero__wave { transform-box: fill-box; transform-origin: center; }
+  .praxis-release-hero__wave--back { animation: praxis-docs-wave-back 13s ease-in-out infinite alternate; }
+  .praxis-release-hero__wave--front { animation: praxis-docs-wave-front 9s ease-in-out infinite alternate; }
+  .praxis-release-hero__wave { animation-play-state: var(--motion-play, var(--scene-play, running)); }
+}
+@keyframes praxis-docs-wave-back { from { transform: translate3d(-2%, 2%, 0); } to { transform: translate3d(3%, -3%, 0); } }
+@keyframes praxis-docs-wave-front { from { transform: translate3d(3%, -2%, 0); } to { transform: translate3d(-3%, 2%, 0); } }
+
+@media (max-width: 900px) {
+  .praxis-release-index > h2:first-of-type + ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767.98px) {
+  .praxis-release-hero { min-height: 0; padding: 2rem 1.5rem 2.5rem; }
+  .praxis-release-hero::after { background: linear-gradient(90deg, color-mix(in srgb, var(--release-bg) 92%, transparent), color-mix(in srgb, var(--release-bg) 67%, transparent)); }
+  .praxis-release-hero__waves { width: 150%; left: -25%; opacity: .53; }
+  .praxis-release-hero__eyebrow { margin-bottom: 2rem; font-size: .62rem; }
+  .praxis-release-home .praxis-release-hero h1 { font-size: clamp(2.55rem, 9vw, 3.75rem); }
+  .praxis-release-hero__actions { gap: 1rem; }
+  .praxis-release-index .docs-version-control { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+  .praxis-release-index > h2 + ul, .praxis-release-index > h2:first-of-type + ul { grid-template-columns: minmax(0, 1fr); }
+}
