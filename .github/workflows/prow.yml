@@ -89,7 +89,7 @@ jobs:
       # binding lgtm to the reviewed commit (prow/lgtm commit status)
       statuses: write
     steps:
-      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+      - uses: cncf/prow-github-actions@ed3bb424a5475f42b5d699048faa4a469a68b9ef # v3.4.0
         with:
           github-token: ${{ github.token }}
           # remove- aliases (/remove-kind, /unhold, ...) come with their base
@@ -120,7 +120,7 @@ jobs:
       # re-running failed workflow runs on the head commit
       actions: write
     steps:
-      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+      - uses: cncf/prow-github-actions@ed3bb424a5475f42b5d699048faa4a469a68b9ef # v3.4.0
         with:
           github-token: ${{ github.token }}
           prow-commands: /retest /test /ok-to-test
@@ -144,7 +144,7 @@ jobs:
       # approving held workflow runs for ok-to-test pull requests
       actions: write
     steps:
-      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+      - uses: cncf/prow-github-actions@ed3bb424a5475f42b5d699048faa4a469a68b9ef # v3.4.0
         with:
           github-token: ${{ github.token }}
           jobs: sweep lgtm
@@ -159,7 +159,7 @@ jobs:
       # creating labels
       issues: write
     steps:
-      - uses: cncf/prow-github-actions@187c5e3cd95a329c43448e1bdb3b1f5249232e44 # v3.0.1
+      - uses: cncf/prow-github-actions@ed3bb424a5475f42b5d699048faa4a469a68b9ef # v3.4.0
         with:
           github-token: ${{ github.token }}
           jobs: label-sync
