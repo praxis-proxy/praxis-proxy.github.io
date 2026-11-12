@@ -1195,7 +1195,7 @@ def add_example_frontmatter(lines: list[str], values: dict) -> None:
 def frontmatter(values: dict) -> str:
     lines = ["+++", f"title = {quote_toml(values['title'])}", 'type = "docs"']
     for key in ("weight", "order", "product", "version", "version_label", "source_commit", "source_repo",
-                "source_path", "issue_url", "reader_need", "topic", "summary", "edit_url", "github_repo",
+                "source_path", "issue_url", "reader_need", "navigation_section", "topic", "summary", "edit_url", "github_repo",
                 "github_branch", "github_subdir", "github_project_repo", "description"):
         if key in values and values[key] is not None:
             value = values[key]
@@ -1391,6 +1391,7 @@ def page_metadata(product: str, source_path: str, original: str, navigation: dic
         **({"title": product_navigation["source_start_label"]}
            if source_path == product_navigation.get("start") and product_navigation.get("source_start_label") else {}),
         "reader_need": need,
+        "navigation_section": override.get("navigation_section", "extend" if "/developing/" in source_path else {"Tutorial": "start", "How-to": "configure", "Explanation": "understand"}.get(need, "reference")),
         "topic": override.get("topic") or fallback_topic(source_path),
         "order": override.get("order", 100),
         "summary": summary,
@@ -1402,8 +1403,15 @@ def validate_navigation(source_catalog: dict, navigation: dict) -> None:
     for product, config in source_catalog["products"].items():
         product_navigation = navigation.get("products", {}).get(product, {})
         articles = product_navigation.get("articles", {})
-        if product_navigation.get("groups") != list(ARTICLE_NEEDS):
-            raise RuntimeError(f"{product} docs navigation must list the four reader-need groups in order")
+        section_ids = {section["id"] for section in navigation["sections"]}
+        for source_path, metadata in articles.items():
+            if metadata.get("navigation_section") not in section_ids:
+                raise RuntimeError(f"{product}:{source_path} has an invalid navigation section")
+        for step in product_navigation.get("journey", []):
+            if bool(step.get("page")) == bool(step.get("source")):
+                raise RuntimeError(f"{product} journey step needs exactly one page or source target")
+            if step.get("source") and step["source"] not in articles:
+                raise RuntimeError(f"{product} journey source is not classified: {step['source']}")
         if product_navigation.get("start") not in articles:
             raise RuntimeError(f"{product} docs navigation start path is not classified")
         selected = {
@@ -1553,6 +1561,7 @@ def check_example_catalog_adapter() -> None:
 
 
 def check_adapter() -> None:
+    assert page_metadata("ai", "docs/developing/new-tool.md", "# New tool\n\nContributor tooling setup.", {})["navigation_section"] == "extend"
     start_metadata = page_metadata("ai", "docs/quickstart.md", "# Quickstart\n\nBuild the release binary.",
                                    {"products": {"ai": {"start": "docs/quickstart.md", "source_start_label": "Build from source"}}})
     assert start_metadata["title"] == "Build from source"
@@ -1779,7 +1788,10 @@ def prepare(mode: str) -> None:
                         "source_commit": sha, "version_archive": version != default_release,
                     },
                 }
-                shortcode = "{{< docs-version >}}\n\n{{< docs-mobile-toc >}}\n\n"
+                overview = source_rel == navigation["products"][product]["overview"]
+                shortcode = "{{< docs-version >}}\n\n" + ("{{< docs-journey >}}\n\n" if overview else "{{< docs-mobile-toc >}}\n\n")
+                if overview:
+                    page_body = '<details id="source-index" class="docs-source-index"><summary>Full source documentation index</summary>\n\n' + page_body + '\n\n</details>'
                 destination.write_text(
                     frontmatter(metadata) + shortcode + page_body
                     + "\n\n{{< docs-source-links >}}\n\n{{< docs-related >}}\n",
@@ -1877,7 +1889,10 @@ def prepare(mode: str) -> None:
                     "preview_dirty": bool(dev_status),
                 },
             }
-            shortcode = "{{< docs-version >}}\n\n{{< docs-mobile-toc >}}\n\n"
+            overview = source_rel == navigation["products"][product]["overview"]
+            shortcode = "{{< docs-version >}}\n\n" + ("{{< docs-journey >}}\n\n" if overview else "{{< docs-mobile-toc >}}\n\n")
+            if overview:
+                page_body = '<details id="source-index" class="docs-source-index"><summary>Full source documentation index</summary>\n\n' + page_body + '\n\n</details>'
             destination.write_text(
                 frontmatter(metadata) + shortcode + page_body
                 + "\n\n{{< docs-source-links >}}\n\n{{< docs-related >}}\n",
@@ -1893,7 +1908,7 @@ def prepare(mode: str) -> None:
               + (" (tracking {})".format(edit_branch) if archive_dev else ""))
 
     (DATA_OUT / "docs_build_versions.json").write_text(
-        json.dumps({"products": products_out}, indent=2) + "\n", encoding="utf-8"
+        json.dumps({"products": products_out, "preview": mode == "serve"}, indent=2) + "\n", encoding="utf-8"
     )
     (DATA_OUT / "docs_sources.json").write_text(json.dumps(source_map, indent=2) + "\n", encoding="utf-8")
     write_example_coverage_report(source_catalog, example_coverage)

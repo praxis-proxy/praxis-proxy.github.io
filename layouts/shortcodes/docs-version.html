@@ -36,6 +36,6 @@
   {{- if $page.Params.version_archive }}
   <aside class="docs-version-banner" role="note">Archived documentation for {{ $page.Params.version_label }}. <a href="{{ printf "%s/%s/" $productID $product.default | relURL }}">View the default release</a>.</aside>
   {{- else if eq $version "dev" }}
-  <aside class="docs-version-banner" role="note">Unreleased development documentation at commit {{ $page.Params.source_commit }}{{ if $page.Params.preview_dirty }} (local changes included){{ end }}. It tracks upstream work and may change before any release. <a href="{{ printf "%s/%s/" $productID $product.default | relURL }}">View the default release</a>.</aside>
+  <aside class="docs-version-banner" role="note">Unreleased development documentation at commit <abbr title="{{ $page.Params.source_commit }}">{{ printf "%.12s" $page.Params.source_commit }}</abbr>{{ if $page.Params.preview_dirty }} (local changes included){{ end }}. It tracks upstream work and may change before any release. <a href="{{ printf "%s/%s/" $productID $product.default | relURL }}">View the default release</a>.</aside>
   {{- end -}}
 {{- end -}}

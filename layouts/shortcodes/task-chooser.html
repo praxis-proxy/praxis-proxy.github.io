@@ -3,14 +3,18 @@
 {{- $order := slice "praxis" "ai" "policy" "grid" -}}
 {{- $titles := dict "praxis" "Run an HTTP or TCP proxy" "ai" "Send requests to AI services" "policy" "Control access to tools and data" "grid" "Route inference across Kubernetes sites" -}}
 {{- $descriptions := dict "praxis" "Choose where requests go and add header or security rules with built-in filters." "ai" "Route model and agent traffic through a gateway connected to AI providers." "policy" "Decide who can do what, pass identity between services, and limit data exposure." "grid" "Discover inference providers across Kubernetes sites and publish routing state for Praxis AI gateways." -}}
-{{- $prerequisites := dict "praxis" "Docker Engine and curl. The first proxy tutorial forwards a request to a local backend." "ai" "Docker Engine, curl, and an OpenAI API key for requests to the live provider." "policy" "Requires Rust 1.92 or newer (install with rustup; the repository pins its toolchain). The quickstart walks through its included authorization and redaction scenario." "grid" "Review the technical-preview scope and installation requirements for the Kubernetes clusters you plan to connect." -}}
+{{- $prerequisites := dict "praxis" "Docker Engine with Linux AMD64 support (native or emulated), and curl. The first proxy tutorial forwards a request to a local backend." "ai" "Docker Engine with Linux AMD64 support (native or emulated), curl, and an OpenAI API key for requests to the live provider." "policy" "Rust and a host application. This path embeds the library; gateway policy integration belongs to the host project’s documentation." "grid" "Review the technical-preview scope and installation requirements for the Kubernetes clusters you plan to connect." -}}
 {{- $showPrerequisites := eq (.Get "prerequisites") "true" -}}
 <section class="home-section home-tasks" aria-labelledby="task-chooser-title">
+  {{- if ne (.Get "compact") "true" -}}
   <div class="home-section__heading">
     <p class="home-section__eyebrow">Choose by task</p>
-    <h2 id="task-chooser-title">Build the path you need.</h2>
-    <p>Start with a proxy. Add AI capabilities or policy enforcement as your system grows.</p>
+    <h2 id="task-chooser-title">Choose your starting path.</h2>
+    <p>Choose a project directly. AI gateway setup does not require completing the core proxy tutorial.</p>
   </div>
+  {{- else -}}
+  <h2 id="task-chooser-title" class="visually-hidden">Choose your starting path</h2>
+  {{- end -}}
   <div class="task-grid">
   {{- range $id := $order -}}
     {{- $product := index $products $id -}}
@@ -36,17 +40,8 @@
       {{- else -}}{{- with index $startPages 0 -}}
       <a class="task-card__action" href="{{ .RelPermalink }}">Get started: {{ .Title }} <span aria-hidden="true">→</span></a>
       {{- end -}}{{- end -}}
-      {{- $tutorialPages := sort (where $productPages "Params.reader_need" "Tutorial") "Params.order" -}}
-      {{- with index $tutorialPages 0 -}}
-        {{- if ne .RelPermalink $startHref -}}
-        {{- if eq $id "praxis" -}}
-        <p class="task-card__secondary"><a href="{{ "guides/use-filters/" | relURL }}">Configure built-in filters</a></p>
-        <p class="task-card__secondary"><a href="{{ .RelPermalink }}">Developer tutorial: {{ .Title }}</a></p>
-        {{- else -}}
-        <p class="task-card__secondary"><a href="{{ .RelPermalink }}">Tutorial: {{ .Title }}</a></p>
-        {{- end -}}
-        {{- end -}}
-      {{- end -}}
+      {{- if $nav.development_summary }}<p class="task-card__secondary"><a href="{{ partial "docs-start.html" (dict "product" $id "version" "dev") }}">New onboarding · Development (unreleased)</a></p>{{ end -}}
+      <p class="task-card__secondary"><a href="{{ printf "%s/%s/" $id $product.default | relURL }}">Browse {{ $product.name }} documentation · {{ $product.default }}</a></p>
     </article>
   {{- end -}}
   </div>

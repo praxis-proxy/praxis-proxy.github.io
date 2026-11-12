@@ -22,6 +22,7 @@
     <nav class="praxis-footer__group" aria-label="Documentation">
       <h2>Documentation</h2>
       <ul>
+        <li><a href="{{ "docs/" | relURL }}">Start with a task</a></li>
         <li><a href="{{ partial "docs-start.html" (dict "product" "praxis") }}">First proxy tutorial</a></li>
         <li><a href="{{ partial "docs-start.html" (dict "product" "ai") }}">Praxis AI quickstart</a></li>
         {{- range $entry := slice (dict "id" "policy" "source" "docs/content/quickstart.md" "label" "Policy quickstart") (dict "id" "grid" "source" "docs/installation/existing-clusters.md" "label" "Grid Kubernetes installation") -}}

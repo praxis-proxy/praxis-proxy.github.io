@@ -1,0 +1,23 @@
+{{- $project := index hugo.Data.docs_build_versions.products .product -}}
+{{- $navigation := index hugo.Data.docs_navigation.products .product -}}
+{{- $version := .version | default $project.default -}}
+{{- $steps := slice -}}
+{{- range $navigation.journey -}}
+  {{- if and (or (not .default_only) (eq $version $project.default)) (or (not .non_default_only) (ne $version $project.default)) (or (not .versions) (in .versions $version)) -}}
+    {{- $target := false -}}
+    {{- if .page -}}
+      {{- $target = site.GetPage .page -}}
+    {{- else -}}
+      {{- $matches := where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .source -}}
+      {{- with index $matches 0 }}{{ $target = . }}{{ end -}}
+    {{- end -}}
+    {{- if $target -}}
+      {{- $steps = $steps | append (dict "title" .title "summary" .summary "href" $target.RelPermalink) -}}
+    {{- else if and hugo.Data.docs_build_versions.preview .optional_in_preview -}}
+      {{- warnf "Local source checkout omits journey step %q in %s/%s" .title $.product $version -}}
+    {{- else -}}
+      {{- errorf "Missing journey step %q in %s/%s" .title $.product $version -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $steps -}}

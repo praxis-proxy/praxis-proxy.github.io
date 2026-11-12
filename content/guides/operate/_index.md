@@ -1,4 +1,6 @@
 +++
+topic = "Operations"
+navigation_section = "operate"
 title = "Configure and operate Praxis"
 description = "Find release-specific guidance for routing, TLS, security, health, observability, and reloads."
 type = "guides"

@@ -1,4 +1,5 @@
 +++
+navigation_section = "start"
 title = "Install and run Praxis"
 description = "Install Praxis and send a request through your first proxy."
 type = "guides"
@@ -14,10 +15,12 @@ Praxis {{< product-release product="praxis" />}} is the current default document
 
 ### Container image
 
+The standard-image commands below select `linux/amd64`. ARM hosts need AMD64 emulation configured in their container runtime. Review the package’s platform list when choosing another image variant.
+
 Pull the version matching your documentation:
 
 {{< product-release product="praxis" >}}
-docker pull @IMAGE@
+docker pull --platform linux/amd64 @IMAGE@
 {{< /product-release >}}
 
 For the FIPS variant of the same release, append `-fips` to the tag:
@@ -31,7 +34,7 @@ The [Praxis image package](https://github.com/orgs/praxis-proxy/packages/contain
 To check that Praxis is running, start the image:
 
 {{< product-release product="praxis" >}}
-docker run --rm --publish 127.0.0.1:8080:8080 @IMAGE@
+docker run --rm --platform linux/amd64 --publish 127.0.0.1:8080:8080 @IMAGE@
 {{< /product-release >}}
 
 In another terminal, request the default static response:
@@ -45,7 +48,7 @@ It returns HTTP `200` with `{"status":"ok","server":"praxis"}`. This confirms th
 For a custom configuration, set the listener to `0.0.0.0:8080` and mount the file at `/etc/praxis/config.yaml`:
 
 {{< product-release product="praxis" >}}
-docker run --rm --publish 127.0.0.1:8080:8080 \
+docker run --rm --platform linux/amd64 --publish 127.0.0.1:8080:8080 \
   --volume "$PWD/praxis-container.yaml:/etc/praxis/config.yaml:ro" \
   @IMAGE@
 {{< /product-release >}}

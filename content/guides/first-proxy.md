@@ -1,4 +1,5 @@
 +++
+navigation_section = "start"
 title = "Run your first reverse proxy"
 description = "Run Praxis and forward a request through a real HTTP backend."
 type = "guides"
@@ -10,7 +11,7 @@ topic = "First run"
 
 Use Praxis to forward a request to a real HTTP backend. Configure its built-in `router` and `load_balancer` filters in YAML.
 
-You need Docker Engine, `curl`, and an internet connection to pull the two images. The Praxis image listens on container port `8080`; the echo service listens on port `3000`.
+You need Docker Engine with Linux AMD64 support (native or emulated), `curl`, and an internet connection to pull the two images. The published Praxis v0.7.2 image requires `linux/amd64`; the commands select that platform explicitly. The Praxis image listens on container port `8080`; the echo service listens on port `3000`.
 
 ## Start the echo service
 
@@ -59,7 +60,7 @@ filter_chains:
 Check the configuration before starting Praxis:
 
 {{< product-release product="praxis" >}}
-docker run --rm --network praxis-quickstart \
+docker run --rm --platform linux/amd64 --network praxis-quickstart \
   --volume "$PWD/praxis.yaml:/etc/praxis/config.yaml:ro" \
   @IMAGE@ --validate
 {{< /product-release >}}
@@ -67,7 +68,7 @@ docker run --rm --network praxis-quickstart \
 Start Praxis and publish its HTTP listener on your machine:
 
 {{< product-release product="praxis" >}}
-docker run --rm --name praxis-proxy \
+docker run --rm --platform linux/amd64 --name praxis-proxy \
   --network praxis-quickstart \
   --publish 127.0.0.1:8080:8080 \
   --volume "$PWD/praxis.yaml:/etc/praxis/config.yaml:ro" \

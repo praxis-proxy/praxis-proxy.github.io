@@ -33,6 +33,7 @@ const routes = [
   const page = await context.newPage();
   const report = { browser:await browser.version(), matrix:[], accessibility:[], interactions:[] };
   const errors = [];
+  const checkedImages = new Set();
   page.on('pageerror', err => errors.push(err.message));
   try {
     if (!process.env.QA_INTERACTIONS_ONLY) for (const theme of ['light','dark']) {
@@ -44,9 +45,16 @@ const routes = [
           const response=await page.goto(base+route, {waitUntil:'networkidle'});
           assert.equal(response.status(),200,`${route} HTTP status`);
           if (name === 'explanation') await page.waitForSelector('.mermaid svg');
+          // Hidden/offscreen images may defer loading; verify their resources directly.
+          const imageSources = await page.locator('img').evaluateAll(images => images.map(image => image.src).filter(src => new URL(src).origin === location.origin));
+          for (const src of new Set(imageSources)) if (!checkedImages.has(src)) {
+            const imageResponse = await context.request.get(src);
+            assert.equal(imageResponse.status(), 200, `Image resource ${src}`);
+            assert((imageResponse.headers()['content-type'] || '').startsWith('image/'), `Image content type ${src}`);
+            checkedImages.add(src);
+          }
           const result = await page.evaluate(() => ({
             h1:document.querySelectorAll('h1').length,
-            brokenImages:[...document.images].filter(x=>new URL(x.src).origin===location.origin && (!x.complete || !x.naturalWidth)).map(x=>x.src),
             width:innerWidth, scrollWidth:document.documentElement.scrollWidth,
             theme:document.documentElement.dataset.bsTheme,
             titleTop:document.querySelector('h1').getBoundingClientRect().top,
@@ -70,8 +78,8 @@ const routes = [
             assert.equal(await page.locator('.docs-sidebar__identity').count(),1,'Sidebar names the selected project and release');
             assert.equal(await page.locator('.docs-sidebar-topic > span').filter({hasText:/^Examples$/}).count(),0,'Individual examples belong in the catalog, not the shared sidebar');
             assert.equal(await page.locator('#td-section-nav a').filter({hasText:/^Configuration examples$/}).count(),1,'Sidebar exposes the versioned example catalog');
-            const topics=await page.locator('#docs-need-praxis-how-to').locator('..').locator('.docs-sidebar-topic > span').allTextContents();
-            assert(topics.indexOf('First Proxy')<topics.indexOf('Operating') && topics.indexOf('Operating')<topics.indexOf('Developing'),'Getting started and operations must precede development');
+            const sections=await page.locator('.docs-sidebar-group > label span').allTextContents();
+            assert(sections.indexOf('Start here')<sections.indexOf('Operate') && sections.indexOf('Operate')<sections.indexOf('Extend and contribute'),'Getting started and operations must precede development');
           }
           if (name==='user-guide') {
             assert.equal(await page.locator('#td-section-nav a[aria-current="page"]').count(),1,'Guide has one current sidebar link');
@@ -85,7 +93,6 @@ const routes = [
             const positions=await page.evaluate(()=>['h1','.site-page > article > p','.product-overview__intro','.product-visual'].map(selector=>document.querySelector(selector).getBoundingClientRect().left));
             assert(positions.every(left=>Math.abs(left-positions[0])<=1),'Project heading, prose, actions, and diagram must share an alignment');
           }
-          assert.equal(result.brokenImages.length,0,`${route} broken images: ${result.brokenImages}`);
           assert(result.scrollWidth <= width+1,`${route} ${theme} ${width}px overflow: ${result.scrollWidth}`);
           assert.equal(result.eagerSearch.length,0,`${route} eagerly fetches a search index`);
           if (['home','how-to','overview','start','directory','policy-svg','tutorial','reference','explanation','user-guide','guides','example','examples'].includes(name) && [390,1440].includes(width)) {
@@ -195,7 +202,10 @@ const routes = [
     assert(mermaidCount>0,'Mermaid diagrams rendered');
     await page.evaluate(()=>scrollTo(0,800));
     const y=await page.evaluate(()=>scrollY);
-    await page.locator('#praxis-theme-toggle').click();
+    // Docsy 0.18 reloads Mermaid pages to render the new theme.
+    await Promise.all([page.waitForEvent('load'), page.locator('#praxis-theme-toggle').click()]);
+    await page.waitForFunction(()=>[...document.querySelectorAll('pre.mermaid')].every(node=>node.querySelector('svg')));
+    await page.waitForFunction(expected=>scrollY===expected,y);
     assert.equal(await page.evaluate(()=>scrollY),y,'Theme change preserves scroll');
     assert.equal(await page.locator('.mermaid svg').count(),mermaidCount,'Theme preserves diagrams');
     await page.locator('.praxis-diagram-zoom').first().click();

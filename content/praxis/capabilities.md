@@ -1,4 +1,5 @@
 +++
+navigation_section = "reference"
 title = "Praxis v0.7.2 capabilities and support"
 description = "What the selected Praxis release supports, gates behind build features, or does not implement."
 product = "praxis"

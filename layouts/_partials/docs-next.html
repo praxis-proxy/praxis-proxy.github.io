@@ -1,0 +1,14 @@
+{{- $product := .Params.product | default "" -}}
+{{- if and (not $product) (eq .Section "guides") }}{{ $product = "praxis" }}{{ end -}}
+{{- if $product -}}
+  {{- $config := index hugo.Data.docs_build_versions.products $product -}}
+  {{- $version := (partial "docs-context.html" .).version | default $config.default -}}
+  {{- $steps := partial "docs-journey-steps.html" (dict "product" $product "version" $version) -}}
+  {{- $current := .RelPermalink -}}
+  {{- range $i, $step := $steps -}}
+    {{- if and (eq .href $current) (lt (add $i 1) (len $steps)) -}}
+      {{- $next := index $steps (add $i 1) -}}
+      <nav class="docs-next" aria-label="Next step"><span>Next step · {{ $config.name }} {{ $version }}</span><a href="{{ $next.href }}">{{ $next.title }} <span aria-hidden="true">→</span></a><p>{{ $next.summary }}</p></nav>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
