@@ -157,12 +157,12 @@
       "name": "Praxis Grid",
       "description": "A Kubernetes control plane for multi-site AI inference routing.",
       "content_root": "docs",
-      "default": "v0.2.2",
+      "default": "v0.3.0",
       "development": {
         "ref": "main",
         "sha": "9ead9b27e7f8a1fdf3215d7f9d35d6ed9dfc5dd8"
       },
-      "status": "Grid v0.2.2 is a technical preview; review its release-scoped deployment requirements and limitations.",
+      "status": "Grid is a technical preview; review its release-scoped deployment requirements and limitations.",
       "exclude": [],
       "required": [
         "docs/README.md",
@@ -175,11 +175,18 @@
       ],
       "releases": [
         {
+          "version": "v0.3.0",
+          "label": "v0.3.0 (technical preview)",
+          "tag": "v0.3.0",
+          "sha": "588624bebcde3c7942ffb48c65a53c1b063eed57",
+          "default": true
+        },
+        {
           "version": "v0.2.2",
           "label": "v0.2.2 (technical preview)",
           "tag": "v0.2.2",
           "sha": "33cb906be2bb0ebdbaf253bd307939a44f41b37b",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.2.1",
