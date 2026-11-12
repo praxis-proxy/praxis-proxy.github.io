@@ -5,7 +5,7 @@
 {{- end -}}
 {{- $product := false -}}
 {{- with $productID -}}{{- $product = index hugo.Data.docs_build_versions.products . -}}{{- end -}}
-{{- $version := $page.Params.version | default "" -}}
+{{- $version := (partial "docs-context.html" $page).version -}}
 {{- if and $product (not $version) -}}{{- $version = $product.default -}}{{- end -}}
 {{- if eq $page.Params.topic "Examples" -}}
   {{- partial "sidebar-examples.html" (dict "context" $page) -}}
@@ -18,19 +18,11 @@
   {{- $overviewSource := "docs/README.md" -}}
   {{- if eq $productID "policy" -}}{{- $overviewSource = "docs/content/index.md" -}}{{- end -}}
   {{- $overviewPages := where $allDocs "Params.source_path" $overviewSource -}}
-  {{- $startPages := where $allDocs "Params.source_path" $navigation.start -}}
   {{- $projectHref := printf "%s/%s/" $productID $version | relURL -}}
   {{- $release := index (where $product.versions "slug" $version) 0 -}}
   {{- $guideRoot := site.GetPage "/guides" -}}
   {{- $showGuides := and (eq $productID "praxis") (eq $version $product.default) $guideRoot -}}
-  {{- $startHref := "" -}}
-  {{- if eq $productID "praxis" -}}
-    {{- $startHref = "guides/first-proxy/" | relURL -}}
-  {{- else if eq $productID "ai" -}}
-    {{- $startHref = "ai/container-quickstart/" | relURL -}}
-  {{- else -}}
-    {{- with index $startPages 0 -}}{{- $startHref = .RelPermalink -}}{{- end -}}
-  {{- end -}}
+  {{- $startHref := partial "docs-start.html" (dict "product" $productID "version" $version) -}}
   {{- $misc := slice -}}
   {{- range $allDocs -}}
     {{- if and (ne .Params.source_path $overviewSource) (or (eq .Params.reader_need "Overview") (eq .Params.reader_need "Release")) -}}
@@ -67,7 +59,7 @@
             </ul>
           </li>
         {{- end -}}
-        {{- if and $startHref (not $showGuides) (ne $startHref $page.RelPermalink) }}
+        {{- if and $startHref (not $showGuides) (or $page.Params.current_release (ne $startHref $page.RelPermalink)) }}
         <li class="docs-sidebar-get-started{{ if eq $startHref $page.RelPermalink }} active{{ end }}">
           <a href="{{ $startHref }}"{{ if eq $startHref $page.RelPermalink }} aria-current="page"{{ end }}>Get started</a>
         </li>
@@ -100,7 +92,7 @@
                       <ul class="ul-2">
                         {{- range (.Pages.ByParam "order") }}
                           <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}">
-          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>{{ if eq .Params.source_path "docs/quickstart.md" }}Build from source{{ else }}{{ .LinkTitle }}{{ end }}</a>
+          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>{{ if and $navigation.source_start_label (eq .Params.source_path $navigation.start) }}{{ $navigation.source_start_label }}{{ else }}{{ .LinkTitle }}{{ end }}</a>
                           </li>
                         {{- end }}
                       </ul>

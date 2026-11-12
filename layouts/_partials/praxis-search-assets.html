@@ -1,7 +1,7 @@
 {{- $site := .Site -}}
 {{- $products := hugo.Data.docs_build_versions.products -}}
 {{- $scopeProduct := .Params.product | default "all" -}}
-{{- $scopeVersion := .Params.version | default "" -}}
+{{- $scopeVersion := (partial "docs-context.html" .).version -}}
 {{- if and (eq .Section "guides") (eq $scopeProduct "all") -}}
   {{- $scopeProduct = "praxis" -}}
   {{- $scopeVersion = (index $products "praxis").default -}}

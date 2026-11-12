@@ -20,7 +20,7 @@
     {{- if ne $product "Website" -}}
       {{- with index hugo.Data.docs_build_versions.products $product -}}{{- $product = .name -}}{{- end -}}
     {{- end -}}
-    {{- $version := $page.Param "version_label" | default $branch -}}
+    {{- $version := (partial "docs-context.html" $page).label | default $branch -}}
     {{- $issueTitle := printf "Docs: %s" $page.Title -}}
     {{- $issueBody := printf "Project: %s\nVersion: %s\nSource: %s" $product $version $sourceURL -}}
     {{- $issueQuery := querify "title" $issueTitle "body" $issueBody | safeURL -}}

@@ -5,11 +5,14 @@ import gzip
 import json
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class Page(HTMLParser):
+    base_path = ""
+
     def __init__(self, text):
         super().__init__()
         self.h1 = 0
@@ -26,6 +29,8 @@ class Page(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if self.base_path and attrs.get("href", "").startswith(self.base_path + "/"):
+            attrs["href"] = attrs["href"][len(self.base_path):]
         if tag == 'nav':
             self.nav_stack.append(attrs.get('aria-label'))
         if 'data-praxis-search' in attrs:
@@ -58,6 +63,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--public', type=Path, default=ROOT / 'public')
     public = parser.parse_args().public
+    home_canonical = Page((public / "index.html").read_text()).canonical[0]
+    Page.base_path = urlsplit(home_canonical).path.rstrip("/")
     catalog = json.loads((ROOT / 'data/docs_versions.json').read_text())
     defaults = {key: config['default'] for key, config in catalog['products'].items()}
     versions = {key: {r['version'] for r in config['releases']} | {'dev'}
@@ -107,6 +114,22 @@ def main():
     assert guide.search_scope == ('praxis', defaults['praxis']), 'Guide search must use selected Praxis docs'
     assert f'/praxis/{defaults["praxis"]}/examples/' in guide.docs_links, \
         'Guide sidebar must expose the selected Praxis example catalog'
+    ai_guide = Page((public / 'ai/container-quickstart/index.html').read_text())
+    assert ai_guide.search_scope == ('ai', defaults['ai']), 'AI Docker guide must search the current release'
+    assert ai_guide.docs_current == ['/ai/container-quickstart/'], 'AI start link must mark the current guide exactly once'
+    assert f'/ai/{defaults["ai"]}/examples/' in ai_guide.docs_links
+    for product in ('praxis', 'ai'):
+        for version in versions[product] - {defaults[product]}:
+            archived_start = next(x['url'] for x in sources if x['product'] == product
+                                  and x['version'] == version
+                                  and x['source_path'] == navigation['products'][product]['start'])
+            overview = Page((public / product / version / 'index.html').read_text())
+            assert archived_start in overview.docs_links, f'{product}/{version}: missing version-specific start'
+            assert '/ai/container-quickstart/' not in overview.docs_links
+            assert '/guides/first-proxy/' not in overview.docs_links
+    search_index = next((public / 'search-index').glob('all-defaults*.json'))
+    ai_entry = next(x for x in json.loads(search_index.read_text()) if x['ref'] == Page.base_path + '/ai/container-quickstart/')
+    assert ai_entry['version'] == defaults['ai'], 'AI guide search result must carry current release'
     capabilities = Page((public / 'praxis/capabilities/index.html').read_text())
     assert capabilities.docs_current == ['/praxis/capabilities/'], \
         'Capability reference must have one current sidebar link'

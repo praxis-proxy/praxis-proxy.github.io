@@ -75,7 +75,7 @@ check-in-container: build-in-container
 	lychee --offline --include-fragments=anchor-only --index-files index.html \
 		--root-dir "$(abspath $(HUGO_DESTINATION))" \
 		--remap "^$(LINK_BASEURL) file://$(abspath $(HUGO_DESTINATION))/" \
-		$(if $(LINK_PREFIX),--remap "^file://$(abspath $(HUGO_DESTINATION))$(LINK_PREFIX)/ file://$(abspath $(HUGO_DESTINATION))/") \
+		$(if $(LINK_PREFIX),--remap "^file://$(abspath $(HUGO_DESTINATION))$(LINK_PREFIX)(/|$$) file://$(abspath $(HUGO_DESTINATION))/") \
 		--no-progress --format compact \
 		"$(HUGO_DESTINATION)/**/*.html" "$(HUGO_DESTINATION)/**/*.css" "$(HUGO_DESTINATION)/**/*.xml"
 

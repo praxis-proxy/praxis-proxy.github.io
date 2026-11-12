@@ -4,7 +4,7 @@
 <footer class="praxis-footer">
   <div class="praxis-footer__inner">
     <div class="praxis-footer__brand-block">
-      <a class="praxis-footer__brand" href="{{ .Site.Home.RelPermalink }}">
+      <a class="praxis-footer__brand" aria-label="Praxis home" href="{{ .Site.Home.RelPermalink }}">
         <img class="praxis-footer__brand-logo praxis-footer__brand-logo--light" src="{{ "images/branding/horizontal/black/praxis-horizontal-black.svg" | relURL }}" alt="Praxis" width="140" height="55">
         <img class="praxis-footer__brand-logo praxis-footer__brand-logo--dark" src="{{ "images/branding/horizontal/white/praxis-horizontal-white.svg" | relURL }}" alt="" width="140" height="55" aria-hidden="true">
       </a>
@@ -22,8 +22,9 @@
     <nav class="praxis-footer__group" aria-label="Documentation">
       <h2>Documentation</h2>
       <ul>
-        <li><a href="{{ "guides/first-proxy/" | relURL }}">First proxy tutorial</a></li>
-        {{- range $entry := slice (dict "id" "ai" "source" "docs/quickstart.md" "label" "Praxis AI quickstart") (dict "id" "policy" "source" "docs/content/quickstart.md" "label" "Policy quickstart") (dict "id" "grid" "source" "docs/installation/existing-clusters.md" "label" "Grid Kubernetes installation") -}}
+        <li><a href="{{ partial "docs-start.html" (dict "product" "praxis") }}">First proxy tutorial</a></li>
+        <li><a href="{{ partial "docs-start.html" (dict "product" "ai") }}">Praxis AI quickstart</a></li>
+        {{- range $entry := slice (dict "id" "policy" "source" "docs/content/quickstart.md" "label" "Policy quickstart") (dict "id" "grid" "source" "docs/installation/existing-clusters.md" "label" "Grid Kubernetes installation") -}}
           {{- $project := index $products $entry.id -}}
           {{- $pages := where (where (where site.RegularPages "Params.product" $entry.id) "Params.version" $project.default) "Params.source_path" $entry.source -}}
           {{- with index $pages 0 -}}
@@ -82,7 +83,7 @@
     </div>
   </div>
   <div class="praxis-footer__bottom">
-    <a class="praxis-footer__cncf-wordmark" href="https://www.cncf.io/" rel="noopener noreferrer" target="_blank">
+    <a class="praxis-footer__cncf-wordmark" aria-label="Cloud Native Computing Foundation" href="https://www.cncf.io/" rel="noopener noreferrer" target="_blank">
       <img class="praxis-footer__cncf-wordmark-img praxis-footer__cncf-wordmark-img--light" src="{{ "images/cncf/cncf-color.svg" | relURL }}" alt="Cloud Native Computing Foundation" width="240" height="40">
       <img class="praxis-footer__cncf-wordmark-img praxis-footer__cncf-wordmark-img--dark" src="{{ "images/cncf/cncf-white.png" | relURL }}" alt="" width="240" height="40">
     </a>

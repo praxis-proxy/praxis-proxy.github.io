@@ -33,9 +33,9 @@ COVERAGE_REPORT = ROOT / "docs" / "example-coverage-report.md"
 RELEASE_TAG = re.compile(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\Z")
 GIT_REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]*\Z")
 GIT_SHA = re.compile(r"[0-9a-fA-F]{40}\Z")
-LINK = re.compile(r"(?P<start>!?\[[^\]]*\]\()(?P<url><[^>]+>|[^\s)]+)(?P<end>[^)]*\))")
+LINK = re.compile(r"(?P<start>!?\[[^\]]*\]\(\s*)(?P<url><[^>]+>|[^\s)]+)(?P<end>[^)]*\))")
 REFERENCE_DEFINITION = re.compile(
-    r"(?m)^(?P<prefix>[ \t]{0,3}\[(?:\\.|[^\]])+\]:[ \t]*)"
+    r"(?m)^(?P<prefix>[ \t]{0,3}\[(?:\\.|[^\]])+\]:[ \t]*(?:\r?\n[ \t]*)?)"
     r"(?P<url><[^>\r\n]+>|[^\s]+)(?P<suffix>[^\r\n]*)(?P<newline>\r?\n|$)"
 )
 HTML_LINK = re.compile(r"(?P<attr>\b(?:href|src)=['\"])(?P<url>[^'\"]+)(?P<end>['\"])", re.I)
@@ -862,8 +862,9 @@ def write_example_category_indexes(context: ExampleContext, configs: dict[str, b
                 lines.append(f"- [{details['title']}]({site_url(product, version, output_paths[path])}) — {details['summary']}")
         category = "configurations" if group == "examples/configs" else PurePosixPath(group).name
         output_path = group_pages[group]
-        description = f"{len(group_files)} configurations in {title} for {config['name']}."
-        summary = f"{len(group_files)} version-pinned configuration pages."
+        subtree_count = sum(path.startswith(group + "/") for path in configs)
+        description = f"{subtree_count} configurations in {title} for {config['name']}."
+        summary = f"{subtree_count} version-pinned configuration pages."
         page = {"title": title, "source_path": group, "content_path": output_path,
                 "description": description, "summary": summary, "order": 21}
         metadata = example_index_metadata(context, page)
@@ -1387,6 +1388,8 @@ def page_metadata(product: str, source_path: str, original: str, navigation: dic
             raise RuntimeError(f"{product}:{source_path} needs a meaningful docs_navigation summary")
         summary = fallback_summary(product, source_path)
     return {
+        **({"title": product_navigation["source_start_label"]}
+           if source_path == product_navigation.get("start") and product_navigation.get("source_start_label") else {}),
         "reader_need": need,
         "topic": override.get("topic") or fallback_topic(source_path),
         "order": override.get("order", 100),
@@ -1540,6 +1543,8 @@ def check_example_catalog_adapter() -> None:
             assert "{{< docs-version >}}" in page_text
             assert "basic-reverse-proxy" in category.read_text(encoding="utf-8")
             assert "A2A Agent Card Routing" in all_configs.read_text(encoding="utf-8")
+            assert "3 configurations in All configurations" in all_configs.read_text(encoding="utf-8")
+            assert "1 configurations in Traffic Management" in category.read_text(encoding="utf-8")
             tls_text = tls_page.read_text(encoding="utf-8")
             assert "does not include them" in tls_text and "Companion resources" not in tls_text
     finally:
@@ -1548,6 +1553,9 @@ def check_example_catalog_adapter() -> None:
 
 
 def check_adapter() -> None:
+    start_metadata = page_metadata("ai", "docs/quickstart.md", "# Quickstart\n\nBuild the release binary.",
+                                   {"products": {"ai": {"start": "docs/quickstart.md", "source_start_label": "Build from source"}}})
+    assert start_metadata["title"] == "Build from source"
     rewrite_context = {
         "product": "praxis", "version": "dev", "config": {"repo": "https://github.com/example/docs"},
         "repo": ROOT, "sha": "0" * 40, "source_path": "docs/guide.md", "selected": {},
@@ -1629,6 +1637,10 @@ def check_adapter() -> None:
         **example_context,
     )
     assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/examples/configs/operations/hot-reload.yaml" in raw_example
+    multiline_reference = rewrite_markdown("[chart][gateway-upgrade]\n\n[gateway-upgrade]:\n  ../../charts/praxis-gateway/README.md#providers-from-the-provider-file\n", **source_context)
+    assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/charts/praxis-gateway/README.md#providers-from-the-provider-file" in multiline_reference
+    multiline_source = rewrite_markdown("[chart](\n  ../../charts/praxis-gateway/README.md#providers\n)\n", **source_context)
+    assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/charts/praxis-gateway/README.md#providers" in multiline_source
     missing_source = rewrite_markdown("[missing](../../docs/not-selected.md#part)\n", **source_context)
     assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/docs/not-selected.md#part" in missing_source
 

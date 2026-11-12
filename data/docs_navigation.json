@@ -2,6 +2,8 @@
   "products": {
     "praxis": {
       "start": "docs/quickstart.md",
+      "default_start_page": "/guides/first-proxy",
+      "source_start_label": "Build from source",
       "groups": [
         "How-to",
         "Tutorial",
@@ -565,6 +567,8 @@
     },
     "ai": {
       "start": "docs/quickstart.md",
+      "default_start_page": "/ai/container-quickstart",
+      "source_start_label": "Build from source",
       "groups": [
         "How-to",
         "Tutorial",

@@ -19,7 +19,7 @@
 {{- if partial "chrome-render.html" (dict "page" . "region" "navbar") -}}
 <nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll" aria-label="Main navigation">
   <div class="td-navbar-container container-fluid">
-    <a class="navbar-brand" href="{{ .Site.Home.RelPermalink }}">
+    <a class="navbar-brand" aria-label="Praxis home" href="{{ .Site.Home.RelPermalink }}">
       <img class="navbar-brand__logo navbar-brand__logo--light" src="{{ "images/branding/horizontal/black/praxis-horizontal-black.svg" | relURL }}" alt="{{ .Site.Title }}" width="128" height="50">
       <img class="navbar-brand__logo navbar-brand__logo--dark" src="{{ "images/branding/horizontal/white/praxis-horizontal-white.svg" | relURL }}" alt="" width="128" height="50" aria-hidden="true">
     </a>
