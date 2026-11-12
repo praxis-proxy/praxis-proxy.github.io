@@ -2,7 +2,7 @@
   "name": "praxis-website",
   "private": true,
   "devDependencies": {
-    "sass-embedded": "1.106.1"
+    "sass-embedded": "1.107.1"
   },
   "workspaces": [
     "packages/hugoautogen"
