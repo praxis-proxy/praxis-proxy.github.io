@@ -33,7 +33,7 @@ COVERAGE_REPORT = ROOT / "docs" / "example-coverage-report.md"
 RELEASE_TAG = re.compile(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\Z")
 GIT_REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]*\Z")
 GIT_SHA = re.compile(r"[0-9a-fA-F]{40}\Z")
-LINK = re.compile(r"(?P<start>!?\[[^\]]*\]\()(?P<url><[^>]+>|[^\s)]+)(?P<end>[^)]*\))")
+LINK = re.compile(r"(?P<start>!?\[[^\]]*\]\(\s*)(?P<url><[^>]+>|[^\s)]+)(?P<end>[^)]*\))")
 REFERENCE_DEFINITION = re.compile(
     r"(?m)^(?P<prefix>[ \t]{0,3}\[(?:\\.|[^\]])+\]:[ \t]*)"
     r"(?P<url><[^>\r\n]+>|[^\s]+)(?P<suffix>[^\r\n]*)(?P<newline>\r?\n|$)"
@@ -1637,6 +1637,8 @@ def check_adapter() -> None:
         **example_context,
     )
     assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/examples/configs/operations/hot-reload.yaml" in raw_example
+    multiline_source = rewrite_markdown("[chart](\n  ../../charts/praxis-gateway/README.md#providers\n)\n", **source_context)
+    assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/charts/praxis-gateway/README.md#providers" in multiline_source
     missing_source = rewrite_markdown("[missing](../../docs/not-selected.md#part)\n", **source_context)
     assert f"https://github.com/praxis-proxy/praxis/blob/{sha}/docs/not-selected.md#part" in missing_source
 
