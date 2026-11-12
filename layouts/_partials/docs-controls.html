@@ -1,0 +1,60 @@
+{{- $page := . -}}
+{{- $productID := $page.Params.product | default "" -}}
+{{- if and (not $productID) (eq $page.Section "guides") }}{{ $productID = "praxis" }}{{ end -}}
+{{- $version := (partial "docs-context.html" $page).version -}}
+{{- $sourcePath := $page.Params.source_path | default (printf "website/%s" $page.File.Path) -}}
+{{- $product := index hugo.Data.docs_build_versions.products $productID -}}
+{{- $sourceMap := hugo.Data.docs_sources -}}
+{{- if $product -}}
+  {{- $version = $version | default $product.default -}}
+  {{- $hasFallback := false -}}
+  <div class="docs-context-controls">
+    <div class="docs-project-control">
+      <label for="docs-project-{{ $productID }}">Project</label>
+      <select id="docs-project-{{ $productID }}" aria-describedby="docs-project-scope-{{ $productID }}" onchange="window.location.assign(this.value)">
+        {{- range $id := slice "praxis" "ai" "policy" "grid" -}}
+          {{- $project := index hugo.Data.docs_build_versions.products $id -}}
+          {{- $target := printf "%s/%s/" $id $project.default | relURL -}}
+          {{- if eq $id $productID }}{{ $target = $page.RelPermalink }}{{ end -}}
+        <option value="{{ $target }}"{{ if eq $id $productID }} selected{{ end }}>{{ $project.name }}</option>
+        {{- end -}}
+      </select>
+    </div>
+  <div class="docs-version-control">
+    <label for="docs-version-{{ $productID }}">Version</label>
+    <select aria-label="{{ $product.name }} documentation version" id="docs-version-{{ $productID }}" data-source-path="{{ $sourcePath }}" onchange="const option=this.selectedOptions[0];const url=new window.URL(this.value,window.location.href);if(option.dataset.fallback==='true')url.searchParams.set('version_fallback',this.dataset.sourcePath);window.location.assign(url)">
+      {{- range $product.versions -}}
+        {{- $matches := where (where (where $sourceMap "product" $productID) "version" .slug) "source_path" $sourcePath -}}
+        {{- $fallback := not (gt (len $matches) 0) -}}
+        {{- if $fallback -}}{{- $hasFallback = true -}}{{- end -}}
+        {{- $target := printf "%s/%s/" $productID .slug -}}
+        {{- if not $fallback -}}{{- $target = strings.TrimPrefix "/" (index $matches 0).url -}}{{- end -}}
+        {{- $targetURL := $target | relURL -}}
+        {{- if and $fallback (eq .slug $version) }}{{ $targetURL = $page.RelPermalink }}{{ $fallback = false }}{{ end -}}
+        <option value="{{ $targetURL }}" data-fallback="{{ $fallback }}"{{ if eq .slug $version }} selected{{ end }}>{{ .label }}{{ if $fallback }} — overview{{ end }}</option>
+      {{- end -}}
+    </select>
+  </div>
+  </div>
+  <p id="docs-project-scope-{{ $productID }}" class="docs-project-scope">Switching projects opens that project’s default documentation release.</p>
+  <noscript><nav aria-label="Choose documentation project"><ul>{{ range $id := slice "praxis" "ai" "policy" "grid" }}{{ $project := index hugo.Data.docs_build_versions.products $id }}<li><a href="{{ printf "%s/%s/" $id $project.default | relURL }}">{{ $project.name }}</a></li>{{ end }}</ul></nav></noscript>
+  {{- if $hasFallback }}
+  <p class="docs-version-fallback">Versions marked “overview” do not contain this page. Selecting one opens that version’s documentation overview.</p>
+  {{- end -}}
+  <p class="docs-version-fallback" role="status" aria-live="polite" hidden></p>
+  <script>
+    (() => {
+      const sourcePath = new URLSearchParams(window.location.search).get('version_fallback');
+      const notice = document.querySelector('.docs-version-fallback[role="status"]');
+      if (sourcePath && notice) {
+        notice.textContent = `No page matching “${sourcePath}” exists in this version. Showing its documentation overview.`;
+        notice.hidden = false;
+      }
+    })();
+  </script>
+  {{- if $page.Params.version_archive }}
+  <aside class="docs-version-banner" role="note">Archived documentation for {{ $page.Params.version_label }}. <a href="{{ printf "%s/%s/" $productID $product.default | relURL }}">View the default release</a>.</aside>
+  {{- else if eq $version "dev" }}
+  <aside class="docs-version-banner" role="note">Unreleased development documentation at commit <abbr title="{{ $page.Params.source_commit }}">{{ printf "%.12s" $page.Params.source_commit }}</abbr>{{ if $page.Params.preview_dirty }} (local changes included){{ end }}. It tracks upstream work and may change before any release. <a href="{{ printf "%s/%s/" $productID $product.default | relURL }}">View the default release</a>.</aside>
+  {{- end -}}
+{{- end -}}

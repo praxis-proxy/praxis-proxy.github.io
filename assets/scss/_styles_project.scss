@@ -708,3 +708,10 @@ body.praxis-blog .td-outer { padding-inline: 0; }
   .docs-sidebar__identity > small { overflow-wrap: anywhere; }
 }
 [data-bs-theme='dark'] :is(pre.mermaid, .praxis-diagram-dialog) .edgeLabel p { color: var(--praxis-text) !important; }
+
+.docs-context-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: end; margin-block: 1rem .5rem; }
+.docs-context-controls > div { min-width: 0; margin: 0; }
+.docs-context-controls label { display: block; margin-bottom: .25rem; font-weight: 600; }
+.docs-context-controls select { display: block; width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem .55rem; color: var(--praxis-text); background: var(--praxis-panel); border: 1px solid var(--praxis-border); border-radius: .35rem; }
+.docs-context-controls select:focus-visible { outline: 3px solid var(--praxis-accent); outline-offset: 2px; }
+.docs-project-scope { margin-bottom: 1rem; color: var(--praxis-muted); font-size: .85rem; }

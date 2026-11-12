@@ -30,9 +30,17 @@ const report = { pages: [], axe: [], journeys: [] };
             overflow: document.documentElement.scrollWidth > innerWidth + 1,
             headingCount: document.querySelectorAll('main h1').length,
             titleTop: document.querySelector('h1').getBoundingClientRect().top,
+            project: document.querySelector('.docs-project-control select')?.id,
+            projectTarget: document.querySelector('.docs-project-control select')?.value,
+            globalLinks: [...document.querySelectorAll('#praxis-navbar-menu a')].map(a => a.textContent.trim()),
             navbarBottom: document.querySelector('.td-navbar').getBoundingClientRect().bottom,
             current: [...document.querySelectorAll('#td-section-nav a[aria-current="page"]')].map(a => a.pathname),
           }));
+          assert.deepEqual(state.globalLinks, ['Docs', 'Blog', 'Community']);
+          if (route !== 'docs/') {
+            assert(state.project, `Project selector ${route}`);
+            assert.equal(new URL(state.projectTarget, page.url()).pathname, routePath(route));
+          }
           assert(!state.overflow, `Overflow ${route}/${theme}/${width}`);
           assert.equal(state.headingCount, 1, route);
           assert(state.titleTop >= state.navbarBottom, `Title hidden by header ${route}`);
@@ -76,6 +84,14 @@ const report = { pages: [], axe: [], journeys: [] };
       await page.goto(url('guides/first-proxy/'));
       await page.getByRole('navigation', { name: 'Next step', exact: true }).getByRole('link').click();
       assert.equal(new URL(page.url()).pathname, routePath('guides/use-filters/'));
+      await page.goto(url('ai/dev/quickstart/'));
+      await page.locator('.docs-project-control select').selectOption(routePath(`policy/${catalog.policy.default}/`));
+      await page.waitForURL(url(`policy/${catalog.policy.default}/`));
+      await page.locator('.docs-project-control select').selectOption(routePath(`praxis/${catalog.praxis.default}/`));
+      await page.waitForURL(url(`praxis/${catalog.praxis.default}/`));
+      await page.locator('.docs-version-control select').selectOption(routePath('praxis/dev/'));
+      await page.waitForURL(url('praxis/dev/'));
+      assert.equal(await page.locator('.docs-project-control select').getAttribute('id'), 'docs-project-praxis');
       report.journeys.push({ theme, passed: true });
       await context.close();
     }
@@ -86,6 +102,7 @@ const report = { pages: [], axe: [], journeys: [] };
     await staticPage.keyboard.press('Enter');
     assert(await staticPage.locator('#architecture').isVisible(), 'Source index works without JavaScript');
     assert(await staticPage.locator('.docs-journey__steps a').count() > 0);
+    assert.equal(await staticPage.getByRole('navigation', {name: 'Choose documentation project'}).getByRole('link').count(), 4);
     await noJS.close();
     // All-project search must not expose unreleased provider-selector content.
     const indexes = fs.readdirSync(path.join(root, 'public/search-index')).filter(f => f.startsWith('all-defaults'));

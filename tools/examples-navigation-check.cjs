@@ -87,7 +87,7 @@ const attempt = async (label, work) => {
             currentInSidebarViewport: !!currentBox && !!nav && currentBox.top >= navBox.top && currentBox.bottom <= navBox.top + nav.clientHeight,
             selectedVersion: version?.selectedOptions[0]?.textContent.trim(),
             selectedVersionPath: version?.value ? new URL(version.value, location.href).pathname : null,
-            projectCurrent: [...document.querySelectorAll('.praxis-products-menu a[aria-current]')].map(a => ({ path: new URL(a.href).pathname, current: a.getAttribute('aria-current') })),
+            projectCurrent: [...document.querySelectorAll('.docs-project-control select')].map(s => ({ path: new URL(s.value, location.href).pathname, current: s.id })),
             crumbCurrent: text(crumbs?.querySelector('[aria-current="page"]')),
             crumbPaths: [...(crumbs?.querySelectorAll('a') || [])].map(a => new URL(a.href).pathname),
             openDetails: nav?.querySelectorAll('details[open]').length || 0,
@@ -127,7 +127,7 @@ const attempt = async (label, work) => {
           assert.equal(state.selectedVersionPath, url, `${name} selected version route`);
           assert(state.selectedVersion.toLowerCase().includes(version === 'dev' ? 'development' : version), `${name} version label`);
           assert.equal(state.crumbCurrent, state.h1, `${name} final breadcrumb/H1`);
-          assert.deepEqual(state.projectCurrent, [{ path: `/${id}/${defaults[id].default}/`, current: 'location' }], `${name} project docs context`);
+          assert.deepEqual(state.projectCurrent, [{ path: state.path, current: `docs-project-${id}` }], `${name} project docs context`);
           assert(state.crumbPaths.every(href => href === `/${id}/` || !href.startsWith(`/${id}/`) || href.startsWith(`/${id}/${version}/`)), `${name} breadcrumb leaves selected version`);
           const current = page.locator('#td-section-nav a[aria-current="page"]');
           await current.waitFor({ state: 'visible' });

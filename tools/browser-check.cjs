@@ -220,9 +220,11 @@ const routes = [
     assert(await page.locator('.praxis-search-trigger').first().isVisible(),'Visible mobile search');
     assert(await page.locator('#praxis-theme-toggle').isVisible(),'Visible mobile appearance control');
     await page.locator('.praxis-navbar-toggle').click();
-    await page.locator('#products-menu').click();
-    await page.locator('.praxis-products-menu a[href="/praxis/v0.7.2/"]').click();
-    await page.waitForURL('**/praxis/v0.7.2/');
+    await page.locator('#praxis-navbar-menu a').filter({hasText: /^Docs$/}).click();
+    await page.waitForURL('**/docs/');
+    await page.goto(base+'/praxis/v0.7.2/');
+    await page.locator('.docs-project-control select').selectOption('/ai/v0.8.0/');
+    await page.waitForURL('**/ai/v0.8.0/');
     await page.goto(base+find('praxis','v0.7.2','docs/quickstart.md'));
     await page.locator('.td-sidebar__toggle').click();
     await page.locator('#td-section-nav').waitFor({state:'visible'});
