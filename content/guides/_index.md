@@ -1,4 +1,6 @@
 +++
+topic = "Getting started"
+navigation_section = "start"
 title = "User guides"
 description = "Configure and use Praxis projects, then explore developer extensions when you need new behavior."
 type = "guides"

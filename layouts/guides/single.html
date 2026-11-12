@@ -15,7 +15,9 @@
       {{ $toc }}
     </details>
     {{- end }}
+    {{ partial "docs-controls.html" . }}
     {{ .Content }}
+    {{ partial "docs-next.html" . }}
     <footer class="mt-5 pt-4 border-top">
       {{ partial "landing-contribution.html" . }}
     </footer>

@@ -1,3 +1,4 @@
+{{ partial "docs-next.html" .Page }}
 {{- $page := .Page -}}
 {{- $paths := $page.Params.related_sourcepaths -}}
 {{- if $paths -}}
@@ -7,10 +8,10 @@
     {{- if gt (len $matches) 0 -}}{{- $targets = $targets | append (index $matches 0) -}}{{- end -}}
   {{- end -}}
   {{- if $targets }}
-  <nav class="docs-related" aria-label="Related documentation">
-    <p class="docs-related-title"><strong>Related documentation</strong></p>
+  <nav class="docs-related" aria-label="Continue with this release">
+    <p class="docs-related-title"><strong>Continue with this release</strong></p>
     <ul>
-      {{- range $targets }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
+      {{- range $targets }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ with .Description }}<p>{{ . }}</p>{{ end }}</li>{{ end }}
     </ul>
   </nav>
   {{- end -}}

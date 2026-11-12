@@ -146,13 +146,9 @@ async function checkMobileNavigation() {
 
     await page.goto(url(''));
     await page.locator('.praxis-navbar-toggle').click();
-    await page.locator('#products-menu').click();
-    const project = page.locator('.praxis-products-menu a').first();
-    await project.waitFor({ state: 'visible' });
-    assert.equal(new URL(await project.getAttribute('href'), page.url()).pathname, new URL('praxis/v0.7.2/', base).pathname, 'Praxis docs nav href');
-    await project.click();
-    await page.waitForURL(url('praxis/v0.7.2/'));
-    report.interactions.push('Mobile menu reaches Blog, Community, and the selected Praxis documentation.');
+    await page.locator('#praxis-navbar-menu a').filter({hasText: /^Docs$/}).click();
+    await page.waitForURL(url('docs/'));
+    report.interactions.push('Mobile menu reaches Blog, Community, and Docs.');
   } finally {
     await context.close();
   }

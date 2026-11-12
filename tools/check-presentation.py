@@ -94,13 +94,11 @@ def main():
     expected_tasks.add('/guides/first-proxy/')
     expected_tasks.add('/ai/container-quickstart/')
     home = Page((public / 'index.html').read_text())
-    assert {f'/{product}/{default}/' for product, default in defaults.items()} <= set(home.main_links), \
-        'Projects menu must open each selected documentation release'
-    assert '/grid/' not in home.main_links, 'Grid project page belongs in Grid documentation navigation'
+    assert not {f'/{product}/{default}/' for product, default in defaults.items()} & set(home.main_links), 'Project switching belongs inside documentation'
     grid_docs = Page((public / 'grid' / defaults['grid'] / 'index.html').read_text())
     assert '/grid/' in grid_docs.docs_links, 'Grid documentation must link to its project page'
-    assert not {'/docs/', '/start/', '/examples/'} & set(home.main_links), \
-        'Docs, Get started, and Examples are project navigation, not top-level links'
+    assert '/docs/' in home.main_links, 'Docs hub must be visible in global navigation'
+    assert not {'/start/', '/examples/'} & set(home.main_links), 'Secondary discovery stays in the Docs hub'
     assert '/blog/' in home.main_links, 'Blog must be available in the main navigation'
     blog = Page((public / 'blog/index.html').read_text())
     assert not blog.redirect and blog.h1 == 1, 'Blog index must be a real page with one H1'

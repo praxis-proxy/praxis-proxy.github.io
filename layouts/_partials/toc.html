@@ -1,0 +1,27 @@
+{{- $navigation := index hugo.Data.docs_navigation.products (.Params.product | default "") -}}
+{{- if and $navigation (eq .Params.source_path $navigation.overview) -}}
+<div class="td-toc"><nav id="TableOfContents" aria-label="On this page"><ul><li><a href="#journey-title">Your starting path</a></li><li><a href="#source-index">Full source index</a></li></ul></nav></div>
+{{- else -}}
+{{/*
+
+  Always render the td-toc element. ScrollSpy is counting on it to exist,
+  even if it's empty.
+
+  cSpell:ignore notoc
+*/ -}}
+
+<div class="td-toc" data-proofer-ignore>
+{{ if not .Params.notoc -}}
+  {{ $toc := .TableOfContents -}}
+  {{ if and $toc (ne $toc `<nav id="TableOfContents"></nav>`) -}}
+    <div class="td-toc-title">
+      <span class="td-toc-title__text">{{ i18n "toc_on_this_page" }}</span>
+      <a class="td-toc-title__link" title="{{ i18n "toc_top_of_page" }}" href="#"></a>
+    </div>
+    {{ $toc | safeHTML }}
+  {{ end -}}
+{{ end -}}
+</div>
+{{/* */ -}}
+
+{{- end -}}

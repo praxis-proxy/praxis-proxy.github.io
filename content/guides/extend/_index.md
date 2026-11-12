@@ -1,4 +1,6 @@
 +++
+topic = "Development"
+navigation_section = "extend"
 title = "Extend and contribute"
 description = "Use Rust when you need custom filters, protocols, or changes to the Praxis project."
 type = "guides"

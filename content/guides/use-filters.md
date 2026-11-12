@@ -1,4 +1,5 @@
 +++
+navigation_section = "configure"
 title = "Choose and configure filters"
 description = "Use Praxis’s built-in filters to change how a proxy handles requests."
 type = "guides"
@@ -27,7 +28,7 @@ A **backend** is the application service that receives a proxied request. A **ro
 
 ## Try a complete configuration
 
-You need Docker Engine and `curl`.
+You need Docker Engine with Linux AMD64 support (native or emulated) and `curl`. The container commands explicitly select `linux/amd64` for the published Praxis image.
 
 This local example returns a response directly, without contacting a backend. Save it as `praxis.yaml`:
 
@@ -43,17 +44,14 @@ filter_chains:
       - filter: static_response
         status: 200
         body: "Filter configuration is active."
-        headers:
-          - name: "X-Praxis-Filter"
-            value: "configured"
 ```
 
-`listeners` sets the local address that accepts requests. The filter chain is the ordered list of rules for that listener. Here, `static_response` replies with status `200`, the message, and the `X-Praxis-Filter` header.
+`listeners` sets the local address that accepts requests. The filter chain is the ordered list of rules for that listener. Here, `static_response` replies with status `200` and the configured message.
 
 Save the file as `praxis.yaml` and validate it:
 
 {{< product-release product="praxis" >}}
-docker run --rm \
+docker run --rm --platform linux/amd64 \
   --volume "$PWD/praxis.yaml:/etc/praxis/config.yaml:ro" \
   @IMAGE@ --validate
 {{< /product-release >}}
@@ -61,7 +59,7 @@ docker run --rm \
 Successful validation exits with status `0` and does not start the proxy. Then start it in one terminal:
 
 {{< product-release product="praxis" >}}
-docker run --rm --publish 127.0.0.1:8080:8080 \
+docker run --rm --platform linux/amd64 --publish 127.0.0.1:8080:8080 \
   --volume "$PWD/praxis.yaml:/etc/praxis/config.yaml:ro" \
   @IMAGE@
 {{< /product-release >}}
@@ -72,7 +70,7 @@ In another terminal, send a request:
 curl -i http://127.0.0.1:8080/
 ```
 
-The response should have status `200`, include `X-Praxis-Filter: configured`, and contain `Filter configuration is active.` No separate backend is needed for this example.
+The response should have status `200` and contain `Filter configuration is active.` No separate backend is needed for this example.
 
 The proxy listens on this machine at `127.0.0.1:8080`. To forward requests to a service, configure a `router` and `load_balancer` with its address. Praxis blocks loopback, private-network, and link-local upstream addresses by default; the {{< docs-link product="praxis" source="docs/quickstart.md" label="development quickstart" >}} explains the local-development opt-in and its security implications.
 
