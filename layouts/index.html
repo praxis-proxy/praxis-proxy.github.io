@@ -10,7 +10,7 @@
         <h1 id="home-title"><span class="home-hero__line">Move fast.</span><span class="home-hero__line"><em>Stay in control.</em></span></h1>
         <p class="home-hero__lede">A programmable proxy for your services. An AI gateway for your agents. Policy controls and multi-site inference routing for Kubernetes.</p>
         <div class="home-hero__actions">
-          <a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy <span aria-hidden="true">↗</span></a>
           <a class="home-hero__secondary" href="{{ printf "ai/%s/" $aiDocs.default | relURL }}">Explore Praxis AI <span aria-hidden="true">→</span></a>
           <a class="home-hero__secondary project-spotlight__secondary" href="{{ printf "grid/%s/" $gridDocs.default | relURL }}">Explore Praxis Grid <span aria-hidden="true">→</span></a>
         </div>

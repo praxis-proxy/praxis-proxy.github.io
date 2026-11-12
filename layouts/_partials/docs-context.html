@@ -1,0 +1,8 @@
+{{- $version := .Params.version | default "" -}}
+{{- $label := .Params.version_label | default "" -}}
+{{- if .Params.current_release -}}
+  {{- $product := index hugo.Data.docs_build_versions.products .Params.product -}}
+  {{- $version = $product.default -}}
+  {{- $label = (index (where $product.versions "slug" $version) 0).label -}}
+{{- end -}}
+{{- return (dict "version" $version "label" $label) -}}

@@ -6,7 +6,7 @@
     {{- $page := . -}}
     {{- $indexable := or $page.IsPage (and $page.IsSection (gt (len $page.RawContent) 0)) (eq $page.Kind "home") -}}
     {{- $product := .Params.product | default "" -}}
-    {{- $version := .Params.version | default "" -}}
+    {{- $version := (partial "docs-context.html" $page).version -}}
     {{- $include := false -}}
     {{- if eq $scopeProduct "all" -}}
       {{- if not $product -}}
@@ -43,7 +43,7 @@
         "product" $product
         "product_name" (cond (ne $product "") (index (index $.products $product) "name") "Praxis ecosystem")
         "version" $version
-        "version_label" ($page.Params.version_label | default "")
+        "version_label" (partial "docs-context.html" $page).label
         "reader_need" ($page.Params.reader_need | default "")
         "topic" ($page.Params.topic | default "")
       -}}

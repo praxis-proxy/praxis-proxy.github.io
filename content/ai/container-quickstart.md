@@ -7,8 +7,7 @@ reader_need = "How-to"
 topic = "AI Gateway"
 order = 5
 product = "ai"
-version = "v0.4.1"
-version_label = "v0.4.1 (alpha)"
+current_release = true
 source_path = "website/container-quickstart.md"
 summary = "Run Praxis AI in Docker and route an OpenAI request through it."
 +++

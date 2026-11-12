@@ -13,9 +13,9 @@
     <div class="product-overview__copy">
       <p>Default documentation: {{ $default.label }}</p>
       {{- if eq $id "praxis" -}}
-      <p class="product-start-action"><a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy</a></p>
+      <p class="product-start-action"><a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy</a></p>
       {{- else if eq $id "ai" -}}
-      <p class="product-start-action"><a class="btn btn-primary" href="{{ "ai/container-quickstart/" | relURL }}">Run Praxis AI</a></p>
+      <p class="product-start-action"><a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run Praxis AI</a></p>
       {{- else -}}{{- with index $startPages 0 -}}
       <p class="product-start-action"><a class="btn btn-primary" href="{{ .RelPermalink }}">Get started: {{ .Title }}</a></p>
       {{- end -}}{{- end -}}

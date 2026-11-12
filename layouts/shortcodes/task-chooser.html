@@ -30,9 +30,9 @@
       <p class="task-card__prerequisite"><strong>Prerequisites:</strong> {{ index $prerequisites $id }}</p>
       {{- end }}
       {{- if eq $id "praxis" -}}
-      <a class="task-card__action" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">→</span></a>
+      <a class="task-card__action" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy <span aria-hidden="true">→</span></a>
       {{- else if eq $id "ai" -}}
-      <a class="task-card__action" href="{{ "ai/container-quickstart/" | relURL }}">Run Praxis AI <span aria-hidden="true">→</span></a>
+      <a class="task-card__action" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run Praxis AI <span aria-hidden="true">→</span></a>
       {{- else -}}{{- with index $startPages 0 -}}
       <a class="task-card__action" href="{{ .RelPermalink }}">Get started: {{ .Title }} <span aria-hidden="true">→</span></a>
       {{- end -}}{{- end -}}

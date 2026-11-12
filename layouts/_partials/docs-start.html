@@ -1,0 +1,14 @@
+{{- $product := index hugo.Data.docs_build_versions.products .product -}}
+{{- $navigation := index hugo.Data.docs_navigation.products .product -}}
+{{- $version := .version | default $product.default -}}
+{{- $href := "" -}}
+{{- if and (eq $version $product.default) $navigation.default_start_page -}}
+  {{- with site.GetPage $navigation.default_start_page -}}
+    {{- $href = .RelPermalink -}}
+  {{- end -}}
+{{- else -}}
+  {{- $pages := where (where (where site.Pages "Params.product" .product) "Params.version" $version) "Params.source_path" $navigation.start -}}
+  {{- with index $pages 0 }}{{ $href = .RelPermalink }}{{ end -}}
+{{- end -}}
+{{- if not $href }}{{ errorf "Missing starting guide for %s/%s" .product $version }}{{ end -}}
+{{- return $href -}}

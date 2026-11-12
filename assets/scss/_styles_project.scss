@@ -113,10 +113,10 @@ h1, h2, h3, h4, h5, h6 { color: var(--praxis-text); line-height: 1.2; letter-spa
   .td-navbar .navbar-nav > .nav-item > a.nav-link:not(.dropdown-toggle):hover,
   .td-navbar .navbar-nav > .nav-item > a.nav-link.active:not(.dropdown-toggle) { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.35em; }
 }
-.navbar-brand__logo { display: block; height: 2.25rem; width: auto; }
-.navbar-brand__logo--dark { display: none; }
-[data-bs-theme='dark'] .navbar-brand__logo--light { display: none; }
-[data-bs-theme='dark'] .navbar-brand__logo--dark { display: block; }
+.td-navbar .navbar-brand .navbar-brand__logo { display: block; height: 2.25rem; width: auto; }
+.td-navbar .navbar-brand .navbar-brand__logo--dark { display: none; }
+[data-bs-theme='dark'] .td-navbar .navbar-brand .navbar-brand__logo--light { display: none; }
+[data-bs-theme='dark'] .td-navbar .navbar-brand .navbar-brand__logo--dark { display: block; }
 .td-navbar .nav-link { min-height: 44px; display: inline-flex; align-items: center; }
 .td-navbar .nav-link.active { color: var(--praxis-accent); font-weight: 600; }
 .td-navbar .nav-link:focus-visible, .td-navbar .navbar-toggler:focus-visible, .praxis-products-menu a:focus-visible { outline: 3px solid var(--praxis-accent); outline-offset: 3px; box-shadow: none; }

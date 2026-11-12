@@ -10,6 +10,7 @@
   <div class="docs-need-products">
     {{- range $id := $order -}}
       {{- $product := index $products $id -}}
+      {{- $navigation := index hugo.Data.docs_navigation.products $id -}}
       {{- $pages := where (where (where site.RegularPages "Params.product" $id) "Params.version" $product.default) "Params.reader_need" $need -}}
       {{- $pages = where $pages "Params.topic" "ne" "Examples" -}}
       {{- $pages = first 3 (sort $pages "Params.order") -}}
@@ -18,7 +19,7 @@
         <h3><a href="{{ printf "%s/" $id | relURL }}">{{ $product.name }}</a></h3>
         <ul>
           {{- range $pages -}}
-          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}</li>
+          <li><a href="{{ .RelPermalink }}">{{ if and $navigation.source_start_label (eq .Params.source_path $navigation.start) }}{{ $navigation.source_start_label }}{{ else }}{{ .Title }}{{ end }}</a>{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}</li>
           {{- end -}}
         </ul>
       </section>

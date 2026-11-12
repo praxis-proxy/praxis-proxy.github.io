@@ -12,7 +12,7 @@
         <p class="praxis-release-hero__summary">Install, configure, and operate this release. Explore filters, architecture, and exact settings when you need them.</p>
         <div class="praxis-release-hero__actions">
           {{- if eq .Params.version $product.default -}}
-            <a class="btn btn-primary" href="{{ "guides/first-proxy/" | relURL }}">Run your first proxy <span aria-hidden="true">↗</span></a>
+            <a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy <span aria-hidden="true">↗</span></a>
           {{- else -}}
             {{- with index $quickstarts 0 -}}<a class="btn btn-primary" href="{{ .RelPermalink }}">Read this release's quickstart <span aria-hidden="true">↗</span></a>{{- end -}}
           {{- end -}}
@@ -41,6 +41,9 @@
       {{ end -}}
     </header>
     {{ .Render "_td-content-after-header" -}}
+    {{- if and (eq .Params.product "ai") (eq .Params.source_path "docs/README.md") -}}
+    <p class="product-start-action"><a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "ai" "version" .Params.version) }}">{{ if eq .Params.version (index hugo.Data.docs_build_versions.products "ai").default }}Run Praxis AI{{ else }}Start with this version{{ end }}</a></p>
+    {{- end -}}
     {{ .Content }}
     {{ partial "section-index.html" . -}}
     {{ partial "feedback.html" . -}}

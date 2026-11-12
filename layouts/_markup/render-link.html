@@ -3,5 +3,10 @@
 {{- if and (strings.HasPrefix $destination "/") (not (strings.HasPrefix $destination "//")) (not (strings.HasPrefix $destination $base)) -}}
   {{- $destination = strings.TrimPrefix "/" $destination | relURL -}}
 {{- end -}}
-<a href="{{ $destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+{{- $text := .Text -}}
+{{- $navigation := index hugo.Data.docs_navigation.products (.Page.Params.product | default "") -}}
+{{- if and (in (slice "praxis" "ai") .Page.Params.product) (eq .Page.Params.source_path "docs/README.md") (eq $destination (printf "%s/%s/quickstart/" .Page.Params.product .Page.Params.version | relURL)) -}}
+  {{- $text = $navigation.source_start_label | default .Text -}}
+{{- end -}}
+<a href="{{ $destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
 {{- /* Keep punctuation next to inline links. */ -}}
