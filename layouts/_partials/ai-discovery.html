@@ -1,0 +1,29 @@
+{{- $version := .version -}}
+{{- $pages := where (where site.Pages "Params.product" "ai") "Params.version" $version -}}
+<div class="ai-discovery">
+  {{- range hugo.Data.ai_discovery -}}
+  <section aria-labelledby="ai-{{ .id }}">
+    <h2 id="ai-{{ .id }}">{{ .title }}</h2>
+    <p>{{ .summary }}</p>
+    <ul class="ai-discovery__cards">
+      {{- range .cards -}}
+        {{- $source := .source -}}
+        {{- if and (eq $version "dev") .dev_source }}{{ $source = .dev_source }}{{ end -}}
+        {{- $matches := where $pages "Params.source_path" $source -}}
+        {{- if and (not $matches) hugo.Data.docs_build_versions.preview }}{{ $matches = where $pages "Params.source_path" .source }}{{ end -}}
+        {{- $card := . -}}
+        {{- with index $matches 0 }}
+          {{- $href := .RelPermalink -}}
+          {{- if and (eq $version "dev") (not hugo.Data.docs_build_versions.preview) $card.dev_fragment }}{{ $href = printf "%s#%s" $href $card.dev_fragment }}{{ end -}}
+      <li><h3><a href="{{ $href }}">{{ $card.title }}</a></h3><p>{{ $card.summary }}</p></li>
+        {{- else -}}
+          {{- if or (eq $version "dev") (eq $version (index hugo.Data.docs_build_versions.products "ai").default) -}}
+          {{- errorf "Missing AI discovery target %s in %s" $source $version -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+  <p class="docs-development-note">{{ if eq $version "dev" }}These operator recipes describe unreleased Development source. Each guide identifies its build, services, and compatibility limits.{{ else }}These links use this documentation snapshot. Complete new operator recipes are available in <a href="{{ "ai/dev/" | relURL }}">unreleased Development documentation</a>.{{ end }}</p>
+</div>

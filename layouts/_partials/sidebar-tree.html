@@ -53,7 +53,7 @@
           <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>Configuration examples</a>
         </li>
         {{- end }}
-        {{- range hugo.Data.docs_navigation.sections }}
+        {{- range ($navigation.sections | default hugo.Data.docs_navigation.sections) }}
           {{- $need := .id -}}
           {{- $label := .label -}}
           {{- $needPages := where $allDocs "Params.navigation_section" $need -}}

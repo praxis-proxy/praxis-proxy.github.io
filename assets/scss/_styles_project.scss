@@ -715,3 +715,9 @@ body.praxis-blog .td-outer { padding-inline: 0; }
 .docs-context-controls select { display: block; width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem .55rem; color: var(--praxis-text); background: var(--praxis-panel); border: 1px solid var(--praxis-border); border-radius: .35rem; }
 .docs-context-controls select:focus-visible { outline: 3px solid var(--praxis-accent); outline-offset: 2px; }
 .docs-project-scope { margin-bottom: 1rem; color: var(--praxis-muted); font-size: .85rem; }
+
+.ai-discovery section { margin-block: 2rem; }
+.ai-discovery__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; padding: 0; list-style: none; }
+.ai-discovery__cards > li { padding: 1.25rem; border: 1px solid var(--praxis-border); border-radius: .5rem; background: var(--praxis-panel); }
+.ai-discovery__cards h3 { font-size: 1.15rem; margin: 0 0 .75rem; }
+.ai-discovery__cards p { margin: 0; }

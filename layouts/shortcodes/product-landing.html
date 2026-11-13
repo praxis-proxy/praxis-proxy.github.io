@@ -48,3 +48,5 @@
   </section>
   <p class="product-links"><a href="{{ $product.repo }}">Source repository</a><a href="{{ $product.issues }}">Report an issue</a><a href="{{ printf "%s/%s/" $id $product.default | relURL }}">Browse {{ $default.label }} documentation</a></p>
 </section>
+
+{{ if eq $id "ai" }}{{ partial "ai-discovery.html" (dict "version" $product.default) }}{{ end }}
