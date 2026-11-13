@@ -4,9 +4,11 @@
 {{- $steps := partial "docs-journey-steps.html" (dict "product" $page.Params.product "version" $page.Params.version) -}}
 <section class="docs-journey" aria-labelledby="journey-title">
   <p class="docs-journey__eyebrow">{{ $product.name }} / {{ $page.Params.version_label }}</p>
-  <h2 id="journey-title">{{ if eq $page.Params.product "policy" }}Start with your integration{{ else }}From first result to configuration{{ end }}</h2>
+  <h2 id="journey-title">{{ if eq $page.Params.product "policy" }}Start with your integration{{ else if eq $page.Params.product "ai" }}Find your API, provider, and gateway task{{ else }}From first result to configuration{{ end }}</h2>
   <p>{{ $product.description }}{{ if eq $page.Params.product "policy" }} This path is for embedding the Rust library. Gateway operators should use the policy integration documented by their host project and release.{{ end }}</p>
   {{ if and hugo.Data.docs_build_versions.preview (eq $page.Params.version "dev") }}<p class="docs-development-note">This local preview uses the source working tree. Available steps may differ from the pinned Development snapshot.</p>{{ end }}
+  {{ if eq $page.Params.product "ai" }}{{ partial "ai-discovery.html" (dict "version" $page.Params.version) }}{{ end }}
+  {{ if eq $page.Params.product "ai" }}<h2>Follow the starting path</h2>{{ end }}
   <ol class="docs-journey__steps">
     {{- range $i, $step := $steps }}
     <li><span class="docs-journey__number" aria-hidden="true">{{ add $i 1 }}</span><div><a href="{{ .href }}">{{ .title }}</a><p>{{ .summary }}</p></div></li>

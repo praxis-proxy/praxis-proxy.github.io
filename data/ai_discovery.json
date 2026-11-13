@@ -1,0 +1,82 @@
+[
+  {
+    "id": "client-apis",
+    "title": "Choose your client API",
+    "summary": "Start with the protocol your application sends. Native forwarding and translation have different compatibility boundaries.",
+    "cards": [
+      {
+        "title": "OpenAI Chat Completions",
+        "summary": "Review API forwarding and build requirements. Development includes a Chat Completions quickstart with complete configuration.",
+        "source": "docs/features.md",
+        "dev_fragment": "chat-completions",
+        "dev_source": "docs/quickstart.md"
+      },
+      {
+        "title": "Anthropic Messages",
+        "summary": "Choose native Messages forwarding or translation to a Chat Completions backend; review streaming and compatibility limits.",
+        "source": "docs/anthropic-messages.md",
+        "dev_source": "docs/recipes/anthropic.md"
+      },
+      {
+        "title": "Responses and Conversations",
+        "summary": "Distinguish upstream passthrough from experimental managed state and tool execution. Check build features before configuring.",
+        "source": "docs/features.md",
+        "dev_source": "docs/recipes/managed-responses.md"
+      }
+    ]
+  },
+  {
+    "id": "providers",
+    "title": "Connect a provider",
+    "summary": "Match the client protocol to your upstream, credentials, and selected build. Provider adapters do not imply support for every provider operation.",
+    "cards": [
+      {
+        "title": "Choose a client and provider",
+        "summary": "Review capabilities and build requirements. Development adds a client/provider decision table covering credentials and compatibility.",
+        "source": "docs/features.md",
+        "dev_source": "docs/client-provider-paths.md"
+      },
+      {
+        "title": "Azure, Vertex, and Bedrock",
+        "summary": "Review the provider adapters and their prerequisites before selecting a configuration.",
+        "source": "docs/filters/reference.md",
+        "dev_source": "docs/recipes/providers.md"
+      }
+    ]
+  },
+  {
+    "id": "gateway-tasks",
+    "title": "Add gateway behavior",
+    "summary": "Choose a task, follow its guide, then use the filter reference for exact settings. External services and optional builds may be required.",
+    "cards": [
+      {
+        "title": "Route models and providers",
+        "summary": "Explore model routing and selection; Development adds a complete alias and provider-routing recipe.",
+        "source": "docs/filters/intelligent_route.md",
+        "dev_source": "docs/recipes/routing.md"
+      },
+      {
+        "title": "Guardrails and token usage",
+        "summary": "Screen requests with an external guardrail service and inspect usage. Development combines these in an operator recipe.",
+        "source": "docs/features.md",
+        "dev_source": "docs/recipes/guardrails-token-usage.md"
+      },
+      {
+        "title": "Discover filters and composition",
+        "summary": "Find capabilities, filter settings, and the pipeline composition needed for your task.",
+        "source": "docs/filters/README.md"
+      },
+      {
+        "title": "MCP, A2A, and agentic flows",
+        "summary": "Separate protocol routing and brokering from model-driven tool execution and experimental managed flows.",
+        "source": "docs/architecture/agentic-protocols.md"
+      },
+      {
+        "title": "Operate and troubleshoot",
+        "summary": "Plan deployment and capacity. Development adds an operations, observability, and upgrade checklist.",
+        "source": "docs/capacity-planning.md",
+        "dev_source": "docs/operations.md"
+      }
+    ]
+  }
+]

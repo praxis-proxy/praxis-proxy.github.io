@@ -564,7 +564,7 @@
             "docs/operating/observability.md"
           ],
           "order": 30,
-          "summary": "Configure listeners, filter chains, upstream clusters, limits, administration, and runtime behavior with Praxis’s YAML file.",
+          "summary": "Configure listeners, filter chains, upstream clusters, limits, administration, and runtime behavior with Praxis\u2019s YAML file.",
           "navigation_section": "operate"
         },
         "docs/operating/fips.md": {
@@ -647,7 +647,7 @@
         },
         {
           "title": "Build and run this version",
-          "summary": "Follow this snapshot’s source-build quickstart.",
+          "summary": "Follow this snapshot\u2019s source-build quickstart.",
           "source": "docs/quickstart.md",
           "non_default_only": true
         },
@@ -674,7 +674,7 @@
     "ai": {
       "start": "docs/quickstart.md",
       "default_start_page": "/ai/container-quickstart",
-      "source_start_label": "Build from source",
+      "source_start_label": "Quickstart",
       "groups": [
         "How-to",
         "Tutorial",
@@ -682,16 +682,17 @@
         "Explanation"
       ],
       "topic_order": [
-        "AI Gateway",
-        "Core Concepts",
-        "Store",
-        "AI Filters",
-        "OpenAI Compatibility",
-        "Anthropic Messages",
-        "Conformance",
+        "Getting started",
+        "Client APIs",
+        "Providers",
+        "Routing",
+        "Guardrails and usage",
+        "Tools and state",
+        "Operations",
+        "Compatibility",
+        "Filter settings",
         "Architecture",
-        "Developing",
-        "Type Design"
+        "Developing"
       ],
       "articles": {
         "docs/README.md": {
@@ -705,12 +706,10 @@
         "docs/anthropic-messages.md": {
           "source_path": "docs/anthropic-messages.md",
           "reader_need": "How-to",
-          "topic": "Core Concepts",
-          "related": [
-            "docs/filters/reference.md"
-          ],
+          "navigation_section": "apis",
+          "topic": "Client APIs",
           "order": 10,
-          "navigation_section": "configure"
+          "summary": "Compare native Messages forwarding, translation, and compatibility limits."
         },
         "docs/architecture/agentic-protocols.md": {
           "source_path": "docs/architecture/agentic-protocols.md",
@@ -734,11 +733,11 @@
         "docs/architecture/opentelemetry.md": {
           "source_path": "docs/architecture/opentelemetry.md",
           "reader_need": "Explanation",
-          "topic": "Architecture",
+          "topic": "Operations",
           "order": 30,
           "related": [],
           "summary": "Add Praxis AI routing decisions to the OpenTelemetry request traces exported by Praxis core.",
-          "navigation_section": "understand"
+          "navigation_section": "operate"
         },
         "docs/architecture/outbound-callouts.md": {
           "source_path": "docs/architecture/outbound-callouts.md",
@@ -767,7 +766,7 @@
         "docs/conformance/openresponses-translation.md": {
           "source_path": "docs/conformance/openresponses-translation.md",
           "reader_need": "Reference",
-          "topic": "Conformance",
+          "topic": "Compatibility",
           "order": 10,
           "related": [],
           "navigation_section": "reference"
@@ -791,7 +790,7 @@
           ],
           "order": 20,
           "summary": "Connect Codex or Claude Code through a local Praxis AI gateway to inference served by vLLM.",
-          "navigation_section": "configure"
+          "navigation_section": "providers"
         },
         "docs/developing/fips.md": {
           "source_path": "docs/developing/fips.md",
@@ -827,138 +826,137 @@
         },
         "docs/filters/README.md": {
           "source_path": "docs/filters/README.md",
-          "reader_need": "Overview",
-          "topic": "AI Filters",
+          "reader_need": "Explanation",
+          "navigation_section": "protect",
+          "topic": "Guardrails and usage",
           "order": 10,
-          "related": [],
-          "summary": "Browse Praxis AI filters and open their generated configuration reference.",
-          "navigation_section": "reference"
+          "summary": "Discover operator capabilities, required filters, and pipeline ordering."
         },
         "docs/filters/a2a.md": {
           "source_path": "docs/filters/a2a.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Tools and state",
           "order": 10,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/ai_guardrails.md": {
           "source_path": "docs/filters/ai_guardrails.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 20,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/anthropic_messages_format.md": {
           "source_path": "docs/filters/anthropic_messages_format.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Client APIs",
           "order": 10,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/anthropic_messages_protocol.md": {
           "source_path": "docs/filters/anthropic_messages_protocol.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Client APIs",
           "order": 20,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/anthropic_messages_to_chat_completions.md": {
           "source_path": "docs/filters/anthropic_messages_to_chat_completions.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Client APIs",
           "order": 30,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/anthropic_messages_to_chat_completions_stream.md": {
           "source_path": "docs/filters/anthropic_messages_to_chat_completions_stream.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Client APIs",
           "order": 40,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/anthropic_validate.md": {
           "source_path": "docs/filters/anthropic_validate.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Client APIs",
           "order": 50,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/anthropic_web_search.md": {
           "source_path": "docs/filters/anthropic_web_search.md",
           "reader_need": "Reference",
-          "topic": "Anthropic Messages",
+          "topic": "Tools and state",
           "order": 60,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/aws_sigv4_sign.md": {
           "source_path": "docs/filters/aws_sigv4_sign.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Providers",
           "order": 30,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/azure_ad.md": {
           "source_path": "docs/filters/azure_ad.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Providers",
           "order": 40,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/callout_credentials.md": {
           "source_path": "docs/filters/callout_credentials.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Providers",
           "order": 50,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/credential_inject.md": {
           "source_path": "docs/filters/credential_inject.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Providers",
           "order": 60,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/extensions.md": {
           "source_path": "docs/filters/extensions.md",
           "reader_need": "Explanation",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 10,
           "related": [],
           "summary": "Extend Praxis AI with custom filters using the Praxis core filter interfaces and registration model.",
-          "navigation_section": "understand"
+          "navigation_section": "reference"
         },
         "docs/filters/external_metering.md": {
           "source_path": "docs/filters/external_metering.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 70,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/gcp_adc.md": {
           "source_path": "docs/filters/gcp_adc.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Providers",
           "order": 80,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/http_callout.md": {
           "source_path": "docs/filters/http_callout.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 90,
           "related": [],
           "navigation_section": "reference"
@@ -966,225 +964,225 @@
         "docs/filters/identity_header_guard.md": {
           "source_path": "docs/filters/identity_header_guard.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 100,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/intelligent_route.md": {
           "source_path": "docs/filters/intelligent_route.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Routing",
           "order": 110,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "routing"
         },
         "docs/filters/llmisvc_model_provider_resolver.md": {
           "source_path": "docs/filters/llmisvc_model_provider_resolver.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Routing",
           "order": 120,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "routing"
         },
         "docs/filters/mcp.md": {
           "source_path": "docs/filters/mcp.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Tools and state",
           "order": 130,
           "related": [],
           "summary": "Extracts MCP JSON-RPC method, tool, resource, prompt, version, and session metadata into filter-visible request fields.",
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/model_to_header.md": {
           "source_path": "docs/filters/model_to_header.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Routing",
           "order": 140,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "routing"
         },
         "docs/filters/openai_agentic_loop.md": {
           "source_path": "docs/filters/openai_agentic_loop.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 10,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_chat_completions_to_azureai_chat_completions.md": {
           "source_path": "docs/filters/openai_chat_completions_to_azureai_chat_completions.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 20,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_chat_completions_to_vertexai_gemini.md": {
           "source_path": "docs/filters/openai_chat_completions_to_vertexai_gemini.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Providers",
           "order": 30,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "providers"
         },
         "docs/filters/openai_client_tool_compat.md": {
           "source_path": "docs/filters/openai_client_tool_compat.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 40,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_conversations.md": {
           "source_path": "docs/filters/openai_conversations.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 50,
           "related": [],
           "summary": "Serve OpenAI Conversations API endpoints locally through the configured response store.",
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_doc_extract.md": {
           "source_path": "docs/filters/openai_doc_extract.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 60,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_file_resolve.md": {
           "source_path": "docs/filters/openai_file_resolve.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 70,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_file_search_callout.md": {
           "source_path": "docs/filters/openai_file_search_callout.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 80,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_mcp_dispatch.md": {
           "source_path": "docs/filters/openai_mcp_dispatch.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 90,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_mcp_tool_resolve.md": {
           "source_path": "docs/filters/openai_mcp_tool_resolve.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 100,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_operation.md": {
           "source_path": "docs/filters/openai_operation.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 110,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_response_store.md": {
           "source_path": "docs/filters/openai_response_store.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 120,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_responses_compact.md": {
           "source_path": "docs/filters/openai_responses_compact.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 130,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_responses_format.md": {
           "source_path": "docs/filters/openai_responses_format.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 140,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_responses_model_rewrite.md": {
           "source_path": "docs/filters/openai_responses_model_rewrite.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 150,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_responses_proxy.md": {
           "source_path": "docs/filters/openai_responses_proxy.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 160,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_responses_rehydrate.md": {
           "source_path": "docs/filters/openai_responses_rehydrate.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 170,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/openai_responses_request.md": {
           "source_path": "docs/filters/openai_responses_request.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 180,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_responses_validate.md": {
           "source_path": "docs/filters/openai_responses_validate.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 190,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_stream_events.md": {
           "source_path": "docs/filters/openai_stream_events.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 200,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_tool_parse.md": {
           "source_path": "docs/filters/openai_tool_parse.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 210,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/openai_web_search.md": {
           "source_path": "docs/filters/openai_web_search.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Tools and state",
           "order": 220,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "tools"
         },
         "docs/filters/project_state_owner_headers.md": {
           "source_path": "docs/filters/project_state_owner_headers.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 150,
           "related": [],
           "navigation_section": "reference"
@@ -1192,7 +1190,7 @@
         "docs/filters/prompt_enrich.md": {
           "source_path": "docs/filters/prompt_enrich.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 160,
           "related": [],
           "navigation_section": "reference"
@@ -1200,15 +1198,15 @@
         "docs/filters/provider_route.md": {
           "source_path": "docs/filters/provider_route.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Routing",
           "order": 170,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "routing"
         },
         "docs/filters/reference.md": {
           "source_path": "docs/filters/reference.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "related": [
             "docs/filters/README.md",
             "docs/architecture/ai-inference.md"
@@ -1219,15 +1217,15 @@
         "docs/filters/responses_to_chat_completions.md": {
           "source_path": "docs/filters/responses_to_chat_completions.md",
           "reader_need": "Reference",
-          "topic": "OpenAI Compatibility",
+          "topic": "Client APIs",
           "order": 230,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "apis"
         },
         "docs/filters/state_owner.md": {
           "source_path": "docs/filters/state_owner.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 190,
           "related": [],
           "navigation_section": "reference"
@@ -1235,7 +1233,7 @@
         "docs/filters/stream_usage_inject.md": {
           "source_path": "docs/filters/stream_usage_inject.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 200,
           "related": [],
           "navigation_section": "reference"
@@ -1243,7 +1241,7 @@
         "docs/filters/time_to_first_token.md": {
           "source_path": "docs/filters/time_to_first_token.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 210,
           "related": [],
           "navigation_section": "reference"
@@ -1251,54 +1249,50 @@
         "docs/filters/token_ceiling.md": {
           "source_path": "docs/filters/token_ceiling.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 220,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/token_count.md": {
           "source_path": "docs/filters/token_count.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 230,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/token_rate_limit.md": {
           "source_path": "docs/filters/token_rate_limit.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 240,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/filters/token_usage_headers.md": {
           "source_path": "docs/filters/token_usage_headers.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Guardrails and usage",
           "order": 250,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "protect"
         },
         "docs/fips.md": {
           "source_path": "docs/fips.md",
           "reader_need": "How-to",
-          "topic": "Core Concepts",
+          "topic": "Operations",
           "order": 20,
           "related": [],
-          "navigation_section": "configure"
+          "navigation_section": "operate"
         },
         "docs/quickstart.md": {
           "source_path": "docs/quickstart.md",
           "reader_need": "Tutorial",
-          "topic": "Developing",
-          "related": [
-            "docs/anthropic-messages.md",
-            "docs/features.md"
-          ],
+          "navigation_section": "start",
+          "topic": "Getting started",
           "order": 10,
-          "summary": "Build Praxis AI from source for local development, then route a Responses API request to an AI backend.",
-          "navigation_section": "start"
+          "summary": "Build the gateway and forward your first request to a provider."
         },
         "docs/release.md": {
           "source_path": "docs/release.md",
@@ -1311,7 +1305,7 @@
         "docs/store/schema-migration.md": {
           "source_path": "docs/store/schema-migration.md",
           "reader_need": "How-to",
-          "topic": "Store",
+          "topic": "Operations",
           "order": 10,
           "summary": "Replace the disposable v3 response store with a fresh v4 database before starting current releases; startup creates the required schema.",
           "related": [],
@@ -1320,7 +1314,7 @@
         "docs/store/legacy-item-position-repair.md": {
           "source_path": "docs/store/legacy-item-position-repair.md",
           "reader_need": "How-to",
-          "topic": "Store",
+          "topic": "Operations",
           "order": 20,
           "related": [],
           "navigation_section": "operate"
@@ -1328,10 +1322,10 @@
         "docs/capacity-planning.md": {
           "source_path": "docs/capacity-planning.md",
           "reader_need": "Reference",
-          "topic": "Core Concepts",
+          "topic": "Operations",
           "order": 20,
           "related": [],
-          "navigation_section": "reference"
+          "navigation_section": "operate"
         },
         "docs/migrating-to-0.2.md": {
           "source_path": "docs/migrating-to-0.2.md",
@@ -1339,12 +1333,12 @@
           "topic": "Core Concepts",
           "order": 30,
           "related": [],
-          "navigation_section": "configure"
+          "navigation_section": "providers"
         },
         "docs/conformance/README.md": {
           "source_path": "docs/conformance/README.md",
           "reader_need": "Overview",
-          "topic": "Conformance",
+          "topic": "Compatibility",
           "order": 20,
           "related": [],
           "navigation_section": "reference"
@@ -1352,7 +1346,7 @@
         "docs/conformance/openai-responses-state-conformance.md": {
           "source_path": "docs/conformance/openai-responses-state-conformance.md",
           "reader_need": "Reference",
-          "topic": "Conformance",
+          "topic": "Compatibility",
           "order": 20,
           "related": [],
           "navigation_section": "reference"
@@ -1360,7 +1354,7 @@
         "docs/filters/ai_operation.md": {
           "source_path": "docs/filters/ai_operation.md",
           "reader_need": "Reference",
-          "topic": "AI Filters",
+          "topic": "Filter settings",
           "order": 25,
           "related": [],
           "navigation_section": "reference"
@@ -1403,7 +1397,7 @@
           "topic": "Developing",
           "order": 50,
           "related": [],
-          "navigation_section": "configure"
+          "navigation_section": "providers"
         },
         "docs/anthropic-messages-replay-test-plan.md": {
           "source_path": "docs/anthropic-messages-replay-test-plan.md",
@@ -1415,16 +1409,244 @@
           "navigation_section": "extend"
         },
         "docs/client-provider-paths.md": {
+          "source_path": "docs/client-provider-paths.md",
           "reader_need": "How-to",
-          "topic": "Clients and providers",
-          "order": 5,
-          "navigation_section": "configure",
-          "summary": "Choose an AI client protocol and provider, with the credentials and build features each path requires.",
-          "related": [
-            "docs/quickstart.md",
-            "docs/anthropic-messages.md",
-            "docs/features.md"
-          ]
+          "navigation_section": "start",
+          "topic": "Getting started",
+          "order": 10,
+          "summary": "Choose a protocol, backend, credentials, and required build features."
+        },
+        "docs/recipes/README.md": {
+          "source_path": "docs/recipes/README.md",
+          "reader_need": "Overview",
+          "navigation_section": "start",
+          "topic": "Getting started",
+          "order": 10,
+          "summary": "Choose a complete recipe with prerequisites, configuration, and verification."
+        },
+        "docs/recipes/anthropic.md": {
+          "source_path": "docs/recipes/anthropic.md",
+          "reader_need": "How-to",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 10,
+          "summary": "Configure native Messages or translate to a Chat Completions backend."
+        },
+        "docs/recipes/providers.md": {
+          "source_path": "docs/recipes/providers.md",
+          "reader_need": "How-to",
+          "navigation_section": "providers",
+          "topic": "Providers",
+          "order": 10,
+          "summary": "Choose provider credentials, adapters, build features, and complete configurations."
+        },
+        "docs/recipes/routing.md": {
+          "source_path": "docs/recipes/routing.md",
+          "reader_need": "How-to",
+          "navigation_section": "routing",
+          "topic": "Routing",
+          "order": 10,
+          "summary": "Configure aliases and choose provider selection, failover, or session affinity."
+        },
+        "docs/recipes/guardrails-token-usage.md": {
+          "source_path": "docs/recipes/guardrails-token-usage.md",
+          "reader_need": "How-to",
+          "navigation_section": "protect",
+          "topic": "Guardrails and usage",
+          "order": 10,
+          "summary": "Configure external screening and observe token usage with explicit prerequisites."
+        },
+        "docs/recipes/managed-responses.md": {
+          "source_path": "docs/recipes/managed-responses.md",
+          "reader_need": "How-to",
+          "navigation_section": "tools",
+          "topic": "Tools and state",
+          "order": 10,
+          "summary": "Select an experimental build for managed state, Conversations, and tool execution."
+        },
+        "docs/operations.md": {
+          "source_path": "docs/operations.md",
+          "reader_need": "How-to",
+          "navigation_section": "operate",
+          "topic": "Operations",
+          "order": 10,
+          "summary": "Validate deployments, observe traffic, diagnose failures, and plan upgrades."
+        },
+        "docs/developing/filter-hosts.md": {
+          "source_path": "docs/developing/filter-hosts.md",
+          "reader_need": "How-to",
+          "navigation_section": "extend",
+          "topic": "Developing",
+          "order": 10,
+          "summary": "Register filters and response-store extensions when embedding Praxis AI."
+        },
+        "docs/architecture/cryptographic-inventory.md": {
+          "source_path": "docs/architecture/cryptographic-inventory.md",
+          "reader_need": "Explanation",
+          "navigation_section": "understand",
+          "topic": "Architecture",
+          "order": 100,
+          "summary": "Read the release-matched cryptographic inventory documentation and its scope."
+        },
+        "docs/architecture/responses-retained-payload.md": {
+          "source_path": "docs/architecture/responses-retained-payload.md",
+          "reader_need": "Explanation",
+          "navigation_section": "understand",
+          "topic": "Architecture",
+          "order": 100,
+          "summary": "Read the release-matched responses retained payload documentation and its scope."
+        },
+        "docs/architecture/routing-facts.md": {
+          "source_path": "docs/architecture/routing-facts.md",
+          "reader_need": "Explanation",
+          "navigation_section": "understand",
+          "topic": "Architecture",
+          "order": 100,
+          "summary": "Read the release-matched routing facts documentation and its scope."
+        },
+        "docs/conformance/openresponses-acceptance.md": {
+          "source_path": "docs/conformance/openresponses-acceptance.md",
+          "reader_need": "Reference",
+          "navigation_section": "reference",
+          "topic": "Compatibility",
+          "order": 100,
+          "summary": "Read the release-matched openresponses acceptance documentation and its scope."
+        },
+        "docs/conformance/translation-matrix.md": {
+          "source_path": "docs/conformance/translation-matrix.md",
+          "reader_need": "Reference",
+          "navigation_section": "reference",
+          "topic": "Compatibility",
+          "order": 100,
+          "summary": "Read the release-matched translation matrix documentation and its scope."
+        },
+        "docs/developing/openai-anthropic-compatibility.md": {
+          "source_path": "docs/developing/openai-anthropic-compatibility.md",
+          "reader_need": "Explanation",
+          "navigation_section": "extend",
+          "topic": "Developing",
+          "order": 100,
+          "summary": "Read the release-matched openai anthropic compatibility documentation and its scope."
+        },
+        "docs/developing/openshell-cli-vllm-through-praxis.md": {
+          "source_path": "docs/developing/openshell-cli-vllm-through-praxis.md",
+          "reader_need": "Explanation",
+          "navigation_section": "extend",
+          "topic": "Developing",
+          "order": 100,
+          "summary": "Read the release-matched openshell cli vllm through praxis documentation and its scope."
+        },
+        "docs/documentation-audit.md": {
+          "source_path": "docs/documentation-audit.md",
+          "reader_need": "Explanation",
+          "navigation_section": "extend",
+          "topic": "Developing",
+          "order": 100,
+          "summary": "Review the documentation support audit, source evidence, validation, and remaining gaps."
+        },
+        "docs/filters/anthropic_messages_request.md": {
+          "source_path": "docs/filters/anthropic_messages_request.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched anthropic messages request documentation and its scope."
+        },
+        "docs/filters/anthropic_messages_to_vertexai_anthropic.md": {
+          "source_path": "docs/filters/anthropic_messages_to_vertexai_anthropic.md",
+          "reader_need": "Reference",
+          "navigation_section": "providers",
+          "topic": "Providers",
+          "order": 100,
+          "summary": "Read the release-matched anthropic messages to vertexai anthropic documentation and its scope."
+        },
+        "docs/filters/inflight_tracker.md": {
+          "source_path": "docs/filters/inflight_tracker.md",
+          "reader_need": "Reference",
+          "navigation_section": "routing",
+          "topic": "Routing",
+          "order": 100,
+          "summary": "Read the release-matched inflight tracker documentation and its scope."
+        },
+        "docs/filters/model_to_provider.md": {
+          "source_path": "docs/filters/model_to_provider.md",
+          "reader_need": "Reference",
+          "navigation_section": "routing",
+          "topic": "Routing",
+          "order": 100,
+          "summary": "Read the release-matched model to provider documentation and its scope."
+        },
+        "docs/filters/openai_chat_completions_request.md": {
+          "source_path": "docs/filters/openai_chat_completions_request.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched openai chat completions request documentation and its scope."
+        },
+        "docs/filters/openai_chat_completions_streaming_selector.md": {
+          "source_path": "docs/filters/openai_chat_completions_streaming_selector.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched openai chat completions streaming selector documentation and its scope."
+        },
+        "docs/filters/openai_chat_completions_to_anthropic.md": {
+          "source_path": "docs/filters/openai_chat_completions_to_anthropic.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched openai chat completions to anthropic documentation and its scope."
+        },
+        "docs/filters/openai_chat_completions_to_anthropic_stream.md": {
+          "source_path": "docs/filters/openai_chat_completions_to_anthropic_stream.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched openai chat completions to anthropic stream documentation and its scope."
+        },
+        "docs/filters/openai_file_search_dispatch.md": {
+          "source_path": "docs/filters/openai_file_search_dispatch.md",
+          "reader_need": "Reference",
+          "navigation_section": "tools",
+          "topic": "Tools and state",
+          "order": 100,
+          "summary": "Read the release-matched openai file search dispatch documentation and its scope."
+        },
+        "docs/filters/openai_responses_store.md": {
+          "source_path": "docs/filters/openai_responses_store.md",
+          "reader_need": "Reference",
+          "navigation_section": "tools",
+          "topic": "Tools and state",
+          "order": 100,
+          "summary": "Read the release-matched openai responses store documentation and its scope."
+        },
+        "docs/filters/openai_responses_to_chat_completions.md": {
+          "source_path": "docs/filters/openai_responses_to_chat_completions.md",
+          "reader_need": "Reference",
+          "navigation_section": "apis",
+          "topic": "Client APIs",
+          "order": 100,
+          "summary": "Read the release-matched openai responses to chat completions documentation and its scope."
+        },
+        "docs/filters/openai_web_search_dispatch.md": {
+          "source_path": "docs/filters/openai_web_search_dispatch.md",
+          "reader_need": "Reference",
+          "navigation_section": "tools",
+          "topic": "Tools and state",
+          "order": 100,
+          "summary": "Read the release-matched openai web search dispatch documentation and its scope."
+        },
+        "docs/filters/token_usage_metrics.md": {
+          "source_path": "docs/filters/token_usage_metrics.md",
+          "reader_need": "Reference",
+          "navigation_section": "protect",
+          "topic": "Guardrails and usage",
+          "order": 100,
+          "summary": "Read the release-matched token usage metrics documentation and its scope."
         }
       },
       "overview": "docs/README.md",
@@ -1437,7 +1659,7 @@
         },
         {
           "title": "Build and send your first request",
-          "summary": "Follow this snapshot’s source-build quickstart.",
+          "summary": "Follow this snapshot\u2019s source-build quickstart.",
           "source": "docs/quickstart.md",
           "non_default_only": true
         },
@@ -1445,6 +1667,15 @@
           "title": "Choose your client and provider",
           "summary": "Compare request protocols, credentials and build features.",
           "source": "docs/client-provider-paths.md",
+          "versions": [
+            "dev"
+          ],
+          "optional_in_preview": true
+        },
+        {
+          "title": "Choose an operator recipe",
+          "summary": "Follow a complete configuration for your client, provider, or gateway task.",
+          "source": "docs/recipes/README.md",
           "versions": [
             "dev"
           ],
@@ -1461,7 +1692,49 @@
           "source": "docs/filters/reference.md"
         }
       ],
-      "development_summary": "The expanded source-build guide includes application client setup and a provider selector."
+      "development_summary": "Operator recipes cover client APIs, provider adapters, routing, guardrails, and experimental managed tools.",
+      "sections": [
+        {
+          "id": "start",
+          "label": "Get started"
+        },
+        {
+          "id": "apis",
+          "label": "Client APIs"
+        },
+        {
+          "id": "providers",
+          "label": "Providers and credentials"
+        },
+        {
+          "id": "routing",
+          "label": "Route requests"
+        },
+        {
+          "id": "protect",
+          "label": "Protect and control"
+        },
+        {
+          "id": "tools",
+          "label": "Tools and state"
+        },
+        {
+          "id": "operate",
+          "label": "Operate"
+        },
+        {
+          "id": "understand",
+          "label": "Architecture"
+        },
+        {
+          "id": "reference",
+          "label": "Reference"
+        },
+        {
+          "id": "extend",
+          "label": "Develop and contribute"
+        }
+      ]
     },
     "policy": {
       "start": "docs/content/quickstart.md",

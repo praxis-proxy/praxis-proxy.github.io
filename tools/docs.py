@@ -385,7 +385,7 @@ def site_url(product: str, version: str, output_path: str) -> str:
         suffix = "" if relative == "." else relative + "/"
     else:
         suffix = path.with_suffix("").as_posix() + "/"
-    return f"/{product}/{version}/{suffix}"
+    return f"/{product}/{version}/{suffix.lower()}"
 
 
 def normalized_repo_path(source_path: str, href_path: str) -> str | None:
@@ -815,6 +815,9 @@ def write_example_catalog_index(context: ExampleContext, samples: list[tuple[str
         lines.append("Choose a category below to browse every published YAML configuration." if configs
                      else "Browse the linked source examples below.")
     if configs:
+        if any(PurePosixPath(path).parent.as_posix() == "examples/configs" for path in configs):
+            lines.extend(["", "## General {#general}", "",
+                          f"[Browse general configurations]({site_url(product, version, group_pages['examples/configs'])}). The complete catalog also links to specialized categories."])
         lines.extend(["", "## Browse all configurations", ""])
     elif other_samples:
         lines.extend(["", "## Linked source examples", ""])
@@ -1406,7 +1409,7 @@ def validate_navigation(source_catalog: dict, navigation: dict) -> None:
     for product, config in source_catalog["products"].items():
         product_navigation = navigation.get("products", {}).get(product, {})
         articles = product_navigation.get("articles", {})
-        section_ids = {section["id"] for section in navigation["sections"]}
+        section_ids = {section["id"] for section in product_navigation.get("sections", navigation["sections"])}
         for source_path, metadata in articles.items():
             if metadata.get("navigation_section") not in section_ids:
                 raise RuntimeError(f"{product}:{source_path} has an invalid navigation section")
@@ -1554,6 +1557,8 @@ def check_example_catalog_adapter() -> None:
             assert "{{< docs-version >}}" in page_text
             assert "basic-reverse-proxy" in category.read_text(encoding="utf-8")
             assert "A2A Agent Card Routing" in all_configs.read_text(encoding="utf-8")
+            catalog_page = tmp / "docs/praxis/v0.7.2/examples/_index.md"
+            assert "## General {#general}" in catalog_page.read_text(encoding="utf-8")
             assert "3 configurations in All configurations" in all_configs.read_text(encoding="utf-8")
             assert "1 configurations in Traffic Management" in category.read_text(encoding="utf-8")
             tls_text = tls_page.read_text(encoding="utf-8")
@@ -1564,6 +1569,7 @@ def check_example_catalog_adapter() -> None:
 
 
 def check_adapter() -> None:
+    assert site_url("ai", "dev", "recipes/README.md") == "/ai/dev/recipes/readme/"
     assert page_metadata("ai", "docs/developing/new-tool.md", "# New tool\n\nContributor tooling setup.", {})["navigation_section"] == "extend"
     start_metadata = page_metadata("ai", "docs/quickstart.md", "# Quickstart\n\nBuild the release binary.",
                                    {"products": {"ai": {"start": "docs/quickstart.md", "source_start_label": "Build from source"}}})
