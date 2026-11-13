@@ -57,7 +57,7 @@
       "name": "Praxis AI",
       "description": "An AI gateway built on the Praxis proxy runtime.",
       "content_root": "docs",
-      "default": "v0.8.0",
+      "default": "v0.10.0",
       "development": {
         "ref": "main",
         "sha": "cd664663dc37854f3e770c468ac97edac4021907"
@@ -80,11 +80,25 @@
       ],
       "releases": [
         {
+          "version": "v0.10.0",
+          "label": "v0.10.0 (alpha)",
+          "tag": "v0.10.0",
+          "sha": "f96d0114a995765793b1fb33f86f94ecc298eb08",
+          "default": true
+        },
+        {
+          "version": "v0.9.0",
+          "label": "v0.9.0 (alpha)",
+          "tag": "v0.9.0",
+          "sha": "e88829542814df6f4496c2cc5e30f0d5072b313e",
+          "default": false
+        },
+        {
           "version": "v0.8.0",
           "label": "v0.8.0 (alpha)",
           "tag": "v0.8.0",
           "sha": "c39f7198932d408b12f35cd57a2457067e67d0cf",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.7.0",
@@ -114,7 +128,8 @@
           "sha": "ca3e760c790a34293c03d2314a3c7cfbf73836b3",
           "default": false
         }
-      ]
+      ],
+      "release_policy": "published"
     },
     "policy": {
       "name": "Praxis Policy Engine",
@@ -157,7 +172,7 @@
       "name": "Praxis Grid",
       "description": "A Kubernetes control plane for multi-site AI inference routing.",
       "content_root": "docs",
-      "default": "v0.3.0",
+      "default": "v0.3.1",
       "development": {
         "ref": "main",
         "sha": "9ead9b27e7f8a1fdf3215d7f9d35d6ed9dfc5dd8"
@@ -175,11 +190,18 @@
       ],
       "releases": [
         {
+          "version": "v0.3.1",
+          "label": "v0.3.1 (technical preview)",
+          "tag": "v0.3.1",
+          "sha": "c313a0e0d7f0bf04e43ecc31e89338f89a1c852c",
+          "default": true
+        },
+        {
           "version": "v0.3.0",
           "label": "v0.3.0 (technical preview)",
           "tag": "v0.3.0",
           "sha": "588624bebcde3c7942ffb48c65a53c1b063eed57",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.2.2",

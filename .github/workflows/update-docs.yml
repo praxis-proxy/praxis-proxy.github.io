@@ -1,13 +1,8 @@
 name: Update docs versions
 
 on:
-  # Weekly cron temporarily disabled until the repo setting "Allow GitHub
-  # Actions to create and approve pull requests" is verified on
-  # praxis-proxy.github.io. Re-enable by uncommenting after a manual
-  # workflow_dispatch run is proven green (migration decision O2).
-  # schedule:
-  #   # Weekly, Mondays 06:00 UTC
-  #   - cron: "0 6 * * 1"
+  schedule:
+    - cron: "0 6 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -52,8 +47,7 @@ jobs:
           body: |
             Automated run of `update-doc-versions` + `update-dev-versions`.
 
-            - Promotes each project's docs default to the latest published stable
-              release and moves the matching submodule pointer.
+            - Promotes each project's docs default to the latest release eligible under each project’s configured policy and moves the matching submodule pointer.
             - Refreshes the development channel SHAs (`development` in
               `data/docs_versions.json`) from each project's tracked upstream ref
               so the unreleased "Development" docs stay current.

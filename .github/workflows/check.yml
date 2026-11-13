@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - run: python3 tools/test-release-policy.py
       - run: make check-doc-versions
         env:
           GITHUB_TOKEN: ${{ github.token }}

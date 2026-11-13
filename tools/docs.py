@@ -86,6 +86,8 @@ def run(args: list[str], *, cwd: Path = ROOT, capture: bool = False) -> str:
 def catalog() -> dict:
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     for product, config in data["products"].items():
+        if config.get("release_policy", "stable") not in {"stable", "published"}:
+            raise RuntimeError(f"{product}: invalid release_policy")
         releases = config["releases"]
         versions = [release["version"] for release in releases]
         tags = [release["tag"] for release in releases]
@@ -178,6 +180,7 @@ def check_catalog_objects(*, fetch: bool) -> None:
 
 
 def latest_release_tag(product: str) -> str | None:
+    include_prereleases = catalog()["products"][product].get("release_policy", "stable") == "published"
     parsed = urlsplit(repository_url(product))
     if parsed.hostname != "github.com":
         raise RuntimeError(f"{product} release checks require a GitHub source repository")
@@ -208,7 +211,7 @@ def latest_release_tag(product: str) -> str | None:
         if not isinstance(releases, list):
             raise RuntimeError(f"GitHub returned an invalid release list for {product}")
         for release in releases:
-            if not isinstance(release, dict) or release.get("draft") or release.get("prerelease"):
+            if not isinstance(release, dict) or release.get("draft") or (release.get("prerelease") and not include_prereleases):
                 continue
             tag = release.get("tag_name")
             if not isinstance(tag, str) or not RELEASE_TAG.fullmatch(tag):
@@ -230,12 +233,12 @@ def check_release_versions() -> None:
             continue
         if latest is None:
             current = next(release for release in config["releases"] if release["default"])
-            print(f"{product}: no published stable release; keeping docs default {current['tag']}.")
+            print(f"{product}: no release matching the configured policy; keeping docs default {current['tag']}.")
             continue
         current = next(release for release in config["releases"] if release["default"])
         if current["tag"] != latest or current["version"] != latest or config["default"] != latest:
             failures.append(
-                f"{product}: docs default is {current['version']} ({current['tag']}), but GitHub's latest published stable release is {latest}; "
+                f"{product}: docs default is {current['version']} ({current['tag']}), but GitHub's latest release matching the configured policy is {latest}; "
                 "run `make update-doc-versions` and review the catalog and source pointers"
             )
         else:
@@ -259,7 +262,7 @@ def update_doc_versions() -> None:
         tag = latest_release_tag(product)
         if tag is None:
             current = next(release for release in config["releases"] if release["default"])
-            skipped.append(f"{product}: no published stable release; kept {current['tag']}")
+            skipped.append(f"{product}: no release matching the configured policy; kept {current['tag']}")
             continue
         run(["git", "-C", str(repo), "fetch", "--no-tags", "--depth=1", "origin", f"refs/tags/{tag}:refs/tags/{tag}"])
         sha = git(repo, "rev-parse", f"{tag}^{{commit}}")
@@ -307,7 +310,7 @@ def update_doc_versions() -> None:
     elif not skipped:
         print("Documentation defaults already match the latest published releases.")
     if skipped:
-        print("Skipped projects without a published stable release:\n" + "\n".join(skipped))
+        print("Skipped projects without a release matching the configured policy:\n" + "\n".join(skipped))
 
 
 def init() -> None:
