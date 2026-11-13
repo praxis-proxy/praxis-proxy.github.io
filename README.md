@@ -48,9 +48,9 @@ Production publishing stays on **GitHub Pages** via `make build` and [`.github/w
 
 ## Source revisions and releases
 
-`sources/{praxis,ai,policy,grid}` are read-only documentation inputs. Git records their working revisions as submodule pointers. Release commits and defaults are in [`data/docs_versions.json`](data/docs_versions.json); each project is versioned independently. CI checks each default against that repository's latest published stable GitHub release. Run the check locally with `make check-doc-versions`; it uses the public GitHub API.
+`sources/{praxis,ai,policy,grid}` are read-only documentation inputs. Git records their working revisions as submodule pointers. Release commits and defaults are in [`data/docs_versions.json`](data/docs_versions.json); each project is versioned independently. CI checks each default against that repository's latest eligible GitHub release. `release_policy` defaults to `stable` (excludes prereleases); AI uses `published` (includes published alpha/prereleases, always excludes drafts). The updater and freshness check share this policy and GitHub's release ordering. Run the check locally with `make check-doc-versions`; it uses the public GitHub API.
 
-After `make init` has initialized the source submodules, add the latest published stable release for each project, validate its required docs, promote it, and move the matching source pointers together with:
+After `make init` has initialized the source submodules, add the latest release allowed by each project’s policy, validate its required docs, promote it, and move the matching source pointers together with:
 
 ```sh
 make update-doc-versions
