@@ -385,7 +385,7 @@ def site_url(product: str, version: str, output_path: str) -> str:
         suffix = "" if relative == "." else relative + "/"
     else:
         suffix = path.with_suffix("").as_posix() + "/"
-    return f"/{product}/{version}/{suffix}"
+    return f"/{product}/{version}/{suffix.lower()}"
 
 
 def normalized_repo_path(source_path: str, href_path: str) -> str | None:
@@ -1569,6 +1569,7 @@ def check_example_catalog_adapter() -> None:
 
 
 def check_adapter() -> None:
+    assert site_url("ai", "dev", "recipes/README.md") == "/ai/dev/recipes/readme/"
     assert page_metadata("ai", "docs/developing/new-tool.md", "# New tool\n\nContributor tooling setup.", {})["navigation_section"] == "extend"
     start_metadata = page_metadata("ai", "docs/quickstart.md", "# Quickstart\n\nBuild the release binary.",
                                    {"products": {"ai": {"start": "docs/quickstart.md", "source_start_label": "Build from source"}}})
