@@ -36,7 +36,7 @@ jobs:
         run: |
           git add data/docs_versions.json sources/praxis sources/ai sources/policy sources/grid
           if ! git diff --cached --quiet; then
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "chore: refresh documentation source snapshots"
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit --signoff -m "chore: refresh documentation source snapshots"
           fi
 
       # Build and validate the updated snapshots before opening the PR. A PR
@@ -50,6 +50,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
+          signoff: true
           branch: automation/update-doc-versions
           title: "chore(website): update docs versions to latest releases"
           commit-message: "chore(website): update docs versions to latest releases"
