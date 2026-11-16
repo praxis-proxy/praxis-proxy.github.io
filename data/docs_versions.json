@@ -7,7 +7,7 @@
       "default": "v0.7.2",
       "development": {
         "ref": "main",
-        "sha": "539c6e854da186b0e73a8fd1082a08580016ef85"
+        "sha": "cc572e539e49a4a1611c1996711bc452b247d928"
       },
       "exclude": [
         "docs/proposals/**"
@@ -57,10 +57,10 @@
       "name": "Praxis AI",
       "description": "An AI gateway built on the Praxis proxy runtime.",
       "content_root": "docs",
-      "default": "v0.10.0",
+      "default": "v0.11.0",
       "development": {
         "ref": "main",
-        "sha": "144fb5bc5e35c2c24a80dd5c256421029c529d8c"
+        "sha": "8e5d643f4d5d645b48c888c73137566ea27daa41"
       },
       "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
       "extra_assets": [
@@ -80,11 +80,18 @@
       ],
       "releases": [
         {
+          "version": "v0.11.0",
+          "label": "v0.11.0 (alpha)",
+          "tag": "v0.11.0",
+          "sha": "0c6fd76f597f90d49cbee005ec9461ce8896b0f5",
+          "default": true
+        },
+        {
           "version": "v0.10.0",
           "label": "v0.10.0 (alpha)",
           "tag": "v0.10.0",
           "sha": "f96d0114a995765793b1fb33f86f94ecc298eb08",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.9.0",
@@ -138,7 +145,7 @@
       "default": "v0.4.0",
       "development": {
         "ref": "main",
-        "sha": "223005869b4f8ecb477bc9739fe6391fcf80608a"
+        "sha": "828cb41c2f31723445c4e31051b44f59afa2f53f"
       },
       "status": "The public API is still evolving; breaking changes are documented in the changelog.",
       "exclude": [],
@@ -175,7 +182,7 @@
       "default": "v0.3.1",
       "development": {
         "ref": "main",
-        "sha": "9ead9b27e7f8a1fdf3215d7f9d35d6ed9dfc5dd8"
+        "sha": "1c8508f3fccd6a37deee02914f593af17ba3c405"
       },
       "status": "Grid is a technical preview; review its release-scoped deployment requirements and limitations.",
       "exclude": [],
