@@ -41,10 +41,10 @@ body_class = "community-page"
     <h2>Contribute</h2>
     <p>Project code, examples, and authoritative documentation live in each project repository.</p>
     <ul>
-      <li><a href="https://github.com/praxis-proxy/praxis">Contribute to Praxis</a></li>
-      <li><a href="https://github.com/praxis-proxy/ai">Contribute to Praxis AI</a></li>
-      <li><a href="https://github.com/praxis-proxy/policy">Contribute to Policy</a></li>
-      <li><a href="https://github.com/praxis-proxy/grid">Contribute to Praxis Grid</a></li>
+      <li><a href="https://github.com/praxis-proxy/praxis/blob/main/CONTRIBUTING.md">Contribute to Praxis</a></li>
+      <li><a href="https://github.com/praxis-proxy/ai/blob/main/CONTRIBUTING.md">Contribute to Praxis AI</a></li>
+      <li><a href="https://github.com/praxis-proxy/policy/blob/main/CONTRIBUTING.md">Contribute to Policy</a></li>
+      <li><a href="https://github.com/praxis-proxy/grid/blob/main/CONTRIBUTING.md">Contribute to Praxis Grid</a></li>
     </ul>
   </section>
   <section class="community-card">
