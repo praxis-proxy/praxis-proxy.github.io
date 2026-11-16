@@ -30,6 +30,15 @@ jobs:
       - name: Refresh development channel SHAs from tracked upstream refs
         run: python3 tools/docs.py update-dev-versions
 
+      # Record refreshed source gitlinks so build validation sees the same
+      # catalog and source revisions that will be proposed by the update PR.
+      - name: Commit refreshed catalog and source pointers for validation
+        run: |
+          git add data/docs_versions.json sources/praxis sources/ai sources/policy sources/grid
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "chore: refresh documentation source snapshots"
+          fi
+
       # Build and validate the updated snapshots before opening the PR. A PR
       # created with the default github.token does not trigger the pull_request
       # workflows (check.yml), so gate the docs here instead; a broken update
