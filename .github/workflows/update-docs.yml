@@ -30,6 +30,11 @@ jobs:
       - name: Refresh development channel SHAs from tracked upstream refs
         run: python3 tools/docs.py update-dev-versions
 
+      # Expose refreshed source gitlinks to tools/docs.py so it recognizes
+      # the intentionally promoted snapshots as the recorded inputs.
+      - name: Stage refreshed catalog and source pointers
+        run: git add data/docs_versions.json sources/praxis sources/ai sources/policy sources/grid
+
       # Build and validate the updated snapshots before opening the PR. A PR
       # created with the default github.token does not trigger the pull_request
       # workflows (check.yml), so gate the docs here instead; a broken update
