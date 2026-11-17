@@ -71,6 +71,16 @@ git diff --submodule=log -- sources/praxis
 
 Submodule checkouts are often detached. For a source documentation contribution, make and publish the edit in the product repository first, then update the website pointer to that commit. Do not edit prepared `.cache/` content; it is regenerated on every preparation.
 
+### Enhancement proposals
+
+`sources/enhancements` imports [praxis-proxy/enhancements](https://github.com/praxis-proxy/enhancements). It is unversioned: [`data/enhancements.json`](data/enhancements.json) records the tracked branch and one commit, and `make build` requires the submodule pointer and checkout to match that commit. Every `proposals/NNNNN_slug.md` file (except `template.md`) is published at `/enhancements/nnnnn_slug/` and grouped by its frontmatter `status` on `/enhancements/`; `.asset-*.md` companions are appended to their proposal. `make serve` previews the live checkout. Move to the branch head with:
+
+```sh
+make update-enhancements
+```
+
+Review the catalog change and stage `sources/enhancements`; nothing is committed. Undocumented statuses render under "Other statuses" and are reported during preparation. Links that climb above the enhancements repository root resolve against the proposal's single listed project at its development commit.
+
 `make clean` removes generated content, public output, and Hugo resources while retaining submodules and authored website files.
 
 ## Website presentation

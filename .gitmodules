@@ -10,3 +10,6 @@
 [submodule "sources/grid"]
 	path = sources/grid
 	url = https://github.com/praxis-proxy/grid.git
+[submodule "sources/enhancements"]
+	path = sources/enhancements
+	url = https://github.com/praxis-proxy/enhancements.git

@@ -1,0 +1,58 @@
+{{ define "main" }}
+{{- $build := hugo.Data.enhancements_build -}}
+{{- $proposals := .RegularPages.ByWeight -}}
+<div class="praxis-enhancements-page">
+  <header class="praxis-enhancements-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+    <div class="td-content">{{ .Content }}</div>
+    {{- with $build }}
+    <p class="praxis-enhancements-source">
+      {{ .proposal_count }} proposals from
+      <a href="{{ .repo }}/tree/{{ .sha }}/proposals"><code>praxis-proxy/enhancements</code> at <code>{{ substr .sha 0 12 }}</code></a>{{ if .preview }} (local preview of the working tree){{ end }}.
+      <a href="{{ .process_url }}">Proposal process</a> ·
+      <a href="{{ .statuses_url }}">Status definitions</a> ·
+      <a href="{{ .contributing_url }}">Contribute a proposal</a>
+    </p>
+    {{- end }}
+  </header>
+  {{- with $build }}
+  <nav class="praxis-enhancements-jump" aria-label="Proposal status groups">
+    <ul>
+      {{- range .status_groups }}
+      {{- $count := 0 -}}
+      {{- range .statuses }}{{ $count = add $count (index $build.status_meta .).count }}{{ end }}
+      <li><a href="#status-{{ .key }}">{{ .label }} <span class="praxis-enhancements-count">{{ $count }}</span></a></li>
+      {{- end }}
+    </ul>
+  </nav>
+  {{- range .status_groups }}
+  {{- $group := . -}}
+  <section class="praxis-enhancements-group" aria-labelledby="status-{{ .key }}">
+    <h2 id="status-{{ .key }}">{{ .label }}</h2>
+    {{- range .statuses }}
+    {{- $status := . -}}
+    {{- $meta := index $build.status_meta $status -}}
+    <h3 class="praxis-enhancements-status-heading">{{ $meta.label }} <span class="praxis-enhancements-gloss">— {{ $meta.gloss }}</span></h3>
+    <ul class="praxis-enhancements-list">
+      {{- range where $proposals "Params.enhancement_status" $status }}
+      <li>
+        <p class="praxis-enhancements-item-title">
+          <span class="praxis-enhancements-number">#{{ .Params.enhancement_number }}</span>
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </p>
+        {{ with .Description }}<p class="praxis-enhancements-summary">{{ . }}</p>{{ end }}
+        {{- with .Params.enhancement_repos }}
+        <p class="praxis-enhancements-repos"><span class="visually-hidden">Projects: </span>{{ delimit . ", " }}</p>
+        {{- end }}
+      </li>
+      {{- end }}
+    </ul>
+    {{- end }}
+  </section>
+  {{- end }}
+  {{- else }}
+  <p>No proposals have been imported. Run <code>make init</code> and rebuild.</p>
+  {{- end }}
+</div>
+{{ end }}

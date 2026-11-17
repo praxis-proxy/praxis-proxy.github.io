@@ -29,7 +29,32 @@ STATIC_OUT = CACHE / "docs-static"
 CATALOG = ROOT / "data" / "docs_versions.json"
 NAVIGATION = ROOT / "data" / "docs_navigation.json"
 EXAMPLE_METADATA = ROOT / "data" / "example_metadata.json"
+ENHANCEMENTS_CATALOG = ROOT / "data" / "enhancements.json"
+ENHANCEMENTS_BUILD = DATA_OUT / "enhancements_build.json"
 COVERAGE_REPORT = ROOT / "docs" / "example-coverage-report.md"
+ENHANCEMENT_PRODUCT = "enhancements"
+PROPOSAL_FILE = re.compile(r"(?P<number>\d{5})_(?P<slug>[^/]+)\.md\Z")
+PROPOSAL_ASSET = re.compile(r"(?P<number>\d{5})_(?P<slug>[^/]+)\.asset-(?P<name>[^/]+)\.md\Z")
+# Status values documented in the enhancements repository (docs/statuses.md).
+# Values are (group key, display label, short gloss). Statuses outside this map
+# render under the fallback group and are reported during prepare.
+ENHANCEMENT_STATUS_META = {
+    "proposed": ("discussion", "Proposed", "Filed, not yet accepted"),
+    "blocked": ("discussion", "Blocked", "Cannot proceed; requires prerequisite work"),
+    "accepted": ("implementation", "Accepted", "Approved for implementation"),
+    "experimental": ("implementation", "Experimental", "Implemented, shipping as experimental"),
+    "released": ("shipped", "Released", "Stable, fully shipped"),
+    "retroactive": ("shipped", "Retroactive", "Documents a feature that shipped before the proposal process existed"),
+    "deferred": ("parked", "Deferred", "Intentionally postponed; not actively pursued"),
+    "withdrawn": ("parked", "Withdrawn", "Not proceeding"),
+}
+ENHANCEMENT_STATUS_GROUPS = (
+    ("discussion", "Under discussion"),
+    ("implementation", "In implementation"),
+    ("shipped", "Shipped"),
+    ("parked", "Parked or withdrawn"),
+    ("other", "Other statuses"),
+)
 RELEASE_TAG = re.compile(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\Z")
 GIT_REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]*\Z")
 GIT_SHA = re.compile(r"[0-9a-fA-F]{40}\Z")
@@ -113,6 +138,21 @@ def catalog() -> dict:
         for required in config["required"]:
             if excluded_path(required, exclude):
                 raise RuntimeError(f"{product} excludes a required docs path: {required}")
+    return data
+
+
+@functools.lru_cache(maxsize=1)
+def enhancements_catalog() -> dict:
+    data = json.loads(ENHANCEMENTS_CATALOG.read_text(encoding="utf-8"))
+    for key in ("repo", "ref", "sha"):
+        if not isinstance(data.get(key), str) or not data[key]:
+            raise RuntimeError(f"enhancements catalog must record {key}")
+    if not data["repo"].startswith("https://"):
+        raise RuntimeError("enhancements catalog repo must be an https URL")
+    if not GIT_REF.fullmatch(data["ref"]):
+        raise RuntimeError("enhancements catalog ref must be a Git branch or tag")
+    if not GIT_SHA.fullmatch(data["sha"]):
+        raise RuntimeError("enhancements catalog must record a full commit SHA")
     return data
 
 
@@ -318,6 +358,10 @@ def init() -> None:
         path = SOURCES / product
         if not (path / ".git").exists():
             run(["git", "submodule", "update", "--init", "--depth", "1", "--", f"sources/{product}"])
+    path = SOURCES / ENHANCEMENT_PRODUCT
+    if not (path / ".git").exists():
+        run(["git", "submodule", "update", "--init", "--depth", "1", "--", f"sources/{ENHANCEMENT_PRODUCT}"])
+    check_enhancements_object(fetch=True)
     check_catalog_objects(fetch=True)
     print("Source submodules and cataloged release objects are ready.")
 
@@ -1072,10 +1116,14 @@ def _protect_non_markdown(text: str) -> tuple[str, dict[str, str]]:
 
 def _rewrite_markdown_chunk(text: str, **context) -> str:
     masked, protected = _protect_non_markdown(text)
+    # `resolver` selects the link target policy; product documentation pages
+    # use rewrite_target, imported enhancement proposals use their own.
+    resolver = context.get("resolver") or rewrite_target
+    targets = {key: value for key, value in context.items() if key != "resolver"}
 
     def replace_reference(match: re.Match) -> str:
         url = match.group("url")
-        rewritten = rewrite_target(url, image=False, **context)
+        rewritten = resolver(url, image=False, **targets)
         return match.group("prefix") + rewritten + match.group("suffix") + match.group("newline")
 
     masked = REFERENCE_DEFINITION.sub(replace_reference, masked)
@@ -1087,7 +1135,7 @@ def _rewrite_markdown_chunk(text: str, **context) -> str:
         raw = match.group("url")
         target = raw[1:-1] if raw.startswith("<") and raw.endswith(">") else raw
         is_image = match.group("start").startswith("!")
-        rewritten = rewrite_target(target, image=is_image, **context)
+        rewritten = resolver(target, image=is_image, **targets)
         wrapped = f"<{rewritten}>" if raw.startswith("<") and raw.endswith(">") else rewritten
         return match.group("start") + wrapped + match.group("end")
 
@@ -1095,7 +1143,7 @@ def _rewrite_markdown_chunk(text: str, **context) -> str:
 
     def replace_html(match: re.Match) -> str:
         is_image = match.group("attr").lower().startswith("src")
-        rewritten = rewrite_target(match.group("url"), image=is_image, **context)
+        rewritten = resolver(match.group("url"), image=is_image, **targets)
         return match.group("attr") + rewritten + match.group("end")
 
     def replace_html_element(match: re.Match) -> str:
@@ -1568,6 +1616,534 @@ def check_example_catalog_adapter() -> None:
     check_curated_example_paths()
 
 
+def _yaml_strip_comment(raw: str) -> str:
+    """Drop a trailing YAML comment, ignoring `#` inside quoted values."""
+    quote = None
+    for position, character in enumerate(raw):
+        if quote:
+            if character == quote:
+                quote = None
+        elif character in "\"'":
+            quote = character
+        elif character == "#" and (position == 0 or raw[position - 1] in " \t"):
+            return raw[:position]
+    return raw
+
+
+def _yaml_scalar(raw: str):
+    value = raw.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        return value[1:-1]
+    if value in ("true", "True"):
+        return True
+    if value in ("false", "False"):
+        return False
+    if value in ("null", "~", ""):
+        return ""
+    return value
+
+
+def _yaml_inline(raw: str):
+    value = raw.strip()
+    if value.startswith("[") and value.endswith("]"):
+        inner = value[1:-1].strip()
+        return [] if not inner else [_yaml_scalar(item) for item in inner.split(",")]
+    if value.startswith("{"):
+        raise RuntimeError(f"flow mappings are not supported in proposal frontmatter: {raw.strip()!r}")
+    return _yaml_scalar(value)
+
+
+def _yaml_lines(text: str) -> list[tuple[int, str]]:
+    lines: list[tuple[int, str]] = []
+    for raw in text.splitlines():
+        stripped = _yaml_strip_comment(raw)
+        if not stripped.strip():
+            continue
+        indent = len(stripped) - len(stripped.lstrip(" "))
+        if "\t" in stripped[:indent + 1]:
+            raise RuntimeError("tab indentation is not supported in proposal frontmatter")
+        lines.append((indent, stripped.strip()))
+    return lines
+
+
+def parse_frontmatter_yaml(text: str) -> dict:
+    """Parse the YAML subset used by enhancement proposal frontmatter.
+
+    Supports scalars, quoted strings, booleans, block sequences of scalars or
+    mappings that open on the dash line (`- key: value`), one level of nested
+    mappings, inline empty sequences, and comments. The proposal repository
+    validates against the same subset, so richer syntax raises here instead of
+    silently dropping metadata.
+    """
+    lines = _yaml_lines(text)
+    key_pattern = r"(?P<key>[A-Za-z_][A-Za-z0-9_-]*):(?P<rest>.*)"
+
+    def parse_mapping(index: int, indent: int) -> tuple[dict, int]:
+        result: dict = {}
+        while index < len(lines):
+            line_indent, content = lines[index]
+            if line_indent < indent:
+                break
+            if line_indent > indent:
+                raise RuntimeError(f"unexpected indentation in proposal frontmatter: {content!r}")
+            match = re.fullmatch(key_pattern, content)
+            if not match:
+                raise RuntimeError(f"unsupported proposal frontmatter line: {content!r}")
+            key, rest = match.group("key"), match.group("rest").strip()
+            index += 1
+            if rest:
+                value = _yaml_inline(rest)
+                while index < len(lines) and lines[index][0] > indent and not lines[index][1].startswith("- "):
+                    value = f"{value} {lines[index][1]}".strip()
+                    index += 1
+                result[key] = value
+            elif index < len(lines) and lines[index][0] > indent:
+                if lines[index][1].startswith("- "):
+                    result[key], index = parse_sequence(index, lines[index][0])
+                elif re.fullmatch(key_pattern, lines[index][1]):
+                    result[key], index = parse_mapping(index, lines[index][0])
+                else:
+                    # A plain scalar opened on the line after the key.
+                    value: list[str] = []
+                    while index < len(lines) and lines[index][0] > indent and not lines[index][1].startswith("- "):
+                        value.append(lines[index][1])
+                        index += 1
+                    result[key] = " ".join(value)
+            else:
+                result[key] = ""
+        return result, index
+
+    def parse_sequence(index: int, indent: int) -> tuple[list, int]:
+        items: list = []
+        while index < len(lines):
+            line_indent, content = lines[index]
+            if line_indent < indent or not content.startswith("- "):
+                break
+            if line_indent > indent:
+                raise RuntimeError(f"unexpected indentation in proposal frontmatter: {content!r}")
+            item = content[2:].strip()
+            item_match = re.fullmatch(key_pattern, item)
+            if item_match and not item_match.group("rest"):
+                raise RuntimeError(f"nested block mappings in sequences are not supported: {content!r}")
+            if item_match:
+                entry = {item_match.group("key"): _yaml_inline(item_match.group("rest"))}
+                index += 1
+                while index < len(lines) and lines[index][0] > indent and not lines[index][1].startswith("- "):
+                    nested = re.fullmatch(key_pattern, lines[index][1])
+                    if not nested or not nested.group("rest"):
+                        raise RuntimeError(f"unsupported sequence entry in proposal frontmatter: {lines[index][1]!r}")
+                    entry[nested.group("key")] = _yaml_inline(nested.group("rest"))
+                    index += 1
+                items.append(entry)
+            else:
+                # Plain scalars may wrap onto following, more indented lines.
+                value = _yaml_scalar(item)
+                index += 1
+                while index < len(lines) and lines[index][0] > indent and not lines[index][1].startswith("- "):
+                    value = f"{value} {lines[index][1]}".strip()
+                    index += 1
+                items.append(value)
+        return items, index
+
+    parsed, _ = parse_mapping(0, 0)
+    return parsed
+
+
+def split_frontmatter(text: str) -> tuple[dict, str]:
+    """Split a `---` delimited frontmatter block, parsing its YAML subset."""
+    lines = text.splitlines(keepends=True)
+    if not lines or lines[0].strip() != "---":
+        return {}, text
+    for index in range(1, len(lines)):
+        if lines[index].strip() in ("---", "..."):
+            return parse_frontmatter_yaml("".join(lines[1:index])), "".join(lines[index + 1:])
+    raise RuntimeError("proposal frontmatter is not closed by a `---` delimiter")
+
+
+def check_enhancements_object(*, fetch: bool) -> None:
+    config = enhancements_catalog()
+    repo = SOURCES / ENHANCEMENT_PRODUCT
+    sha = config["sha"]
+    if subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify", f"{sha}^{{commit}}"],
+                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode != 0:
+        if not fetch:
+            raise RuntimeError(f"missing enhancements source object {sha}; run make init")
+        run(["git", "-C", str(repo), "fetch", "--no-tags", "--depth=1", "origin", sha])
+
+
+def _markdown_headings(markdown: str) -> list[tuple[int, str]]:
+    """Return ATX heading (level, text) pairs outside fenced code blocks."""
+    headings: list[tuple[int, str]] = []
+    fence: str | None = None
+    fence_length = 0
+    for line in markdown.splitlines():
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+        if marker:
+            token = marker.group(1)[0]
+            if fence is None:
+                fence, fence_length = token, len(marker.group(1))
+            elif token == fence and len(marker.group(1)) >= fence_length:
+                fence, fence_length = None, 0
+            continue
+        if fence is not None:
+            continue
+        match = re.match(r"^ {0,3}(#{1,6})(?:[ \t]+(.*))?$", line)
+        if match:
+            headings.append((len(match.group(1)), (match.group(2) or "").strip()))
+    return headings
+
+
+def proposal_title(markdown: str, fallback: str) -> str:
+    """Pick the proposal title: the last H1 before the first H2, else the first H1.
+
+    Most proposals carry a single leading H1. A hold notice above the real
+    title (as in the live request tap proposal) produces two H1s; the one
+    attached to the `What?` structure is the document title.
+    """
+    headings = _markdown_headings(markdown)
+    h1_indices = [index for index, (level, _) in enumerate(headings) if level == 1]
+    if not h1_indices:
+        return fallback
+    first_h2 = next((index for index, (level, _) in enumerate(headings) if level == 2), len(headings))
+    candidates = [index for index in h1_indices if index < first_h2]
+    return heading_text(headings[(candidates[-1] if candidates else h1_indices[0])][1]) or fallback
+
+
+def remove_proposal_title_h1(markdown: str, title: str) -> str:
+    """Remove the H1 matching the page title, preserving a stable anchor."""
+    lines = markdown.splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        match = HEADING.fullmatch(line.rstrip("\r\n"))
+        if not match:
+            continue
+        heading = match.group(1).strip()
+        if heading_text(heading).casefold() != heading_text(title).casefold():
+            continue
+        explicit = re.search(r"\s+\{#([^}\s]+)\}\s*$", heading)
+        comparable = heading[:explicit.start()].strip() if explicit else heading
+        inline_anchor = re.search(r"<a\s+(?:id|name)=[\"']([^\"']+)[\"'][^>]*>\s*</a>", comparable, re.I)
+        if explicit or inline_anchor:
+            anchor = explicit.group(1) if explicit else inline_anchor.group(1)
+        else:
+            anchor = slugify_heading(comparable)
+        lines[index] = f'<a id="{anchor}"></a>\n'
+        return "".join(lines)
+    return markdown
+
+
+def demote_all_h1s(markdown: str) -> str:
+    """Shift every ATX H1 down one level so page metadata owns the single H1."""
+    lines: list[str] = []
+    fence: str | None = None
+    fence_length = 0
+    for line in markdown.splitlines(keepends=True):
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+        if marker:
+            token = marker.group(1)[0]
+            if fence is None:
+                fence, fence_length = token, len(marker.group(1))
+            elif token == fence and len(marker.group(1)) >= fence_length:
+                fence, fence_length = None, 0
+            lines.append(line)
+        elif fence is None and re.match(r"^ {0,3}#(?=[ \t])", line):
+            lines.append("#" + line)
+        else:
+            lines.append(line)
+    return "".join(lines)
+
+
+def rewrite_enhancement_target(raw_url: str, *, image: bool, repo: str, ref: str, repo_dir: Path,
+                               sha: str, source_path: str, selected: dict[str, str],
+                               known_paths: set[str], working: bool, assets: Path,
+                               project_source: str = "", **_) -> str:
+    parts = urlsplit(raw_url)
+    if parts.scheme or parts.netloc:
+        return raw_url
+    if not parts.path or parts.path.startswith("/"):
+        return raw_url
+    target = normalized_repo_path(source_path, unquote(parts.path))
+    if target is None:
+        # Proposals moved from a project repository can keep links that climb
+        # above this repository's root. Resolve them inside the single project
+        # the proposal names, at that project's tracked development commit.
+        escaped = [part for part in PurePosixPath(unquote(parts.path)).parts if part not in ("..", ".")]
+        if project_source and escaped:
+            target_url = f"{project_source}/{quote('/'.join(escaped), safe='/')}"
+            return urlunsplit(("", "", target_url, parts.query, parts.fragment))
+        return raw_url
+    if target.rstrip("/") == "proposals":
+        return urlunsplit(("", "", f"/{ENHANCEMENT_PRODUCT}/", parts.query, parts.fragment))
+    if target in selected:
+        return urlunsplit(("", "", selected[target], parts.query, parts.fragment))
+    if image and target in known_paths:
+        body = read_blob(repo_dir, sha, target, working=working)
+        if body is not None:
+            output = assets / ENHANCEMENT_PRODUCT / "_assets" / target
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_bytes(body)
+            return urlunsplit(("", "", f"/{ENHANCEMENT_PRODUCT}/_assets/{target}", parts.query, parts.fragment))
+    is_directory = target.endswith("/") or any(path.startswith(target.rstrip("/") + "/") for path in known_paths)
+    ref_type = "tree" if is_directory else "blob"
+    source_url = f"{repo}/{ref_type}/{ref}/{quote(target, safe='/')}"
+    return urlunsplit(("", "", source_url, parts.query, parts.fragment))
+
+
+def adapt_proposal_markdown(text: str, title: str, **context) -> str:
+    """Rewrite links, drop the title H1, and demote remaining H1s."""
+    text = rewrite_markdown(text, resolver=rewrite_enhancement_target, **context)
+    text = remove_proposal_title_h1(text, title)
+    return demote_all_h1s(text)
+
+
+def enhancements_frontmatter(values: dict, reference_tables: list[tuple[str, list[dict]]]) -> str:
+    lines = ["+++", f"title = {quote_toml(values['title'])}", 'type = "enhancements"',
+             f"weight = {values['weight']}"]
+    for key in ("description", "enhancement_number", "enhancement_status", "enhancement_epic_label",
+                "source_commit", "source_repo", "source_path", "edit_url"):
+        if values.get(key):
+            lines.append(f"{key} = {quote_toml(str(values[key]))}")
+    for key in ("enhancement_repos", "enhancement_authors", "enhancement_stakeholders",
+                "enhancement_graduation_criteria", "enhancement_issue", "enhancement_discussion",
+                "enhancement_epic", "enhancement_experimental_impl"):
+        if values.get(key):
+            lines.append(f"{key} = [" + ", ".join(quote_toml(str(item)) for item in values[key]) + "]")
+    for name, entries in reference_tables:
+        for entry in entries:
+            lines.extend(["", f"[[{name}]]", f"number = {quote_toml(str(entry['number']))}"])
+            for key in ("title", "status", "url"):
+                if entry.get(key):
+                    lines.append(f"{key} = {quote_toml(str(entry[key]))}")
+    lines.extend(["+++", ""])
+    return "\n".join(lines)
+
+
+def prepare_enhancements(mode: str) -> None:
+    config = enhancements_catalog()
+    repo_dir = SOURCES / ENHANCEMENT_PRODUCT
+    repo_url = repository_url(ENHANCEMENT_PRODUCT)
+    if repo_url != config["repo"]:
+        raise RuntimeError(
+            f"the enhancements catalog records {config['repo']}, but the submodule URL is {repo_url}; "
+            "align data/enhancements.json with .gitmodules")
+
+    if mode == "build":
+        check_enhancements_object(fetch=False)
+        expected = pointer(ENHANCEMENT_PRODUCT)
+        source_commit, source_status, _ = source_state(ENHANCEMENT_PRODUCT)
+        if source_commit != config["sha"]:
+            raise RuntimeError(
+                f"the enhancements checkout is {source_commit}, but the catalog records {config['sha']}; "
+                "run make update-enhancements or move the submodule to the recorded commit")
+        if source_status:
+            raise RuntimeError(
+                f"the enhancements source checkout is dirty:\n{source_status}\n"
+                "Commit or discard source changes before make build; use make serve to preview edits.")
+        if expected != config["sha"]:
+            raise RuntimeError(
+                "the sources/enhancements submodule pointer is not staged at the catalog SHA; "
+                "run git add sources/enhancements after reviewing the pointer change")
+        sha, working = config["sha"], False
+        edit_branch = config["ref"]
+    else:
+        source_commit, _, branch = source_state(ENHANCEMENT_PRODUCT)
+        sha, working = source_commit, True
+        edit_branch = branch
+        if not edit_branch:
+            result = subprocess.run(
+                ["git", "-C", str(repo_dir), "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+                text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            edit_branch = result.stdout.strip().removeprefix("origin/") if result.returncode == 0 else ""
+    if subprocess.run(["git", "-C", str(repo_dir), "rev-parse", "--verify", f"{sha}^{{commit}}"],
+                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode != 0:
+        raise RuntimeError("missing enhancements source object; run make init")
+
+    link_ref = edit_branch if working and edit_branch else sha
+    known_paths = repo_paths(repo_dir, sha, working=working)
+    proposals: dict[str, dict] = {}
+    asset_docs: dict[str, list[tuple[str, str]]] = {}
+    skipped: list[str] = []
+    for rel in sorted(path for path in known_paths
+                      if path.startswith("proposals/") and path.endswith(".md")):
+        name = rel[len("proposals/"):]
+        if name == "template.md":
+            continue
+        asset_match = PROPOSAL_ASSET.fullmatch(name)
+        if asset_match:
+            asset_docs.setdefault(f"{asset_match.group('number')}_{asset_match.group('slug')}.md", []).append(
+                (asset_match.group("name"), rel))
+            continue
+        proposal_match = PROPOSAL_FILE.fullmatch(name)
+        if proposal_match:
+            proposals[rel] = {"number": proposal_match.group("number")}
+            continue
+        skipped.append(rel)
+
+    parsed: list[dict] = []
+    unknown_statuses: dict[str, list[str]] = {}
+    duplicate_numbers: set[str] = set()
+    selected: dict[str, str] = {}
+    for rel in sorted(proposals):
+        raw = read_blob(repo_dir, sha, rel, working=working)
+        if raw is None:
+            raise RuntimeError(f"{rel} is listed in the enhancements snapshot but could not be read")
+        meta, body = split_frontmatter(raw.decode("utf-8"))
+        stem = PurePosixPath(rel).stem.lower()
+        status = str(meta.get("status", "")).strip()
+        if not status:
+            raise RuntimeError(f"{rel} has no status in its frontmatter")
+        if status not in ENHANCEMENT_STATUS_META:
+            unknown_statuses.setdefault(status, []).append(rel)
+        fallback = PurePosixPath(rel).stem.replace("_", " ").replace("-", " ").title()
+        parsed.append({"rel": rel, "stem": stem, "number": proposals[rel]["number"],
+                       "title": proposal_title(body, fallback), "status": status,
+                       "meta": meta, "body": body, "weight": int(proposals[rel]["number"])})
+        selected[rel] = f"/{ENHANCEMENT_PRODUCT}/{stem}/"
+    number_counts: dict[str, int] = {}
+    for entry in parsed:
+        number_counts[entry["number"]] = number_counts.get(entry["number"], 0) + 1
+    duplicate_numbers = {number for number, count in number_counts.items() if count > 1}
+    unique_by_number = {entry["number"]: entry for entry in parsed
+                        if number_counts[entry["number"]] == 1}
+
+    def reference(value) -> dict:
+        number = str(value).strip()
+        entry = unique_by_number.get(number)
+        if entry is None:
+            return {"number": number}
+        return {"number": number, "title": entry["title"], "status": entry["status"],
+                "url": selected[entry["rel"]]}
+
+    def string_list(meta: dict, key: str) -> list[str]:
+        value = meta.get(key)
+        if not isinstance(value, list):
+            return []
+        return [str(item).strip() for item in value if str(item).strip()]
+
+    def url_list(meta: dict, key: str) -> list[str]:
+        value = meta.get(key)
+        values = value if isinstance(value, list) else [value]
+        return [str(item).strip() for item in values if str(item).strip().startswith("https://")]
+
+    def text_value(meta: dict, key: str) -> str:
+        value = meta.get(key)
+        text = "" if isinstance(value, (list, dict)) else str(value or "").strip()
+        return "" if text.startswith("https://") else text
+
+    products = catalog()["products"]
+    output_dir = DOCS_OUT / ENHANCEMENT_PRODUCT
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for entry in parsed:
+        meta = entry["meta"]
+        project_source = ""
+        repos = string_list(meta, "repos")
+        development = products.get(repos[0], {}).get("development") if len(repos) == 1 else None
+        if development:
+            project_source = f"{repository_url(repos[0])}/blob/{development['sha']}"
+        context = {"repo": config["repo"], "ref": link_ref, "repo_dir": repo_dir, "sha": sha,
+                   "source_path": entry["rel"], "selected": selected, "known_paths": known_paths,
+                   "working": working, "assets": STATIC_OUT, "project_source": project_source}
+        body = adapt_proposal_markdown(entry["body"], entry["title"], **context)
+        for name, rel in sorted(asset_docs.get(PurePosixPath(entry["rel"]).name, [])):
+            raw = read_blob(repo_dir, sha, rel, working=working)
+            if raw is None:
+                raise RuntimeError(f"{rel} is listed in the enhancements snapshot but could not be read")
+            _, asset_body = split_frontmatter(raw.decode("utf-8"))
+            adapted = adapt_proposal_markdown(
+                asset_body, name.replace("-", " ").title(), **{**context, "source_path": rel})
+            body += f"\n\n## Supporting document: {name}\n\n{adapted}"
+        edit_url = f"{config['repo']}/edit/{edit_branch}/{entry['rel']}" if edit_branch else ""
+        values = {
+            "title": entry["title"], "weight": entry["weight"],
+            "description": summarize(entry["body"]),
+            "enhancement_number": entry["number"], "enhancement_status": entry["status"],
+            "enhancement_repos": string_list(meta, "repos"),
+            "enhancement_authors": string_list(meta, "authors"),
+            "enhancement_stakeholders": string_list(meta, "stakeholders"),
+            "enhancement_graduation_criteria": string_list(meta, "graduation_criteria"),
+            "enhancement_issue": url_list(meta, "issue"),
+            "enhancement_discussion": url_list(meta, "discussion"),
+            "enhancement_epic": url_list(meta, "epic"),
+            "enhancement_epic_label": text_value(meta, "epic"),
+            "enhancement_experimental_impl": url_list(meta, "experimental_impl"),
+            "source_commit": sha, "source_repo": config["repo"], "source_path": entry["rel"],
+            "edit_url": edit_url,
+        }
+        reference_tables = [
+            ("enhancement_related", [reference(number) for number in
+                                     (meta.get("related") if isinstance(meta.get("related"), list) else [])]),
+            ("enhancement_supersedes", [reference(meta["supersedes"])] if meta.get("supersedes") else []),
+            ("enhancement_superseded_by", [reference(meta["superseded_by"])] if meta.get("superseded_by") else []),
+        ]
+        destination = output_dir / f"{entry['stem']}.md"
+        destination.write_text(enhancements_frontmatter(values, reference_tables) + "\n" + body.lstrip("\n"),
+                               encoding="utf-8")
+
+    status_counts: dict[str, int] = {}
+    for entry in parsed:
+        status_counts[entry["status"]] = status_counts.get(entry["status"], 0) + 1
+    status_meta: dict[str, dict] = {}
+    for status in sorted(status_counts):
+        if status in ENHANCEMENT_STATUS_META:
+            group, label, gloss = ENHANCEMENT_STATUS_META[status]
+        else:
+            group, label, gloss = "other", status.title(), "Not part of the documented proposal statuses"
+        status_meta[status] = {"group": group, "label": label, "gloss": gloss,
+                               "count": status_counts[status]}
+    status_groups = [
+        {"key": key, "label": label,
+         "statuses": [status for status in sorted(status_counts) if status_meta[status]["group"] == key]}
+        for key, label in ENHANCEMENT_STATUS_GROUPS
+        if any(status_meta[status]["group"] == key for status in status_counts)
+    ]
+    build = {
+        "repo": config["repo"], "sha": sha, "edit_branch": edit_branch,
+        "preview": mode == "serve", "proposal_count": len(parsed),
+        "status_meta": status_meta, "status_groups": status_groups,
+        "statuses_url": f"{config['repo']}/blob/{link_ref}/docs/statuses.md",
+        "process_url": f"{config['repo']}/blob/{link_ref}/docs/process.md",
+        "contributing_url": f"{config['repo']}/blob/{link_ref}/CONTRIBUTING.md",
+    }
+    ENHANCEMENTS_BUILD.write_text(json.dumps(build, indent=2) + "\n", encoding="utf-8")
+    print(f"enhancements: {len(parsed)} proposals at {sha[:12]}"
+          + (f" (tracking {edit_branch})" if working and edit_branch else ""))
+    if unknown_statuses:
+        for status, files in sorted(unknown_statuses.items()):
+            print(f"  warning: undocumented proposal status {status!r} in {', '.join(files)}; "
+                  "it renders under the fallback status group")
+    if duplicate_numbers:
+        print("  note: proposal numbers shared by multiple files (references stay unlinked): "
+              + ", ".join(sorted(duplicate_numbers)))
+    if skipped:
+        print("  warning: skipped non-proposal Markdown files: " + ", ".join(skipped))
+
+
+def update_enhancements() -> None:
+    data = enhancements_catalog()
+    ref = data["ref"]
+    url = repository_url(ENHANCEMENT_PRODUCT)
+    if url != data["repo"]:
+        raise RuntimeError(
+            f"the enhancements catalog records {data['repo']}, but the submodule URL is {url}; "
+            "align data/enhancements.json with .gitmodules")
+    output = run(["git", "ls-remote", url, f"refs/heads/{ref}"], capture=True)
+    sha = output.split()[0] if output else ""
+    if not GIT_SHA.fullmatch(sha):
+        raise RuntimeError(f"could not resolve the enhancements ref {ref!r} at {url}")
+    if sha == data["sha"]:
+        print(f"The enhancements channel already tracks {ref} at {sha}.")
+        return
+    repo = SOURCES / ENHANCEMENT_PRODUCT
+    if git(repo, "status", "--porcelain=v1", "--untracked-files=all"):
+        raise RuntimeError("the enhancements source checkout is dirty; preserve or commit the changes before updating")
+    run(["git", "-C", str(repo), "fetch", "--no-tags", "--depth=1", "origin", sha])
+    run(["git", "-C", str(repo), "checkout", "--detach", sha])
+    data["sha"] = sha
+    ENHANCEMENTS_CATALOG.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    enhancements_catalog.cache_clear()
+    print(f"Checked out enhancements at {sha} and updated data/enhancements.json. "
+          "Review the catalog and stage sources/enhancements; nothing was committed.")
+
+
 def check_adapter() -> None:
     assert site_url("ai", "dev", "recipes/README.md") == "/ai/dev/recipes/readme/"
     assert page_metadata("ai", "docs/developing/new-tool.md", "# New tool\n\nContributor tooling setup.", {})["navigation_section"] == "extend"
@@ -1694,6 +2270,107 @@ def check_adapter() -> None:
     assert summarize("# Title\n\nA useful summary with `code` and [a link](https://example.test).\n") == "A useful summary with code and a link."
     assert slugify_heading("Dependency Policy & Review") == "dependency-policy--review"
     check_example_catalog_adapter()
+
+    # Enhancements adapter: frontmatter subset, title selection, and link policy.
+    sample = (
+        "---\n"
+        "issue: https://github.com/praxis-proxy/praxis/issues/39  # tracked\n"
+        "status: released\n"
+        "repos:\n"
+        "  - praxis\n"
+        "authors:\n"
+        "  - shaneutt\n"
+        "graduation_criteria:\n"
+        "  - How? section with requirements and design\n"
+        "  - A criterion that wraps onto a second line\n"
+        "    to describe smoothing\n"
+        "stakeholders:\n"
+        "  - shaneutt\n"
+        "  - twghu\n"
+        "experimental_exempt: false\n"
+        "experimental_exempt_reason: \"Core infrastructure\"\n"
+        "related:\n"
+        "  - 00119\n"
+        "origin:\n"
+        "  repo: praxis\n"
+        "  issue: https://github.com/praxis-proxy/praxis/issues/39\n"
+        "merged_from:\n"
+        "  - repo: ai\n"
+        "    issue: https://github.com/praxis-proxy/ai/issues/147\n"
+        "---\n"
+        "# TLS Certificate Hot-Reload\n\n## What?\n\nZero-downtime rotation.\n"
+    )
+    meta, body = split_frontmatter(sample)
+    assert meta["status"] == "released"
+    assert meta["issue"] == "https://github.com/praxis-proxy/praxis/issues/39"
+    assert meta["repos"] == ["praxis"]
+    assert meta["graduation_criteria"] == [
+        "How? section with requirements and design",
+        "A criterion that wraps onto a second line to describe smoothing",
+    ]
+    assert meta["experimental_exempt"] is False
+    assert meta["experimental_exempt_reason"] == "Core infrastructure"
+    assert meta["related"] == ["00119"]
+    assert meta["origin"] == {"repo": "praxis", "issue": "https://github.com/praxis-proxy/praxis/issues/39"}
+    assert meta["merged_from"] == [{"repo": "ai", "issue": "https://github.com/praxis-proxy/ai/issues/147"}]
+    assert body.startswith("# TLS Certificate Hot-Reload")
+    assert parse_frontmatter_yaml("issue: # REQUIRED - link\nstatus: proposed\n") == {"issue": "", "status": "proposed"}
+    assert split_frontmatter("No frontmatter here.\n") == ({}, "No frontmatter here.\n")
+    for invalid in ("key:\n  - nested:\n      deep: true\n", "key: {flow: map}\n", "key:\n\t- tab\n"):
+        try:
+            parse_frontmatter_yaml(invalid)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError(f"unsupported frontmatter must raise: {invalid!r}")
+    assert proposal_title(sample, "Fallback") == "TLS Certificate Hot-Reload"
+    assert proposal_title("# On Hold\n\nWaiting.\n\n# Real Title\n\n## What?\n\nBody.\n", "Fallback") == "Real Title"
+    assert proposal_title("## Only H2s\n\nBody.\n", "Fallback Title") == "Fallback Title"
+    adapted = adapt_proposal_markdown(
+        body, "TLS Certificate Hot-Reload",
+        repo="https://github.com/praxis-proxy/enhancements", ref="0" * 40,
+        repo_dir=ROOT, sha="0" * 40, source_path="proposals/00039_tls-certificate-hot-reload.md",
+        selected={"proposals/00039_tls-certificate-hot-reload.md": "/enhancements/00039_tls-certificate-hot-reload/",
+                  "proposals/00036_branch-chains.md": "/enhancements/00036_branch-chains/"},
+        known_paths={"proposals/00039_tls-certificate-hot-reload.md", "docs/statuses.md"},
+        working=False, assets=ROOT / ".cache" / "check-adapter",
+    )
+    assert adapted.startswith('<a id="tls-certificate-hot-reload"></a>\n\n## What?')
+    cross = adapt_proposal_markdown(
+        "# Branch Chains\n\nSee [branches](00036_branch-chains.md) and [statuses](../docs/statuses.md).\n",
+        "Branch Chains",
+        repo="https://github.com/praxis-proxy/enhancements", ref="0" * 40,
+        repo_dir=ROOT, sha="0" * 40, source_path="proposals/00036_branch-chains.md",
+        selected={"proposals/00036_branch-chains.md": "/enhancements/00036_branch-chains/"},
+        known_paths={"proposals/00036_branch-chains.md", "docs/statuses.md"},
+        working=False, assets=ROOT / ".cache" / "check-adapter",
+    )
+    assert "](/enhancements/00036_branch-chains/)" in cross
+    escaped = rewrite_enhancement_target(
+        "../../examples/configs/token-counting.yaml", image=False,
+        repo="https://github.com/praxis-proxy/enhancements", ref="main", repo_dir=ROOT, sha="0" * 40,
+        source_path="proposals/00119_streaming-token-accumulation.md", selected={}, known_paths=set(),
+        working=False, assets=ROOT / ".cache" / "check-adapter",
+        project_source="https://github.com/praxis-proxy/ai/blob/" + "1" * 40)
+    assert escaped == "https://github.com/praxis-proxy/ai/blob/" + "1" * 40 + "/examples/configs/token-counting.yaml"
+    assert "](https://github.com/praxis-proxy/enhancements/blob/" + "0" * 40 + "/docs/statuses.md)" in cross
+    demoted = demote_all_h1s("# Keep One\n\ntext\n\n```markdown\n# fenced\n```\n\n# Second\n")
+    assert demoted == "## Keep One\n\ntext\n\n```markdown\n# fenced\n```\n\n## Second\n"
+    assert PROPOSAL_FILE.fullmatch("00039_tls-certificate-hot-reload.md").group("number") == "00039"
+    assert PROPOSAL_ASSET.fullmatch("00039_tls.asset-notes.md").group("name") == "notes"
+    assert PROPOSAL_FILE.fullmatch("template.md") is None
+    rendered = enhancements_frontmatter(
+        {"title": "T", "weight": 39, "description": "D", "enhancement_number": "00039",
+         "enhancement_status": "released", "enhancement_repos": ["praxis"], "source_commit": "0" * 40},
+        [("enhancement_related", [{"number": "00119", "title": "Streaming", "status": "proposed",
+                                   "url": "/enhancements/00119_streaming/"}]),
+         ("enhancement_supersedes", [{"number": "00042"}])],
+    )
+    assert 'type = "enhancements"' in rendered
+    assert "enhancement_repos = [\"praxis\"]" in rendered
+    assert "[[enhancement_related]]" in rendered and "url = \"/enhancements/00119_streaming/\"" in rendered
+    assert "[[enhancement_supersedes]]" in rendered
+    assert "url =" not in rendered.split("[[enhancement_supersedes]]")[1]
 
 
 def prepare(mode: str) -> None:
@@ -1919,6 +2596,7 @@ def prepare(mode: str) -> None:
     (DATA_OUT / "docs_build_versions.json").write_text(
         json.dumps({"products": products_out, "preview": mode == "serve"}, indent=2) + "\n", encoding="utf-8"
     )
+    prepare_enhancements(mode)
     (DATA_OUT / "docs_sources.json").write_text(json.dumps(source_map, indent=2) + "\n", encoding="utf-8")
     write_example_coverage_report(source_catalog, example_coverage)
 
@@ -1997,6 +2675,7 @@ def main() -> None:
     commands.add_parser("check-release-versions")
     commands.add_parser("update-doc-versions")
     commands.add_parser("update-dev-versions")
+    commands.add_parser("update-enhancements")
     prepare_parser = commands.add_parser("prepare")
     prepare_parser.add_argument("--mode", choices=("build", "serve"), required=True)
     for name in ("update-docs", "add-docs-version"):
@@ -2016,6 +2695,8 @@ def main() -> None:
             update_doc_versions()
         elif args.command == "update-dev-versions":
             update_dev_versions()
+        elif args.command == "update-enhancements":
+            update_enhancements()
         elif args.command == "prepare":
             prepare(args.mode)
         elif args.command == "update-docs":
