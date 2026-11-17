@@ -79,7 +79,7 @@ Submodule checkouts are often detached. For a source documentation contribution,
 make update-enhancements
 ```
 
-Review the catalog change and stage `sources/enhancements`; nothing is committed. Undocumented statuses render under "Other statuses" and are reported during preparation. Links that climb above the enhancements repository root resolve against the proposal's single listed project at its development commit.
+Review the catalog change and stage `sources/enhancements`; nothing is committed. The list page shows each status with its count along the proposed → accepted → experimental → released lifecycle, and each proposal shows the graduation criteria that gate its next status. Undocumented statuses render after the documented ones and are reported during preparation. Links that climb above the enhancements repository root resolve against the proposal's single listed project at its development commit.
 
 `make clean` removes generated content, public output, and Hugo resources while retaining submodules and authored website files.
 

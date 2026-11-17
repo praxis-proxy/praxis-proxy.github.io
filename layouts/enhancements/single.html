@@ -8,9 +8,17 @@
     <p class="praxis-enhancements-number">Proposal #{{ .Params.enhancement_number }}</p>
     <h1>{{ .Title }}</h1>
     <p class="praxis-enhancements-status">
-      <span class="praxis-enhancements-badge praxis-enhancements-badge--{{ $meta.group | default "other" }}">{{ $meta.label | default $status }}</span>
+      <span class="praxis-enhancements-badge">{{ $meta.label | default $status }}</span>
       {{ with $meta.gloss }}<span class="praxis-enhancements-gloss">{{ . }}</span>{{ end }}
     </p>
+    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" $status "link" true) }}
+    {{- with .Params.enhancement_graduation_criteria }}
+    <section class="praxis-enhancements-criteria-panel" aria-labelledby="enhancement-graduation-criteria">
+      <h2 id="enhancement-graduation-criteria">{{ partial "enhancements/criteria-heading.html" $meta }}</h2>
+      <p>Conditions that must hold before a maintainer advances this proposal{{ with $meta.next_label }} to {{ . }}{{ end }}.</p>
+      <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+    </section>
+    {{- end }}
     <dl class="praxis-enhancements-meta">
       {{- with .Params.enhancement_repos }}<div><dt>Projects</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
       {{- with .Params.enhancement_authors }}<div><dt>Authors</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
@@ -34,12 +42,6 @@
     </dl>
   </header>
   <div class="td-content">{{ .Content }}</div>
-  {{- with .Params.enhancement_graduation_criteria }}
-  <section class="td-content" aria-labelledby="graduation-criteria">
-    <h2 id="graduation-criteria">Graduation criteria</h2>
-    <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
-  </section>
-  {{- end }}
   <footer class="praxis-enhancements-footer">
     <p>
       Imported from <a href="{{ .Params.source_repo }}/blob/{{ .Params.source_commit }}/{{ .Params.source_path }}"><code>{{ .Params.source_path }}</code> at <code>{{ substr .Params.source_commit 0 12 }}</code></a>.

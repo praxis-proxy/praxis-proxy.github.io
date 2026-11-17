@@ -17,25 +17,19 @@
     {{- end }}
   </header>
   {{- with $build }}
-  <nav class="praxis-enhancements-jump" aria-label="Proposal status groups">
-    <ul>
-      {{- range .status_groups }}
-      {{- $count := 0 -}}
-      {{- range .statuses }}{{ $count = add $count (index $build.status_meta .).count }}{{ end }}
-      <li><a href="#status-{{ .key }}">{{ .label }} <span class="praxis-enhancements-count">{{ $count }}</span></a></li>
-      {{- end }}
-    </ul>
+  <nav aria-labelledby="enhancements-status-overview">
+    <h2 id="enhancements-status-overview" class="praxis-enhancements-overview-heading">Status overview</h2>
+    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" "" "link" true) }}
   </nav>
-  {{- range .status_groups }}
-  {{- $group := . -}}
-  <section class="praxis-enhancements-group" aria-labelledby="status-{{ .key }}">
-    <h2 id="status-{{ .key }}">{{ .label }}</h2>
-    {{- range .statuses }}
-    {{- $status := . -}}
-    {{- $meta := index $build.status_meta $status -}}
-    <h3 class="praxis-enhancements-status-heading">{{ $meta.label }} <span class="praxis-enhancements-gloss">— {{ $meta.gloss }}</span></h3>
+  {{- range .status_order }}
+  {{- $status := . -}}
+  {{- $meta := index $build.status_meta $status -}}
+  <section class="praxis-enhancements-group" aria-labelledby="status-{{ $status }}">
+    <h2 id="status-{{ $status }}">{{ $meta.label }} <span class="praxis-enhancements-count">{{ $meta.count }}</span></h2>
+    <p class="praxis-enhancements-gloss">{{ $meta.gloss }}.</p>
     <ul class="praxis-enhancements-list">
       {{- range where $proposals "Params.enhancement_status" $status }}
+      {{- $criteria := .Params.enhancement_graduation_criteria -}}
       <li>
         <p class="praxis-enhancements-item-title">
           <span class="praxis-enhancements-number">#{{ .Params.enhancement_number }}</span>
@@ -45,10 +39,15 @@
         {{- with .Params.enhancement_repos }}
         <p class="praxis-enhancements-repos"><span class="visually-hidden">Projects: </span>{{ delimit . ", " }}</p>
         {{- end }}
+        {{- with $criteria }}
+        <details class="praxis-enhancements-criteria">
+          <summary>{{ partial "enhancements/criteria-heading.html" $meta }} <span class="praxis-enhancements-count">{{ len . }}</span></summary>
+          <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+        </details>
+        {{- end }}
       </li>
       {{- end }}
     </ul>
-    {{- end }}
   </section>
   {{- end }}
   {{- else }}

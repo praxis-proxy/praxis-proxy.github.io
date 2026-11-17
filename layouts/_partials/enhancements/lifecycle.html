@@ -1,0 +1,36 @@
+{{- /* Lifecycle overview. Context: dict "build" (enhancements_build data),
+     "current" (status of the page's proposal, or "" on the list page),
+     "link" (bool: link each status with proposals to its list section;
+     the current status is never linked). */ -}}
+{{- $build := .build -}}
+{{- $current := .current -}}
+{{- $link := .link -}}
+{{- $base := "enhancements/" | relURL -}}
+<div class="praxis-enhancements-lifecycle">
+  <ol class="praxis-enhancements-lifecycle__path" aria-label="Proposal lifecycle">
+    {{- range $build.lifecycle }}
+    {{- $meta := index $build.status_meta . -}}
+    {{- $isCurrent := eq . $current -}}
+    <li class="praxis-enhancements-stage{{ if $isCurrent }} is-current{{ end }}{{ if not $meta.count }} is-empty{{ end }}"{{ if $isCurrent }} aria-current="step"{{ end }}>
+      {{- if and $link $meta.count (not $isCurrent) }}<a href="{{ $base }}#status-{{ . }}">{{ else }}<span>{{ end -}}
+      <span class="praxis-enhancements-stage__label">{{ $meta.label }}</span>
+      <span class="praxis-enhancements-stage__count">{{ $meta.count }}<span class="visually-hidden"> proposals</span></span>
+      {{- if and $link $meta.count (not $isCurrent) }}</a>{{ else }}</span>{{ end -}}
+    </li>
+    {{- end }}
+  </ol>
+  {{- with $build.side_statuses }}
+  <ul class="praxis-enhancements-lifecycle__side" aria-label="Statuses outside the main lifecycle">
+    {{- range . }}
+    {{- $meta := index $build.status_meta . -}}
+    {{- $isCurrent := eq . $current -}}
+    <li class="praxis-enhancements-stage{{ if $isCurrent }} is-current{{ end }}"{{ if $isCurrent }} aria-current="step"{{ end }}>
+      {{- if and $link (not $isCurrent) }}<a href="{{ $base }}#status-{{ . }}">{{ else }}<span>{{ end -}}
+      <span class="praxis-enhancements-stage__label">{{ $meta.label }}</span>
+      <span class="praxis-enhancements-stage__count">{{ $meta.count }}<span class="visually-hidden"> proposals</span></span>
+      {{- if and $link (not $isCurrent) }}</a>{{ else }}</span>{{ end -}}
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</div>

@@ -35,26 +35,23 @@ COVERAGE_REPORT = ROOT / "docs" / "example-coverage-report.md"
 ENHANCEMENT_PRODUCT = "enhancements"
 PROPOSAL_FILE = re.compile(r"(?P<number>\d{5})_(?P<slug>[^/]+)\.md\Z")
 PROPOSAL_ASSET = re.compile(r"(?P<number>\d{5})_(?P<slug>[^/]+)\.asset-(?P<name>[^/]+)\.md\Z")
-# Status values documented in the enhancements repository (docs/statuses.md).
-# Values are (group key, display label, short gloss). Statuses outside this map
-# render under the fallback group and are reported during prepare.
+# Status values documented in the enhancements repository (docs/statuses.md),
+# in display order. Values are (display label, short gloss, forward status).
+# The forward status is the one its graduation criteria gate (docs/process.md);
+# terminal and blocked statuses have none. Statuses outside this map render
+# after the documented ones and are reported during prepare.
 ENHANCEMENT_STATUS_META = {
-    "proposed": ("discussion", "Proposed", "Filed, not yet accepted"),
-    "blocked": ("discussion", "Blocked", "Cannot proceed; requires prerequisite work"),
-    "accepted": ("implementation", "Accepted", "Approved for implementation"),
-    "experimental": ("implementation", "Experimental", "Implemented, shipping as experimental"),
-    "released": ("shipped", "Released", "Stable, fully shipped"),
-    "retroactive": ("shipped", "Retroactive", "Documents a feature that shipped before the proposal process existed"),
-    "deferred": ("parked", "Deferred", "Intentionally postponed; not actively pursued"),
-    "withdrawn": ("parked", "Withdrawn", "Not proceeding"),
+    "proposed": ("Proposed", "Filed, not yet accepted", "accepted"),
+    "blocked": ("Blocked", "Cannot proceed; requires prerequisite work", ""),
+    "accepted": ("Accepted", "Approved for implementation", "experimental"),
+    "experimental": ("Experimental", "Implemented, shipping as experimental", "released"),
+    "released": ("Released", "Stable, fully shipped", ""),
+    "retroactive": ("Retroactive", "Documents a feature that shipped before the proposal process existed", ""),
+    "deferred": ("Deferred", "Intentionally postponed; not actively pursued", "proposed"),
+    "withdrawn": ("Withdrawn", "Not proceeding", ""),
 }
-ENHANCEMENT_STATUS_GROUPS = (
-    ("discussion", "Under discussion"),
-    ("implementation", "In implementation"),
-    ("shipped", "Shipped"),
-    ("parked", "Parked or withdrawn"),
-    ("other", "Other statuses"),
-)
+# The main path a proposal advances along; other statuses sit beside it.
+ENHANCEMENT_LIFECYCLE = ("proposed", "accepted", "experimental", "released")
 RELEASE_TAG = re.compile(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\Z")
 GIT_REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]*\Z")
 GIT_SHA = re.compile(r"[0-9a-fA-F]{40}\Z")
@@ -2082,23 +2079,20 @@ def prepare_enhancements(mode: str) -> None:
     for entry in parsed:
         status_counts[entry["status"]] = status_counts.get(entry["status"], 0) + 1
     status_meta: dict[str, dict] = {}
-    for status in sorted(status_counts):
-        if status in ENHANCEMENT_STATUS_META:
-            group, label, gloss = ENHANCEMENT_STATUS_META[status]
-        else:
-            group, label, gloss = "other", status.title(), "Not part of the documented proposal statuses"
-        status_meta[status] = {"group": group, "label": label, "gloss": gloss,
-                               "count": status_counts[status]}
-    status_groups = [
-        {"key": key, "label": label,
-         "statuses": [status for status in sorted(status_counts) if status_meta[status]["group"] == key]}
-        for key, label in ENHANCEMENT_STATUS_GROUPS
-        if any(status_meta[status]["group"] == key for status in status_counts)
-    ]
+    for status in [*ENHANCEMENT_STATUS_META, *sorted(set(status_counts) - set(ENHANCEMENT_STATUS_META))]:
+        label, gloss, forward = ENHANCEMENT_STATUS_META.get(
+            status, (status.title(), "Not part of the documented proposal statuses", ""))
+        status_meta[status] = {"label": label, "gloss": gloss, "count": status_counts.get(status, 0),
+                               "next": forward, "next_label": ENHANCEMENT_STATUS_META[forward][0] if forward else "",
+                               "lifecycle": status in ENHANCEMENT_LIFECYCLE}
+    status_order = [status for status in status_meta if status_meta[status]["count"]]
     build = {
         "repo": config["repo"], "sha": sha, "edit_branch": edit_branch,
         "preview": mode == "serve", "proposal_count": len(parsed),
-        "status_meta": status_meta, "status_groups": status_groups,
+        "status_meta": status_meta, "status_order": status_order,
+        "lifecycle": list(ENHANCEMENT_LIFECYCLE),
+        "side_statuses": [status for status in status_meta
+                          if status not in ENHANCEMENT_LIFECYCLE and status_meta[status]["count"]],
         "statuses_url": f"{config['repo']}/blob/{link_ref}/docs/statuses.md",
         "process_url": f"{config['repo']}/blob/{link_ref}/docs/process.md",
         "contributing_url": f"{config['repo']}/blob/{link_ref}/CONTRIBUTING.md",
@@ -2109,7 +2103,7 @@ def prepare_enhancements(mode: str) -> None:
     if unknown_statuses:
         for status, files in sorted(unknown_statuses.items()):
             print(f"  warning: undocumented proposal status {status!r} in {', '.join(files)}; "
-                  "it renders under the fallback status group")
+                  "it renders after the documented statuses")
     if duplicate_numbers:
         print("  note: proposal numbers shared by multiple files (references stay unlinked): "
               + ", ".join(sorted(duplicate_numbers)))
