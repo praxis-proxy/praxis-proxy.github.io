@@ -721,3 +721,48 @@ body.praxis-blog .td-outer { padding-inline: 0; }
 .ai-discovery__cards > li { padding: 1.25rem; border: 1px solid var(--praxis-border); border-radius: .5rem; background: var(--praxis-panel); }
 .ai-discovery__cards h3 { font-size: 1.15rem; margin: 0 0 .75rem; }
 .ai-discovery__cards p { margin: 0; }
+
+// Enhancement proposals imported from praxis-proxy/enhancements.
+.praxis-enhancements-page { width: 100%; max-width: 60rem; margin: 0 auto; padding: 3rem 1rem 4rem; overflow-wrap: anywhere; }
+.praxis-enhancements-header { margin-bottom: 2rem; }
+.praxis-enhancements-header h1 { margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 600; letter-spacing: -0.03em; }
+.praxis-enhancements-source, .praxis-enhancements-gloss, .praxis-enhancements-summary, .praxis-enhancements-repos, .praxis-enhancements-footer { color: var(--praxis-muted); }
+.praxis-enhancements-count { color: var(--praxis-muted); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.8rem; }
+.praxis-enhancements-group { margin-top: 2.5rem; scroll-margin-top: 5rem; }
+.td-default main .praxis-enhancements-group { padding: 0; }
+.praxis-enhancements-group > h2 { padding-bottom: 0.5rem; border-bottom: 1px solid var(--praxis-border); scroll-margin-top: 5rem; }
+.praxis-enhancements-list { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.praxis-enhancements-list > li { padding: 1rem 1.25rem; border: 1px solid var(--praxis-border); border-radius: 0.5rem; background: var(--praxis-panel); }
+.praxis-enhancements-list p { margin: 0; }
+.praxis-enhancements-list p + p { margin-top: 0.35rem; }
+.praxis-enhancements-item-title { font-weight: 600; }
+.praxis-enhancements-number { margin-right: 0.4rem; color: var(--praxis-muted); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.85rem; font-weight: 400; }
+.praxis-enhancements-repos { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.8rem; }
+.praxis-enhancements-back { margin-bottom: 1.5rem; }
+.praxis-enhancements-status { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.praxis-enhancements-badge { padding: 0.2rem 0.65rem; border: 1px solid currentColor; border-radius: 999px; color: var(--praxis-accent); font-size: 0.85rem; font-weight: 600; }
+.praxis-enhancements-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem 1.5rem; margin: 1.5rem 0 0; padding: 1rem 1.25rem; border: 1px solid var(--praxis-border); border-radius: 0.5rem; background: var(--praxis-panel); }
+.praxis-enhancements-meta dt { color: var(--praxis-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.praxis-enhancements-meta dd { margin: 0.15rem 0 0; }
+.praxis-enhancements-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--praxis-border); font-size: 0.9rem; }
+.praxis-enhancements-overview-heading { margin: 0 0 0.75rem; font-size: 1.1rem; }
+.praxis-enhancements-lifecycle { display: grid; gap: 0.75rem; margin-bottom: 1.5rem; }
+.praxis-enhancements-lifecycle ol, .praxis-enhancements-lifecycle ul { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.praxis-enhancements-lifecycle__path .praxis-enhancements-stage + .praxis-enhancements-stage::before { content: "→"; align-self: center; margin-right: 0.5rem; color: var(--praxis-muted); }
+.praxis-enhancements-stage { display: flex; }
+.praxis-enhancements-stage > a, .praxis-enhancements-stage > span { display: inline-flex; gap: 0.5rem; align-items: baseline; padding: 0.4rem 0.8rem; border: 1px solid var(--praxis-border); border-radius: 0.5rem; background: var(--praxis-panel); color: var(--praxis-text); text-decoration: none; }
+.praxis-enhancements-stage > a:hover { border-color: var(--praxis-accent); }
+.praxis-enhancements-stage__label { font-weight: 600; }
+.praxis-enhancements-stage__count { color: var(--praxis-muted); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.85rem; }
+.praxis-enhancements-stage.is-empty > a, .praxis-enhancements-stage.is-empty > span { border-style: dashed; color: var(--praxis-muted); }
+.praxis-enhancements-stage.is-current > span { border: 2px solid var(--praxis-accent); color: var(--praxis-accent); }
+.praxis-enhancements-lifecycle__side .praxis-enhancements-stage > a, .praxis-enhancements-lifecycle__side .praxis-enhancements-stage > span { padding: 0.25rem 0.65rem; font-size: 0.9rem; }
+.praxis-enhancements-group > h2 .praxis-enhancements-count { font-size: 1rem; }
+.praxis-enhancements-group > .praxis-enhancements-gloss { margin: 0.5rem 0 1rem; }
+.praxis-enhancements-criteria { margin-top: 0.6rem; }
+.praxis-enhancements-criteria summary { width: fit-content; color: var(--praxis-accent); font-size: 0.9rem; cursor: pointer; }
+.praxis-enhancements-criteria ul, .praxis-enhancements-criteria-panel ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+.praxis-enhancements-criteria li { margin-top: 0.25rem; }
+.praxis-enhancements-criteria-panel, .td-default main .praxis-enhancements-criteria-panel { margin-top: 1.5rem; padding: 1rem 1.25rem; border: 1px solid var(--praxis-border); border-left: 4px solid var(--praxis-accent); border-radius: 0.5rem; background: var(--praxis-panel); }
+.praxis-enhancements-criteria-panel h2 { margin: 0 0 0.35rem; font-size: 1.15rem; }
+.praxis-enhancements-criteria-panel > p { margin: 0; color: var(--praxis-muted); font-size: 0.95rem; }

@@ -3,9 +3,11 @@
 {{- $communityURL := "community/" | relURL -}}
 {{- $blogURL := "blog/" | relURL -}}
 {{- $docsURL := "docs/" | relURL -}}
+{{- $enhancementsURL := "enhancements/" | relURL -}}
 {{- $docsActive := or .Params.product (in (slice "docs" "guides" "examples" "search" "start") .Section) -}}
 {{- $communityActive := strings.HasPrefix $page.RelPermalink $communityURL -}}
 {{- $blogActive := strings.HasPrefix $page.RelPermalink $blogURL -}}
+{{- $enhancementsActive := strings.HasPrefix $page.RelPermalink $enhancementsURL -}}
 <a class="visually-hidden-focusable praxis-skip-link" href="#main-content">Skip to content</a>
 {{- if partial "chrome-render.html" (dict "page" . "region" "navbar") -}}
 <nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll" aria-label="Main navigation">
@@ -30,6 +32,7 @@
       <ul class="navbar-nav align-items-lg-center">
         <li class="nav-item"><a class="nav-link{{ if $docsActive }} active{{ end }}" href="{{ $docsURL }}"{{ if $docsActive }} aria-current="{{ if eq $page.RelPermalink $docsURL }}page{{ else }}location{{ end }}"{{ end }}>Docs</a></li>
         <li class="nav-item"><a class="nav-link{{ if $blogActive }} active{{ end }}"{{ if $blogActive }} aria-current="{{ if eq $page.RelPermalink $blogURL }}page{{ else }}location{{ end }}"{{ end }} href="{{ $blogURL }}">Blog</a></li>
+        <li class="nav-item"><a class="nav-link{{ if $enhancementsActive }} active{{ end }}"{{ if $enhancementsActive }} aria-current="{{ if eq $page.RelPermalink $enhancementsURL }}page{{ else }}location{{ end }}"{{ end }} href="{{ $enhancementsURL }}">Proposals</a></li>
         <li class="nav-item"><a class="nav-link{{ if $communityActive }} active{{ end }}"{{ if $communityActive }} aria-current="{{ if eq $page.RelPermalink $communityURL }}page{{ else }}location{{ end }}"{{ end }} href="{{ $communityURL }}">Community</a></li>
       </ul>
     </div>

@@ -1,0 +1,52 @@
+{{ define "main" }}
+{{- $build := hugo.Data.enhancements_build -}}
+{{- $status := .Params.enhancement_status -}}
+{{- $meta := index $build.status_meta $status -}}
+<article class="praxis-enhancements-page praxis-enhancement">
+  <p class="praxis-enhancements-back"><a href="{{ "enhancements/" | relURL }}">← All enhancement proposals</a></p>
+  <header class="praxis-enhancements-header">
+    <p class="praxis-enhancements-number">Proposal #{{ .Params.enhancement_number }}</p>
+    <h1>{{ .Title }}</h1>
+    <p class="praxis-enhancements-status">
+      <span class="praxis-enhancements-badge">{{ $meta.label | default $status }}</span>
+      {{ with $meta.gloss }}<span class="praxis-enhancements-gloss">{{ . }}</span>{{ end }}
+    </p>
+    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" $status "link" true) }}
+    {{- with .Params.enhancement_graduation_criteria }}
+    <section class="praxis-enhancements-criteria-panel" aria-labelledby="enhancement-graduation-criteria">
+      <h2 id="enhancement-graduation-criteria">{{ partial "enhancements/criteria-heading.html" $meta }}</h2>
+      <p>Conditions that must hold before a maintainer advances this proposal{{ with $meta.next_label }} to {{ . }}{{ end }}.</p>
+      <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+    </section>
+    {{- end }}
+    <dl class="praxis-enhancements-meta">
+      {{- with .Params.enhancement_repos }}<div><dt>Projects</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+      {{- with .Params.enhancement_authors }}<div><dt>Authors</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+      {{- with .Params.enhancement_stakeholders }}<div><dt>Stakeholders</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+      {{- range slice (slice "enhancement_issue" "Issue") (slice "enhancement_discussion" "Discussion") (slice "enhancement_epic" "Epic") (slice "enhancement_experimental_impl" "Experimental implementation") }}
+      {{- $key := index . 0 }}{{ $label := index . 1 }}
+      {{- with index $.Params $key }}
+      <div><dt>{{ $label }}</dt><dd>{{ range $i, $url := . }}{{ if $i }}, {{ end }}<a href="{{ $url }}">{{ $url | replaceRE "^https://github.com/" "" }}</a>{{ end }}</dd></div>
+      {{- else }}
+      {{- if and (eq $key "enhancement_epic") $.Params.enhancement_epic_label }}<div><dt>Epic</dt><dd>{{ $.Params.enhancement_epic_label }}</dd></div>{{ end }}
+      {{- end }}
+      {{- end }}
+      {{- range slice (slice "enhancement_supersedes" "Supersedes") (slice "enhancement_superseded_by" "Superseded by") (slice "enhancement_related" "Related") }}
+      {{- $key := index . 0 }}{{ $label := index . 1 }}
+      {{- with index $.Params $key }}
+      <div><dt>{{ $label }}</dt><dd>
+        {{- range $i, $ref := . }}{{ if $i }}, {{ end }}{{ with $ref.url }}<a href="{{ strings.TrimPrefix "/" . | relURL }}">#{{ $ref.number }} {{ $ref.title }}</a>{{ else }}#{{ $ref.number }}{{ end }}{{ end -}}
+      </dd></div>
+      {{- end }}
+      {{- end }}
+    </dl>
+  </header>
+  <div class="td-content">{{ .Content }}</div>
+  <footer class="praxis-enhancements-footer">
+    <p>
+      Imported from <a href="{{ .Params.source_repo }}/blob/{{ .Params.source_commit }}/{{ .Params.source_path }}"><code>{{ .Params.source_path }}</code> at <code>{{ substr .Params.source_commit 0 12 }}</code></a>.
+      {{ with .Params.edit_url }}<a href="{{ . }}">Suggest a change</a> in the enhancements repository.{{ end }}
+    </p>
+  </footer>
+</article>
+{{ end }}

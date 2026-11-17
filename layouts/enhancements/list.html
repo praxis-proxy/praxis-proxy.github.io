@@ -1,0 +1,57 @@
+{{ define "main" }}
+{{- $build := hugo.Data.enhancements_build -}}
+{{- $proposals := .RegularPages.ByWeight -}}
+<div class="praxis-enhancements-page">
+  <header class="praxis-enhancements-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+    <div class="td-content">{{ .Content }}</div>
+    {{- with $build }}
+    <p class="praxis-enhancements-source">
+      {{ .proposal_count }} proposals from
+      <a href="{{ .repo }}/tree/{{ .sha }}/proposals"><code>praxis-proxy/enhancements</code> at <code>{{ substr .sha 0 12 }}</code></a>{{ if .preview }} (local preview of the working tree){{ end }}.
+      <a href="{{ .process_url }}">Proposal process</a> ·
+      <a href="{{ .statuses_url }}">Status definitions</a> ·
+      <a href="{{ .contributing_url }}">Contribute a proposal</a>
+    </p>
+    {{- end }}
+  </header>
+  {{- with $build }}
+  <nav aria-labelledby="enhancements-status-overview">
+    <h2 id="enhancements-status-overview" class="praxis-enhancements-overview-heading">Status overview</h2>
+    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" "" "link" true) }}
+  </nav>
+  {{- range .status_order }}
+  {{- $status := . -}}
+  {{- $meta := index $build.status_meta $status -}}
+  <section class="praxis-enhancements-group" aria-labelledby="status-{{ $status }}">
+    <h2 id="status-{{ $status }}">{{ $meta.label }} <span class="praxis-enhancements-count">{{ $meta.count }}</span></h2>
+    <p class="praxis-enhancements-gloss">{{ $meta.gloss }}.</p>
+    <ul class="praxis-enhancements-list">
+      {{- range where $proposals "Params.enhancement_status" $status }}
+      {{- $criteria := .Params.enhancement_graduation_criteria -}}
+      <li>
+        <p class="praxis-enhancements-item-title">
+          <span class="praxis-enhancements-number">#{{ .Params.enhancement_number }}</span>
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </p>
+        {{ with .Description }}<p class="praxis-enhancements-summary">{{ . }}</p>{{ end }}
+        {{- with .Params.enhancement_repos }}
+        <p class="praxis-enhancements-repos"><span class="visually-hidden">Projects: </span>{{ delimit . ", " }}</p>
+        {{- end }}
+        {{- with $criteria }}
+        <details class="praxis-enhancements-criteria">
+          <summary>{{ partial "enhancements/criteria-heading.html" $meta }} <span class="praxis-enhancements-count">{{ len . }}</span></summary>
+          <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+        </details>
+        {{- end }}
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+  {{- else }}
+  <p>No proposals have been imported. Run <code>make init</code> and rebuild.</p>
+  {{- end }}
+</div>
+{{ end }}

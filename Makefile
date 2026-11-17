@@ -8,7 +8,7 @@ LINK_PREFIX = $(shell printf '%s' '$(LINK_BASEURL)' | sed -E 's|^[a-zA-Z][a-zA-Z
 CONTAINER_USER = --user $(shell id -u):$(shell id -g)
 CONTAINER_MAKE = docker compose run --build --rm $(CONTAINER_USER) website make HUGO_DESTINATION="$(HUGO_DESTINATION)"
 
-.PHONY: help init init-in-container build build-in-container build-host serve serve-in-container check check-in-container check-doc-versions update-doc-versions update-doc-versions-in-container update-dev-versions update-dev-versions-in-container update-docs update-docs-in-container add-docs-version add-docs-version-in-container clean
+.PHONY: help init init-in-container build build-in-container build-host serve serve-in-container check check-in-container check-doc-versions update-doc-versions update-doc-versions-in-container update-dev-versions update-dev-versions-in-container update-enhancements update-enhancements-in-container update-docs update-docs-in-container add-docs-version add-docs-version-in-container clean
 
 help:
 	@printf '%s\n' \
@@ -20,6 +20,7 @@ help:
 	  'check-doc-versions Verify catalog defaults match the latest published releases' \
 	  'update-doc-versions Refresh defaults and source pointers from latest releases' \
 	  'update-dev-versions Refresh the development channel SHAs from tracked upstream refs' \
+	  'update-enhancements Move the enhancement proposals snapshot to its tracked branch head' \
 	  'update-docs PRODUCT=policy REF=<tag-or-commit>' \
 	  'add-docs-version PRODUCT=policy REF=<release-tag>' \
 	  'clean              Remove generated site output, keeping sources and authored files'
@@ -94,6 +95,12 @@ update-dev-versions:
 
 update-dev-versions-in-container:
 	python3 tools/docs.py update-dev-versions
+
+update-enhancements:
+	$(CONTAINER_MAKE) update-enhancements-in-container
+
+update-enhancements-in-container:
+	python3 tools/docs.py update-enhancements
 
 update-docs:
 	$(CONTAINER_MAKE) update-docs-in-container PRODUCT="$(PRODUCT)" REF="$(REF)"
