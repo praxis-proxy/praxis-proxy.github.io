@@ -8,20 +8,20 @@
         "title": "OpenAI Chat Completions",
         "summary": "Review API forwarding and build requirements. Development includes a Chat Completions quickstart with complete configuration.",
         "source": "docs/features.md",
-        "dev_fragment": "chat-completions",
-        "dev_source": "docs/quickstart.md"
+        "dev_source": "docs/getting-started/build-from-source.md",
+        "dev_fragment": "chat-completions"
       },
       {
         "title": "Anthropic Messages",
         "summary": "Choose native Messages forwarding or translation to a Chat Completions backend; review streaming and compatibility limits.",
         "source": "docs/anthropic-messages.md",
-        "dev_source": "docs/recipes/anthropic.md"
+        "dev_source": "docs/guides/anthropic.md"
       },
       {
         "title": "Responses and Conversations",
         "summary": "Distinguish upstream passthrough from experimental managed state and tool execution. Check build features before configuring.",
         "source": "docs/features.md",
-        "dev_source": "docs/recipes/managed-responses.md"
+        "dev_source": "docs/guides/managed-responses.md"
       }
     ]
   },
@@ -34,13 +34,13 @@
         "title": "Choose a client and provider",
         "summary": "Review capabilities and build requirements. Development adds a client/provider decision table covering credentials and compatibility.",
         "source": "docs/features.md",
-        "dev_source": "docs/client-provider-paths.md"
+        "dev_source": "docs/getting-started/choose-client-and-provider.md"
       },
       {
         "title": "Azure, Vertex, and Bedrock",
         "summary": "Review the provider adapters and their prerequisites before selecting a configuration.",
         "source": "docs/filters/reference.md",
-        "dev_source": "docs/recipes/providers.md"
+        "dev_source": "docs/guides/providers/README.md"
       }
     ]
   },
@@ -53,13 +53,13 @@
         "title": "Route models and providers",
         "summary": "Explore model routing and selection; Development adds a complete alias and provider-routing recipe.",
         "source": "docs/filters/intelligent_route.md",
-        "dev_source": "docs/recipes/routing.md"
+        "dev_source": "docs/guides/routing.md"
       },
       {
         "title": "Guardrails and token usage",
         "summary": "Screen requests with an external guardrail service and inspect usage. Development combines these in an operator recipe.",
         "source": "docs/features.md",
-        "dev_source": "docs/recipes/guardrails-token-usage.md"
+        "dev_source": "docs/guides/guardrails.md"
       },
       {
         "title": "Discover filters and composition",
@@ -75,7 +75,7 @@
         "title": "Operate and troubleshoot",
         "summary": "Plan deployment and capacity. Development adds an operations, observability, and upgrade checklist.",
         "source": "docs/capacity-planning.md",
-        "dev_source": "docs/operations.md"
+        "dev_source": "docs/operations/README.md"
       }
     ]
   }

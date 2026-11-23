@@ -9,6 +9,12 @@
 {{- else -}}
   {{- $pages := where (where (where site.Pages "Params.product" .product) "Params.version" $version) "Params.source_path" $navigation.start -}}
   {{- with index $pages 0 }}{{ $href = .RelPermalink }}{{ end -}}
+  {{- /* A release where the start page moved uses its new path. */ -}}
+  {{- range $navigation.start_fallbacks -}}
+    {{- if not $href -}}
+      {{- with index (where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .) 0 }}{{ $href = .RelPermalink }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
 {{- if not $href }}{{ errorf "Missing starting guide for %s/%s" .product $version }}{{ end -}}
 {{- return $href -}}
