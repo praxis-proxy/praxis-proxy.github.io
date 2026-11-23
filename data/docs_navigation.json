@@ -674,6 +674,52 @@
           "order": 10,
           "summary": "Build Praxis from source for local development, then route a request to an upstream backend.",
           "navigation_section": "start"
+        },
+        "docs/operating/tracing.md": {
+          "source_path": "docs/operating/tracing.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 75,
+          "related": [
+            "docs/operating/observability.md"
+          ],
+          "navigation_section": "operate"
+        },
+        "docs/operating/diagnostics.md": {
+          "source_path": "docs/operating/diagnostics.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 80,
+          "related": [
+            "docs/operating/observability.md"
+          ],
+          "navigation_section": "operate"
+        },
+        "docs/architecture/hyper-backend.md": {
+          "source_path": "docs/architecture/hyper-backend.md",
+          "reader_need": "Explanation",
+          "topic": "Architecture",
+          "order": 110,
+          "related": [],
+          "navigation_section": "understand"
+        },
+        "docs/developing/adding-backends.md": {
+          "source_path": "docs/developing/adding-backends.md",
+          "reader_need": "How-to",
+          "topic": "Developing",
+          "order": 25,
+          "related": [
+            "docs/developing/adding-protocols.md"
+          ],
+          "navigation_section": "extend"
+        },
+        "docs/filters/http/traffic_management/head_classifier.md": {
+          "source_path": "docs/filters/http/traffic_management/head_classifier.md",
+          "reader_need": "Reference",
+          "topic": "Http Traffic Management",
+          "order": 45,
+          "related": [],
+          "navigation_section": "reference"
         }
       },
       "overview": "docs/README.md",
@@ -2706,6 +2752,56 @@
           "order": 80,
           "related": [],
           "summary": "PPE acts as a reference monitor between an agent and the tools, agents, and data it can access.",
+          "navigation_section": "understand"
+        },
+        "docs/content/llm-routes.md": {
+          "source_path": "docs/content/llm-routes.md",
+          "reader_need": "Reference",
+          "topic": "Core Concepts",
+          "order": 25,
+          "related": [
+            "docs/content/http-routing.md"
+          ],
+          "navigation_section": "reference"
+        },
+        "docs/content/rate-limiting.md": {
+          "source_path": "docs/content/rate-limiting.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 27,
+          "related": [
+            "docs/content/builtins.md"
+          ],
+          "navigation_section": "configure"
+        },
+        "docs/content/auditing.md": {
+          "source_path": "docs/content/auditing.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 12,
+          "related": [
+            "docs/content/deployment.md"
+          ],
+          "navigation_section": "operate"
+        },
+        "docs/content/fips.md": {
+          "source_path": "docs/content/fips.md",
+          "reader_need": "How-to",
+          "topic": "Core Concepts",
+          "order": 14,
+          "related": [
+            "docs/content/deployment.md"
+          ],
+          "navigation_section": "operate"
+        },
+        "docs/content/apl/metadata.md": {
+          "source_path": "docs/content/apl/metadata.md",
+          "reader_need": "Explanation",
+          "topic": "APL",
+          "order": 75,
+          "related": [
+            "docs/content/apl/pdp.md"
+          ],
           "navigation_section": "understand"
         }
       },

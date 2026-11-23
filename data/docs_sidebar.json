@@ -89,7 +89,8 @@
       "ai:docs/filters/token_usage_headers.md|Token usage headers",
       "ai:docs/filters/time_to_first_token.md|Time to first token",
       "ai:docs/architecture/opentelemetry.md|OpenTelemetry routing",
-      "praxis:docs/operating/observability.md|Logs, metrics and traces"
+      "praxis:docs/operating/observability.md|Logs, metrics and traces",
+      "praxis:docs/operating/tracing.md|Distributed tracing"
      ]
     },
     {
@@ -124,6 +125,7 @@
        "group": "Proxy operations",
        "items": [
         "praxis:docs/operating/capacity-planning.md|Capacity planning",
+        "praxis:docs/operating/diagnostics.md|Diagnostics",
         "praxis:docs/operating/fips.md|FIPS 140-3"
        ]
       },
@@ -157,6 +159,7 @@
         "praxis:docs/architecture/connection-lifecycle.md",
         "praxis:docs/architecture/http-correctness.md",
         "praxis:docs/architecture/tcp-proxy.md",
+        "praxis:docs/architecture/hyper-backend.md",
         "praxis:docs/architecture/upstream-binding.md",
         "praxis:docs/architecture/pingora-handler-lifecycle.md",
         "praxis:docs/architecture/crate-layout.md",
@@ -242,6 +245,7 @@
         "praxis:docs/filters/http/traffic_management/endpoint_selector.md",
         "praxis:docs/filters/http/traffic_management/grpc_detection.md",
         "praxis:docs/filters/http/traffic_management/grpc_timeout.md",
+        "praxis:docs/filters/http/traffic_management/head_classifier.md",
         "praxis:docs/filters/http/traffic_management/iterative_request_router.md",
         "praxis:docs/filters/http/traffic_management/load_balancer.md",
         "praxis:docs/filters/http/traffic_management/rate_limit.md",
@@ -317,6 +321,7 @@
       "praxis:docs/developing/adding-filters.md|Add a built-in filter",
       "ai:docs/developing/adding-filters.md|Add a built-in gateway filter",
       "praxis:docs/developing/adding-protocols.md|Add a protocol",
+      "praxis:docs/developing/adding-backends.md|Add a network backend",
       {
        "group": "Contribute to the proxy",
        "items": [
@@ -395,11 +400,15 @@
      "label": "Guides",
      "items": [
       "policy:docs/content/http-routing.md|HTTP routing",
+      "policy:docs/content/llm-routes.md|Authorize LLM routes",
+      "policy:docs/content/rate-limiting.md|Rate limiting",
       "policy:docs/content/identity-claim-mapping.md|Add a claim mapper preset",
       "policy:docs/content/identity-delegation.md|Identity and token exchange",
       "policy:docs/content/patterns.md|Policy patterns",
       "policy:docs/content/testing.md|Test policies",
       "policy:docs/content/deployment.md|Deploy",
+      "policy:docs/content/auditing.md|Auditing",
+      "policy:docs/content/fips.md|FIPS builds",
       "policy:docs/content/upgrade-apl.md|Upgrade an APL configuration"
      ]
     },
@@ -426,6 +435,7 @@
       "policy:docs/content/apl/identity.md|Identity and IdP integration",
       "policy:docs/content/apl/delegation.md|Delegation and token exchange",
       "policy:docs/content/apl/pdp.md|PDP integration",
+      "policy:docs/content/apl/metadata.md|Fetched metadata",
       "policy:docs/content/apl/restrict.md|Backend restriction",
       "policy:docs/content/apl/tainting.md|Session taint",
       "policy:docs/content/apl/elicitation.md|Human-in-the-loop elicitation"
