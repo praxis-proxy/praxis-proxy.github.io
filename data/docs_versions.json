@@ -7,7 +7,7 @@
       "default": "v0.7.2",
       "development": {
         "ref": "main",
-        "sha": "cc572e539e49a4a1611c1996711bc452b247d928"
+        "sha": "32a9eff78b75109f6af0798c16d84f8295821abb"
       },
       "exclude": [
         "docs/proposals/**"
@@ -57,10 +57,10 @@
       "name": "Praxis AI",
       "description": "An AI gateway built on the Praxis proxy runtime.",
       "content_root": "docs",
-      "default": "v0.11.0",
+      "default": "v0.12.1",
       "development": {
         "ref": "main",
-        "sha": "8e5d643f4d5d645b48c888c73137566ea27daa41"
+        "sha": "dec7482aee459caf2f9dbddae332ce4a04f852dc"
       },
       "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
       "extra_assets": [
@@ -80,11 +80,18 @@
       ],
       "releases": [
         {
+          "version": "v0.12.1",
+          "label": "v0.12.1 (alpha)",
+          "tag": "v0.12.1",
+          "sha": "f4fad2d7a4cfaebf00edba039ce0b6feb5b3bf7f",
+          "default": true
+        },
+        {
           "version": "v0.11.0",
           "label": "v0.11.0 (alpha)",
           "tag": "v0.11.0",
           "sha": "0c6fd76f597f90d49cbee005ec9461ce8896b0f5",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.10.0",
@@ -145,7 +152,7 @@
       "default": "v0.4.0",
       "development": {
         "ref": "main",
-        "sha": "828cb41c2f31723445c4e31051b44f59afa2f53f"
+        "sha": "156d253ef7d93a163c92493b40ff38aa743ffd96"
       },
       "status": "The public API is still evolving; breaking changes are documented in the changelog.",
       "exclude": [],
@@ -179,10 +186,10 @@
       "name": "Praxis Grid",
       "description": "A Kubernetes control plane for multi-site AI inference routing.",
       "content_root": "docs",
-      "default": "v0.3.1",
+      "default": "v0.3.2",
       "development": {
         "ref": "main",
-        "sha": "1c8508f3fccd6a37deee02914f593af17ba3c405"
+        "sha": "984a989a3f315460d1c712627783bf1d3bd1205a"
       },
       "status": "Grid is a technical preview; review its release-scoped deployment requirements and limitations.",
       "exclude": [],
@@ -197,11 +204,18 @@
       ],
       "releases": [
         {
+          "version": "v0.3.2",
+          "label": "v0.3.2 (technical preview)",
+          "tag": "v0.3.2",
+          "sha": "fce66e6e083dbf8aed0142fb629c51aeb57f0565",
+          "default": true
+        },
+        {
           "version": "v0.3.1",
           "label": "v0.3.1 (technical preview)",
           "tag": "v0.3.1",
           "sha": "c313a0e0d7f0bf04e43ecc31e89338f89a1c852c",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.3.0",
