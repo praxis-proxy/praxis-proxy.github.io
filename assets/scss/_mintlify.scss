@@ -2279,7 +2279,7 @@ a.mx-status:hover { border-color: var(--st); }
 }
 .mx-hub__refs {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 0.85rem;
 }
 .mx-hub__ref {
@@ -2468,4 +2468,10 @@ html .ai-discovery__cards {
 @media (max-width: 767.98px) {
   .mx-log__entry { grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
   .mx-log__meta { position: static; flex-direction: row; flex-wrap: wrap; align-items: center; }
+}
+.mx-sidebar--tree .mx-version__news {
+  display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.45rem 0 0 0.1rem;
+  color: var(--mx-muted); font-size: 0.8rem; text-decoration: none;
+  svg { width: 0.85rem; height: 0.85rem; color: var(--mx-accent-text); }
+  &:hover { color: var(--mx-text); }
 }

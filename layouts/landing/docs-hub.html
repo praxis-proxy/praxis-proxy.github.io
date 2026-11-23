@@ -14,6 +14,7 @@
   "ref" `<path d="M5 4.5h10l4 4v11H5v-15Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`
   "config" `<path d="M7 8 3 12l4 4M17 8l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12h.01M14 12h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>`
   "features" `<path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.5l-1.8-5.9-5.7-1.8L10.2 9 12 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>`
+  "changelog" `<path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5v4h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`
   "examples" `<rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>`
 -}}
 {{- $journeyIcons := slice "connect" "configure" "operate" "extend" -}}
@@ -103,7 +104,8 @@
         (dict "i" "ref" "t" "Filter reference" "d" "Every gateway filter and its options." "h" (partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/filters/reference.md")))
         (dict "i" "config" "t" "Runtime configuration" "d" "Listeners, clusters, TLS and the filter pipeline." "h" (partial "mx/doc-href.html" (dict "product" "praxis" "source" "docs/operating/configuration.md")))
         (dict "i" "features" "t" "Capabilities and build features" "d" "What each release includes and how to select it." "h" (partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/features.md")))
-        (dict "i" "examples" "t" "Example configurations" "d" "Complete configs by release and category." "h" ("examples/" | relURL)) }}
+        (dict "i" "examples" "t" "Example configurations" "d" "Complete configs by release and category." "h" ("examples/" | relURL))
+        (dict "i" "changelog" "t" "Changelog" "d" "What changed in each release of every project." "h" ("changelog/" | relURL)) }}
       <a class="mx-hub__ref" href="{{ .h }}"><span class="mx-hub__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">{{ index $icon .i | safeHTML }}</svg></span><strong>{{ .t }}</strong><span>{{ .d }}</span></a>
       {{- end }}
     </div>

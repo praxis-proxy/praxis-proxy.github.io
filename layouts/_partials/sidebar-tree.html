@@ -33,6 +33,7 @@
           {{- end }}
         </select>
       </label>
+      <a class="mx-version__news" href="{{ printf "changelog/#%s" $productID | relURL }}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5 9.4 6l3.6.3-2.8 2.3.9 3.5L8 10.2l-3.1 1.9.9-3.5L3 6.3 6.6 6 8 2.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>What's new in {{ $version }}</a>
       <button class="btn btn-link td-sidebar__toggle mx-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"><span class="docs-sidebar__toggle-text">Browse</span></button>
     </div>
     <nav class="td-sidebar-nav collapse foldable-nav mx-nav" id="td-section-nav" aria-label="Documentation navigation">
