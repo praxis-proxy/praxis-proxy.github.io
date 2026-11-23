@@ -189,7 +189,7 @@ const routes = [
     report.interactions.push('Version switch preserves corresponding page and archive notice');
 
     await context.grantPermissions(['clipboard-read','clipboard-write']);
-    const copy=page.locator('.td-click-to-copy').first();
+    const copy=page.locator('.highlight .mx-copy').first();
     await copy.click();
     await page.waitForTimeout(50);
     assert((await page.evaluate(()=>navigator.clipboard.readText())).trim().length>0,'Code copy');

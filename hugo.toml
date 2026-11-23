@@ -58,6 +58,10 @@ enableGitInfo = false
 [params.docsy.plugins.mermaid]
   version = "11.17.2"
 
+# praxis-code-blocks.js renders a labelled copy button in the code block header.
+[params.docsy.plugins."click-to-copy"]
+  enable = false
+
 # GA4 — loads only for production builds via layouts/_partials/head.html
 [services.googleAnalytics]
   id = "G-C7WVKSX8LD"

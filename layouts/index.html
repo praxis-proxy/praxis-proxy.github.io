@@ -51,10 +51,9 @@
           <div class="mx-live__status" aria-hidden="true"><span class="mx-live__rec"></span>live · illustrative traffic</div>
           <svg class="mx-live__svg" viewBox="0 0 640 360" role="img" aria-labelledby="mx-live-title mx-live-desc">
             <title id="mx-live-title">Requests flowing through the gateway filter chain</title>
-            <desc id="mx-live-desc">Three clients send OpenAI requests to the gateway listener on port 8080. Each request passes ai_operation, which classifies it, then router, which matches the /v1 prefix, then load_balancer, which forwards it to api.openai.com.</desc>
+            <desc id="mx-live-desc">Three clients send OpenAI requests to the gateway listener on port 8080. Each request passes ai_operation, which classifies it, then router, which matches the /v1 prefix, then load_balancer, which forwards it to api.openai.com. The response streams back to the client as a series of token chunks.</desc>
             <defs>
               <pattern id="mx-live-grid" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0v16" fill="none" class="mx-live__gridline"/></pattern>
-              <radialGradient id="mx-live-halo"><stop offset="0" stop-color="#c4b5fd" stop-opacity=".9"/><stop offset="1" stop-color="#c4b5fd" stop-opacity="0"/></radialGradient>
             </defs>
             <rect x="176" y="40" width="288" height="280" rx="18" class="mx-live__core"/>
             <rect x="176" y="40" width="288" height="280" rx="18" fill="url(#mx-live-grid)" opacity=".6"/>
@@ -67,24 +66,65 @@
             <path d="M112 290 C144 290 144 180 176 180" class="mx-live__wire"/>
             <path d="M464 180 L512 180" class="mx-live__wire"/>
             <path d="M176 180 L464 180" class="mx-live__wire mx-live__wire--core"/>
-            <g class="mx-live__node mx-live__node--client mx-live__hit-c0"><rect x="16" y="53" width="96" height="34" rx="10"/><circle cx="32" cy="70" r="3"/><text x="42" y="74">codex</text></g>
-            <g class="mx-live__node mx-live__node--client mx-live__hit-c1"><rect x="16" y="163" width="96" height="34" rx="10"/><circle cx="32" cy="180" r="3"/><text x="42" y="184">web app</text></g>
-            <g class="mx-live__node mx-live__node--client mx-live__hit-c2"><rect x="16" y="273" width="96" height="34" rx="10"/><circle cx="32" cy="290" r="3"/><text x="42" y="294">agent</text></g>
+            <path d="M464 212 L176 212" class="mx-live__wire mx-live__wire--back"/>
+            <text x="196" y="230" class="mx-live__meta mx-live__meta--lane">← streamed response</text>
+            <g class="mx-live__node mx-live__node--client mx-live__c0 mx-live__hit-c0"><rect x="16" y="53" width="96" height="34" rx="10"/><circle cx="32" cy="70" r="3"/><text x="42" y="74">codex</text></g>
+            <g class="mx-live__node mx-live__node--client mx-live__c1 mx-live__hit-c1"><rect x="16" y="163" width="96" height="34" rx="10"/><circle cx="32" cy="180" r="3"/><text x="42" y="184">web app</text></g>
+            <g class="mx-live__node mx-live__node--client mx-live__c2 mx-live__hit-c2"><rect x="16" y="273" width="96" height="34" rx="10"/><circle cx="32" cy="290" r="3"/><text x="42" y="294">agent</text></g>
             <g class="mx-live__node mx-live__node--ep mx-live__hit-e1 mx-live__hit-all"><rect x="512" y="163" width="120" height="34" rx="10"/><circle cx="526" cy="180" r="3"/><text x="535" y="184">api.openai.com</text></g>
             <text x="572" y="156" text-anchor="middle" class="mx-live__ok mx-live__ok-e1 mx-live__hit-all">200 OK</text>
+            <rect x="184" y="160" width="86" height="40" rx="10" class="mx-live__ring mx-live__ring--listener"/>
             <g class="mx-live__stage mx-live__stage--listener"><rect x="184" y="160" width="86" height="40" rx="10"/><text x="227" y="184" text-anchor="middle">ai_operation</text></g>
+            <text x="227" y="150" text-anchor="middle" class="mx-live__note mx-live__note--listener">responses</text>
+            <rect x="278" y="160" width="56" height="40" rx="10" class="mx-live__ring mx-live__ring--router"/>
             <g class="mx-live__stage mx-live__stage--router"><rect x="278" y="160" width="56" height="40" rx="10"/><text x="306" y="184" text-anchor="middle">router</text></g>
+            <text x="306" y="150" text-anchor="middle" class="mx-live__note mx-live__note--router">/v1 ✓</text>
+            <rect x="342" y="160" width="112" height="40" rx="10" class="mx-live__ring mx-live__ring--lb"/>
             <g class="mx-live__stage mx-live__stage--lb"><rect x="342" y="160" width="112" height="40" rx="10"/><text x="398" y="184" text-anchor="middle">load_balancer</text></g>
-            <text x="320" y="226" text-anchor="middle" class="mx-live__meta">path_prefix "/v1" → openai_backend</text>
-            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-0" style="offset-path: path('M112 70 C144 70 144 180 176 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-0" style="offset-path: path('M176 180 L464 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-0" style="offset-path: path('M464 180 L512 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-1" style="offset-path: path('M112 180 L176 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-1" style="offset-path: path('M176 180 L464 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-1" style="offset-path: path('M464 180 L512 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-2" style="offset-path: path('M112 290 C144 290 144 180 176 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-2" style="offset-path: path('M176 180 L464 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
-            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-2" style="offset-path: path('M464 180 L512 180')"><circle r="10" fill="url(#mx-live-halo)"/><circle r="3.5" class="mx-live__dot"/></g>
+            <text x="398" y="150" text-anchor="middle" class="mx-live__note mx-live__note--lb">→ :443 TLS</text>
+            <text x="320" y="262" text-anchor="middle" class="mx-live__meta">path_prefix "/v1" → openai_backend</text>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-0 mx-live__c0 mx-live__tail-2" style="offset-path: path('M112 70 C144 70 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-0 mx-live__c0 mx-live__tail-1" style="offset-path: path('M112 70 C144 70 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-0 mx-live__c0 mx-live__tail-0" style="offset-path: path('M112 70 C144 70 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-0 mx-live__c0 mx-live__tail-2" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-0 mx-live__c0 mx-live__tail-1" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-0 mx-live__c0 mx-live__tail-0" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-0 mx-live__c0 mx-live__tail-2" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-0 mx-live__c0 mx-live__tail-1" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-0 mx-live__c0 mx-live__tail-0" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c0 mx-live__chunk-0 mx-live__chunk-n0" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 82 112 82')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c0 mx-live__chunk-0 mx-live__chunk-n1" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 82 112 82')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c0 mx-live__chunk-0 mx-live__chunk-n2" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 82 112 82')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c0 mx-live__chunk-0 mx-live__chunk-n3" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 82 112 82')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c0 mx-live__chunk-0 mx-live__chunk-n4" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 82 112 82')"/>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-1 mx-live__c1 mx-live__tail-2" style="offset-path: path('M112 180 L176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-1 mx-live__c1 mx-live__tail-1" style="offset-path: path('M112 180 L176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-1 mx-live__c1 mx-live__tail-0" style="offset-path: path('M112 180 L176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-1 mx-live__c1 mx-live__tail-2" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-1 mx-live__c1 mx-live__tail-1" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-1 mx-live__c1 mx-live__tail-0" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-1 mx-live__c1 mx-live__tail-2" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-1 mx-live__c1 mx-live__tail-1" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-1 mx-live__c1 mx-live__tail-0" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c1 mx-live__chunk-1 mx-live__chunk-n0" style="offset-path: path('M512 190 L464 212 L176 212 L112 190')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c1 mx-live__chunk-1 mx-live__chunk-n1" style="offset-path: path('M512 190 L464 212 L176 212 L112 190')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c1 mx-live__chunk-1 mx-live__chunk-n2" style="offset-path: path('M512 190 L464 212 L176 212 L112 190')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c1 mx-live__chunk-1 mx-live__chunk-n3" style="offset-path: path('M512 190 L464 212 L176 212 L112 190')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c1 mx-live__chunk-1 mx-live__chunk-n4" style="offset-path: path('M512 190 L464 212 L176 212 L112 190')"/>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-2 mx-live__c2 mx-live__tail-2" style="offset-path: path('M112 290 C144 290 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-2 mx-live__c2 mx-live__tail-1" style="offset-path: path('M112 290 C144 290 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--in mx-live__pkt-2 mx-live__c2 mx-live__tail-0" style="offset-path: path('M112 290 C144 290 144 180 176 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-2 mx-live__c2 mx-live__tail-2" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-2 mx-live__c2 mx-live__tail-1" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--core mx-live__pkt-2 mx-live__c2 mx-live__tail-0" style="offset-path: path('M176 180 L464 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-2 mx-live__c2 mx-live__tail-2" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-2 mx-live__c2 mx-live__tail-1" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <g class="mx-live__pkt mx-live__pkt--out mx-live__pkt-2 mx-live__c2 mx-live__tail-0" style="offset-path: path('M464 180 L512 180')"><circle r="9" class="mx-live__halo"/><circle r="3.5" class="mx-live__dot"/></g>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c2 mx-live__chunk-2 mx-live__chunk-n0" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 302 112 302')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c2 mx-live__chunk-2 mx-live__chunk-n1" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 302 112 302')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c2 mx-live__chunk-2 mx-live__chunk-n2" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 302 112 302')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c2 mx-live__chunk-2 mx-live__chunk-n3" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 302 112 302')"/>
+            <rect x="-4" y="-1.75" width="8" height="3.5" rx="1.75" class="mx-live__chunk mx-live__c2 mx-live__chunk-2 mx-live__chunk-n4" style="offset-path: path('M512 190 L464 212 L176 212 C144 212 144 302 112 302')"/>
           </svg>
           <ol class="visually-hidden" aria-label="Request path">
             <li>Listener: accept on port 8080</li>
@@ -92,6 +132,7 @@
             <li>router: match the /v1 prefix</li>
             <li>headers: set the Host header</li>
             <li>load_balancer: forward to api.openai.com over TLS</li>
+            <li>Response: streamed back to the calling client</li>
           </ol>
         </div>
       </div>
