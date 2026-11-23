@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "@fortawesome/fontawesome-free": "7.3.1",
-    "bootstrap": "5.3.9"
+    "@fortawesome/fontawesome-free": "7.3.1"
   },
   "devDependencies": {},
   "name": "project",
