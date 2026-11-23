@@ -86,9 +86,8 @@ Review the catalog change and stage `sources/enhancements`; nothing is committed
 ## Draft gateway direction
 
 This checkout explores the proposed AI gateway charter. `params.gateway_draft` in
-`hugo.toml` enables the visible draft notice and `noindex, nofollow` metadata.
-Keep that flag enabled until the direction is accepted and release claims are
-reviewed. It does not merge source repositories or change release ownership.
+`hugo.toml` sets `noindex, nofollow` metadata on every page. Keep that flag
+enabled until the direction is accepted and release claims are reviewed. It does not merge source repositories or change release ownership.
 
 The homepage leads into `/ai/container-quickstart/`. `/docs/` and the task pages
 under `/gateway/` organize connection, configuration and operation; the Rust

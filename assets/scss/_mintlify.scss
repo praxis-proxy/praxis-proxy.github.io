@@ -1435,22 +1435,6 @@ g[clip-path='url(#mx-sp-clip)'] { filter: drop-shadow(0 0 5px rgb(56 189 248 / 8
 // ================================================================ AI gateway direction (ported from the gateway draft)
 .mx-steps--four { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 .mx-steps__more { margin: 1.5rem 0 0; color: var(--mx-muted); font-size: 0.92rem; a { color: var(--mx-accent-text); font-weight: 500; } }
-.gateway-draft {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem 0.9rem;
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid var(--mx-border);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--mx-accent) 8%, var(--mx-bg)), var(--mx-bg) 50%, color-mix(in srgb, var(--mx-dot-ai) 8%, var(--mx-bg)));
-  color: var(--mx-body);
-  font-size: 0.85rem;
-  text-align: center;
-  strong { padding: 0.1rem 0.55rem; border-radius: 999px; background: var(--mx-accent); color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; }
-  span { max-width: 80ch; }
-}
-.praxis-docs-layout .gateway-draft { justify-content: flex-start; margin-bottom: 1.5rem; border: 1px solid var(--mx-border); border-radius: 0.75rem; text-align: left; }
 .gateway-journeys__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
@@ -1467,7 +1451,6 @@ g[clip-path='url(#mx-sp-clip)'] { filter: drop-shadow(0 0 5px rgb(56 189 248 / 8
   [aria-current='page'] { border-color: transparent; background: var(--mx-accent-soft); color: var(--mx-accent-text); font-weight: 600; }
 }
 .gateway-page .gateway-journeys { padding: 2rem 0; }
-[data-bs-theme='dark'] .gateway-draft strong { color: #0b0c10; }
 
 // ================================================================ proposals and community
 // Status hues; chip text mixes toward the theme text color so it keeps contrast in both themes.
