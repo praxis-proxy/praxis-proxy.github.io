@@ -1,0 +1,9 @@
+{{ define "main" }}
+<article class="td-content mx-article">
+  {{ partial "mx/page-head.html" (dict "page" .) }}
+  {{ .Render "_td-content-after-header" -}}
+  {{ partial "mx/content.html" . }}
+  {{ partial "mx/pager.html" . }}
+  {{ partial "page-meta-lastmod.html" . }}
+</article>
+{{ end }}

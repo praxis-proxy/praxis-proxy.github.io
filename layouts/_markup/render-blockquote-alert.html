@@ -1,0 +1,16 @@
+{{- $type := lower .AlertType -}}
+{{- $labels := dict "note" "Note" "tip" "Tip" "important" "Important" "warning" "Warning" "caution" "Caution" -}}
+{{- $icons := dict
+  "note" `<path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6"/>`
+  "tip" `<path d="M7.5 14.5h5M8 17h4M10 3a5 5 0 0 0-3 9c.6.5 1 1.1 1 1.9V14h4v-.1c0-.8.4-1.4 1-1.9A5 5 0 0 0 10 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>`
+  "important" `<path d="M4 4.5h12v9H9l-3.5 3v-3H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 7v3M10 12v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`
+  "warning" `<path d="M10 3.2 17.5 16H2.5L10 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v3.5M10 13.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`
+  "caution" `<path d="M7 2.8h6L17.2 7v6L13 17.2H7L2.8 13V7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 6.5v4M10 13v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`
+-}}
+<div class="mx-callout mx-callout--{{ $type }}" role="note">
+  <svg class="mx-callout__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">{{ index $icons $type | default (index $icons "note") | safeHTML }}</svg>
+  <div class="mx-callout__body">
+    <p class="mx-callout__title">{{ with .AlertTitle }}{{ . }}{{ else }}{{ index $labels $type | default "Note" }}{{ end }}</p>
+    {{ .Text }}
+  </div>
+</div>

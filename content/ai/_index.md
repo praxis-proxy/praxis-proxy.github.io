@@ -1,5 +1,5 @@
 +++
-title = "Praxis AI"
+title = "Praxis AI gateway"
 description = "An alpha AI gateway with provider-aware routing and filters, built on the Praxis proxy runtime."
 type = "landing"
 layout = "list"
@@ -12,5 +12,12 @@ Praxis AI adds AI request classification, provider routing, translation, and age
 Start with the [container quickstart]({{< relref "container-quickstart.md" >}}) to route a request to OpenAI. It requires an `OPENAI_API_KEY`, a provider account, and network access to `api.openai.com:443`. For source builds and development, {{< docs-link product="ai" source="docs/quickstart.md" label="see the source quickstart" >}}. For capabilities and setup-dependent features, {{< docs-link product="ai" source="docs/features.md" label="read the release feature overview" >}}.
 
 Praxis AI and Praxis release numbers are independent; this site has not verified them as a compatibility set. Choose versions from the relevant project manifests and test the combination you deploy.
+
+## Follow a gateway task
+
+- [Connect applications and providers]({{< relref "gateway/connect.md" >}})
+- [Configure routing, state, tools and controls]({{< relref "gateway/configure.md" >}})
+- [Operate your deployment]({{< relref "gateway/operate.md" >}})
+- [Extend the gateway in Rust]({{< relref "guides/extend/_index.md" >}})
 
 {{< product-landing product="ai" >}}

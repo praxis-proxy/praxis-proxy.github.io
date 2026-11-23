@@ -189,7 +189,7 @@ const routes = [
     report.interactions.push('Version switch preserves corresponding page and archive notice');
 
     await context.grantPermissions(['clipboard-read','clipboard-write']);
-    const copy=page.locator('.td-click-to-copy').first();
+    const copy=page.locator('.highlight .mx-copy').first();
     await copy.click();
     await page.waitForTimeout(50);
     assert((await page.evaluate(()=>navigator.clipboard.readText())).trim().length>0,'Code copy');
@@ -223,12 +223,12 @@ const routes = [
     await page.locator('#praxis-navbar-menu a').filter({hasText: /^Docs$/}).click();
     await page.waitForURL('**/docs/');
     await page.goto(base+'/praxis/v0.7.2/');
-    await page.locator('.docs-project-control select').selectOption('/ai/v0.8.0/');
-    await page.waitForURL('**/ai/v0.8.0/');
+    await page.locator('.mx-tabs a').filter({hasText:/Policy/}).click();
+    await page.waitForURL('**/policy/v0.4.0/');
     await page.goto(base+find('praxis','v0.7.2','docs/quickstart.md'));
     await page.locator('.td-sidebar__toggle').click();
     await page.locator('#td-section-nav').waitFor({state:'visible'});
-    assert(await page.locator('.docs-sidebar-group').count()>=4,'Populated sidebar groups');
+    assert(await page.locator('#td-section-nav .mx-nav__section').count()>=4,'Populated sidebar groups');
     await page.locator('.docs-mobile-toc summary').click();
     assert(await page.locator('.docs-mobile-toc[open]').isVisible(),'Mobile TOC');
     report.interactions.push('Mobile menu, visible search/appearance, docs drawer and TOC');

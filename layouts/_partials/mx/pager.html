@@ -1,0 +1,19 @@
+{{- $page := . -}}
+{{- $ordered := partial "mx/nav-order.html" $page -}}
+{{- $prev := false -}}{{- $next := false -}}
+{{- range $i, $p := $ordered -}}
+  {{- if eq $p.RelPermalink $page.RelPermalink -}}
+    {{- if gt $i 0 }}{{ $prev = index $ordered (sub $i 1) }}{{ end -}}
+    {{- if lt (add $i 1) (len $ordered) }}{{ $next = index $ordered (add $i 1) }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- if or $prev $next }}
+<nav class="mx-pager" aria-label="Previous and next pages">
+  {{- with $prev }}
+  <a class="mx-pager__link mx-pager__link--prev" href="{{ .RelPermalink }}" rel="prev"><span class="mx-pager__dir"><span aria-hidden="true">←</span> Previous</span><span class="mx-pager__title">{{ .LinkTitle }}</span></a>
+  {{- end }}
+  {{- with $next }}
+  <a class="mx-pager__link mx-pager__link--next" href="{{ .RelPermalink }}" rel="next"><span class="mx-pager__dir">Next <span aria-hidden="true">→</span></span><span class="mx-pager__title">{{ .LinkTitle }}</span></a>
+  {{- end }}
+</nav>
+{{- end -}}

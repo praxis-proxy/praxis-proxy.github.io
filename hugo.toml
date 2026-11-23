@@ -40,7 +40,8 @@ enableGitInfo = false
   unsafe = true
 
 [params]
-  description = "Run and configure the Praxis proxy, connect AI services with Praxis AI, and enforce access with Praxis Policy Engine."
+  description = "Praxis: an AI gateway, composable by design. Connect applications to models and tools, configure request behavior, and extend the gateway in Rust."
+  gateway_draft = true
   offlineSearch = false
   images = ["images/praxis-social.png"]
   github_repo = "https://github.com/praxis-proxy/praxis-proxy.github.io"
@@ -56,6 +57,10 @@ enableGitInfo = false
 
 [params.docsy.plugins.mermaid]
   version = "11.17.2"
+
+# praxis-code-blocks.js renders a labelled copy button in the code block header.
+[params.docsy.plugins."click-to-copy"]
+  enable = false
 
 # GA4 — loads only for production builds via layouts/_partials/head.html
 [services.googleAnalytics]

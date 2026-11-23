@@ -1,55 +1,113 @@
 {{ define "main" }}
 {{- $build := hugo.Data.enhancements_build -}}
 {{- $proposals := .RegularPages.ByWeight -}}
-<div class="praxis-enhancements-page">
-  <header class="praxis-enhancements-header">
-    <h1>{{ .Title }}</h1>
-    {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
-    <div class="td-content">{{ .Content }}</div>
+<div class="mx-props">
+  <header class="mx-props__hero">
+    <div class="mx-props__glow" aria-hidden="true"></div>
+    <p class="mx-eyebrow">Proposals</p>
+    <h1>Shape what Praxis<br><span>builds next.</span></h1>
+    {{ with .Description }}<p class="mx-props__lede">{{ . }}</p>{{ end }}
+    <div class="mx-props__intro">{{ .Content }}</div>
     {{- with $build }}
-    <p class="praxis-enhancements-source">
-      {{ .proposal_count }} proposals from
-      <a href="{{ .repo }}/tree/{{ .sha }}/proposals"><code>praxis-proxy/enhancements</code> at <code>{{ substr .sha 0 12 }}</code></a>{{ if .preview }} (local preview of the working tree){{ end }}.
-      <a href="{{ .process_url }}">Proposal process</a> ·
-      <a href="{{ .statuses_url }}">Status definitions</a> ·
-      <a href="{{ .contributing_url }}">Contribute a proposal</a>
+    <div class="mx-props__actions">
+      <a class="mx-btn mx-btn--primary" href="{{ .contributing_url }}">Write a proposal</a>
+      <a class="mx-btn mx-btn--ghost" href="{{ .process_url }}">How the process works <span aria-hidden="true">→</span></a>
+    </div>
+    <p class="mx-props__source">
+      <span class="mx-chip">{{ .proposal_count }} proposals</span>
+      <span>from <a href="{{ .repo }}/tree/{{ .sha }}/proposals"><code>praxis-proxy/enhancements</code> at <code>{{ substr .sha 0 12 }}</code></a>{{ if .preview }} (local preview of the working tree){{ end }}</span>
+      <span aria-hidden="true">·</span><a href="{{ .statuses_url }}">Status definitions</a>
     </p>
     {{- end }}
   </header>
+
   {{- with $build }}
-  <nav aria-labelledby="enhancements-status-overview">
-    <h2 id="enhancements-status-overview" class="praxis-enhancements-overview-heading">Status overview</h2>
-    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" "" "link" true) }}
+  <nav class="mx-flow" aria-labelledby="mx-flow-title">
+    <h2 id="mx-flow-title" class="visually-hidden">Status overview</h2>
+    <ol class="mx-flow__path" aria-label="Proposal lifecycle">
+      {{- range $i, $s := .lifecycle }}
+      {{- $meta := index $build.status_meta $s -}}
+      <li class="mx-flow__stage mx-st--{{ $s }}{{ if not $meta.count }} is-empty{{ end }}">
+        {{- if $meta.count }}<a href="#status-{{ $s }}">{{ else }}<span>{{ end -}}
+        <span class="mx-flow__step">{{ add $i 1 }}</span>
+        <strong class="mx-flow__count">{{ $meta.count }}<span class="visually-hidden"> proposals</span></strong>
+        <span class="mx-flow__label">{{ $meta.label }}</span>
+        <span class="mx-flow__gloss">{{ $meta.gloss }}</span>
+        {{- if $meta.count }}</a>{{ else }}</span>{{ end -}}
+      </li>
+      {{- end }}
+    </ol>
+    {{- with .side_statuses }}
+    <ul class="mx-flow__side" aria-label="Statuses outside the main lifecycle">
+      {{- range . }}
+      {{- $meta := index $build.status_meta . -}}
+      <li><a class="mx-status mx-st--{{ . }}" href="#status-{{ . }}" title="{{ $meta.gloss }}">{{ $meta.label }} <span>{{ $meta.count }}</span></a></li>
+      {{- end }}
+    </ul>
+    {{- end }}
   </nav>
+
+  {{- $repos := slice -}}
+  {{- range $proposals }}{{ range .Params.enhancement_repos }}{{ $repos = $repos | append . }}{{ end }}{{ end -}}
+  {{- $repoOrder := slice "ai" "praxis" "policy" "grid" -}}
+  {{- $repoList := slice -}}
+  {{- range $repoOrder }}{{ if in $repos . }}{{ $repoList = $repoList | append . }}{{ end }}{{ end -}}
+  {{- range (uniq $repos) }}{{ if not (in $repoList .) }}{{ $repoList = $repoList | append . }}{{ end }}{{ end -}}
+
+  <div class="mx-props__filters" data-mx-filters hidden>
+    <label class="mx-props__search">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.6" stroke="currentColor" stroke-width="1.8"/><path d="m12.7 12.7 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="visually-hidden">Filter proposals by title, number or summary</span>
+      <input type="search" placeholder="Filter by title, number or summary…" data-mx-q autocomplete="off">
+    </label>
+    <div class="mx-props__chips" role="group" aria-label="Filter by status">
+      <button type="button" class="mx-fchip" aria-pressed="true" data-mx-status="">All</button>
+      {{- range .status_order }}{{ $meta := index $build.status_meta . }}{{ if $meta.count }}
+      <button type="button" class="mx-fchip mx-st--{{ . }}" aria-pressed="false" data-mx-status="{{ . }}">{{ $meta.label }}</button>
+      {{- end }}{{ end }}
+    </div>
+    <div class="mx-props__chips" role="group" aria-label="Filter by project">
+      <button type="button" class="mx-fchip" aria-pressed="true" data-mx-repo="">All projects</button>
+      {{- range $repoList }}
+      <button type="button" class="mx-fchip" aria-pressed="false" data-mx-repo="{{ . }}"><i class="mx-repo-dot mx-repo-dot--{{ . }}" aria-hidden="true"></i>{{ . }}</button>
+      {{- end }}
+    </div>
+    <p class="mx-props__count" role="status" aria-live="polite" data-mx-count></p>
+  </div>
+
+  <div class="mx-props__groups">
   {{- range .status_order }}
   {{- $status := . -}}
   {{- $meta := index $build.status_meta $status -}}
-  <section class="praxis-enhancements-group" aria-labelledby="status-{{ $status }}">
-    <h2 id="status-{{ $status }}">{{ $meta.label }} <span class="praxis-enhancements-count">{{ $meta.count }}</span></h2>
-    <p class="praxis-enhancements-gloss">{{ $meta.gloss }}.</p>
-    <ul class="praxis-enhancements-list">
-      {{- range where $proposals "Params.enhancement_status" $status }}
+  {{- $items := where $proposals "Params.enhancement_status" $status -}}
+  {{- if $items }}
+  <section class="mx-props__group" aria-labelledby="status-{{ $status }}" data-mx-group="{{ $status }}">
+    <header class="mx-props__group-head">
+      <h2 id="status-{{ $status }}"><span class="mx-status mx-st--{{ $status }}">{{ $meta.label }}</span> <span class="mx-props__group-count">{{ $meta.count }}</span></h2>
+      <p>{{ $meta.gloss }}.</p>
+    </header>
+    <ul class="mx-props__grid">
+      {{- range $items }}
       {{- $criteria := .Params.enhancement_graduation_criteria -}}
-      <li>
-        <p class="praxis-enhancements-item-title">
-          <span class="praxis-enhancements-number">#{{ .Params.enhancement_number }}</span>
-          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <li class="mx-prop mx-st--{{ $status }}" data-status="{{ $status }}" data-repos="{{ delimit (.Params.enhancement_repos | default slice) " " }}" data-text="{{ lower (printf "%s %s %s" .Params.enhancement_number .Title (.Description | default "")) }}">
+        <p class="mx-prop__top"><span class="mx-prop__num">#{{ .Params.enhancement_number }}</span>{{ with .Params.enhancement_authors }}<span class="mx-prop__by">by {{ delimit . ", " }}</span>{{ end }}</p>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{ with .Description }}<p class="mx-prop__sum">{{ . }}</p>{{ end }}
+        <p class="mx-prop__foot">
+          {{- with .Params.enhancement_repos }}<span class="mx-prop__repos"><span class="visually-hidden">Projects: </span>{{ range . }}<span class="mx-repo"><i class="mx-repo-dot mx-repo-dot--{{ . }}" aria-hidden="true"></i>{{ . }}</span>{{ end }}</span>{{ end -}}
+          {{- with $criteria }}<span class="mx-prop__crit">{{ len . }} {{ cond (eq (len .) 1) "criterion" "criteria" }}{{ with $meta.next_label }} to {{ . }}{{ end }}</span>{{ end -}}
         </p>
-        {{ with .Description }}<p class="praxis-enhancements-summary">{{ . }}</p>{{ end }}
-        {{- with .Params.enhancement_repos }}
-        <p class="praxis-enhancements-repos"><span class="visually-hidden">Projects: </span>{{ delimit . ", " }}</p>
-        {{- end }}
-        {{- with $criteria }}
-        <details class="praxis-enhancements-criteria">
-          <summary>{{ partial "enhancements/criteria-heading.html" $meta }} <span class="praxis-enhancements-count">{{ len . }}</span></summary>
-          <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
-        </details>
-        {{- end }}
       </li>
       {{- end }}
     </ul>
   </section>
   {{- end }}
+  {{- end }}
+  </div>
+  <div class="mx-props__empty" data-mx-empty hidden>
+    <p><strong>No proposals match these filters.</strong></p>
+    <button type="button" class="mx-btn mx-btn--ghost" data-mx-reset>Clear filters</button>
+  </div>
   {{- else }}
   <p>No proposals have been imported. Run <code>make init</code> and rebuild.</p>
   {{- end }}

@@ -1,3 +1,6 @@
+{{- /* Project docs and guides show these actions in the page header (mx/page-head.html). */ -}}
+{{- if not (or .Params.product (eq .Section "guides")) -}}
 {{- if not .Params.source_commit -}}
   {{ partial "docs-contribution-meta.html" . }}
+{{- end -}}
 {{- end -}}

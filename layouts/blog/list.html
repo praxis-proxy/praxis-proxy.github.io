@@ -1,52 +1,67 @@
 {{ define "main" }}
 {{- $posts := .RegularPages.ByDate.Reverse -}}
-{{- $pages := .Paginate $posts 10 -}}
-<div class="praxis-blog-list">
-  <h1 class="visually-hidden">Praxis blog</h1>
-  <div class="praxis-blog-grid">
-    {{- range $index, $post := $pages.Pages }}
-    {{- $featured := and (eq $pages.PageNumber 1) (eq $index 0) -}}
-    <article class="praxis-blog-card{{ if $featured }} praxis-blog-card--featured{{ end }}">
-      <header>
-        {{- if $featured }}<p class="praxis-blog-card__eyebrow">Latest post</p>{{ end -}}
-        <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
-        <p class="praxis-blog-meta">
-          <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "January 2, 2006" }}</time>
-          <span aria-hidden="true">·</span>
-          <span>{{ $post.ReadingTime }} min read</span>
-        </p>
-        <p class="praxis-blog-author">
-          <img src="{{ "favicon.svg" | relURL }}" width="32" height="32" alt="">
-          <span>{{ $post.Params.author | default "Praxis contributors" }}</span>
-        </p>
-      </header>
-      {{- with $post.Description | default $post.Summary }}
-      <p class="praxis-blog-card__excerpt">{{ . | plainify | truncate 200 }}</p>
-      {{- end }}
-      {{- with $post.Params.tags }}
-      <ul class="praxis-blog-tags" aria-label="Post tags">
-        {{- range . }}<li><a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">{{ . }}</a></li>{{ end -}}
-      </ul>
-      {{- end }}
-      <a class="praxis-blog-card__read-more" href="{{ $post.RelPermalink }}" aria-label="Read {{ $post.Title }}">Read more <span aria-hidden="true">→</span></a>
-    </article>
-    {{- else }}
-    <div class="praxis-blog-empty">
-      <p>No posts have been published yet.</p>
+{{- $pages := .Paginate $posts 9 -}}
+{{- $tags := slice -}}
+{{- range $posts }}{{ range .Params.tags }}{{ $tags = $tags | append . }}{{ end }}{{ end -}}
+<div class="mx-blog">
+  <header class="mx-blog__hero">
+    <div class="mx-props__glow" aria-hidden="true"></div>
+    <p class="mx-eyebrow">Blog</p>
+    <h1>Notes from the people<br><span>building the gateway.</span></h1>
+    <p class="mx-props__lede">{{ .Description }}</p>
+    <p class="mx-blog__subscribe">
+      <a class="mx-btn mx-btn--ghost mx-btn--sm" href="{{ "blog/index.xml" | relURL }}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3a10 10 0 0 1 10 10M3 7a6 6 0 0 1 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="3.6" cy="12.4" r="1.4" fill="currentColor"/></svg> Subscribe with RSS</a>
+      {{- with uniq $tags }}<span class="mx-blog__tags">{{ range . }}<a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">#{{ . }}</a>{{ end }}</span>{{ end }}
+    </p>
+  </header>
+
+  {{- with $pages.Pages }}
+  {{- $first := index . 0 -}}
+  {{- if eq $pages.PageNumber 1 }}
+  <article class="mx-post-feature">
+    <a class="mx-post-feature__art" href="{{ $first.RelPermalink }}" tabindex="-1" aria-hidden="true">{{ partial "mx/cover.html" $first }}</a>
+    <div class="mx-post-feature__body">
+      <p class="mx-post__meta"><span class="mx-chip">Latest</span><time datetime="{{ $first.Date.Format "2006-01-02" }}">{{ $first.Date.Format "January 2, 2006" }}</time><span aria-hidden="true">·</span><span>{{ $first.ReadingTime }} min read</span></p>
+      <h2><a href="{{ $first.RelPermalink }}">{{ $first.Title }}</a></h2>
+      {{ with $first.Description | default $first.Summary }}<p class="mx-post__excerpt">{{ . | plainify | truncate 240 }}</p>{{ end }}
+      <p class="mx-post__author"><img src="{{ "favicon.svg" | relURL }}" width="28" height="28" alt=""><span>{{ $first.Params.author | default "Praxis contributors" }}</span></p>
+      <a class="mx-pillar__link mx-blog__read" href="{{ $first.RelPermalink }}" aria-hidden="true" tabindex="-1">Read the post <span>→</span></a>
     </div>
-    {{- end }}
-    {{- if eq (len $posts) 1 }}
-    <div class="praxis-blog-archive-note">
-      <p class="praxis-blog-card__eyebrow">Archive</p>
-      <p>No earlier posts yet.</p>
-    </div>
-    {{- end }}
-    {{- if or $pages.HasPrev $pages.HasNext }}
-    <nav class="praxis-blog-pagination" aria-label="Blog pages">
-      {{- with $pages.Prev }}<a href="{{ .URL }}"><small>Newer entries</small><span>« Previous page</span></a>{{ else }}<span></span>{{ end -}}
-      {{- with $pages.Next }}<a href="{{ .URL }}"><small>Older entries</small><span>Next page »</span></a>{{ end -}}
-    </nav>
-    {{- end }}
-  </div>
+  </article>
+  {{- end }}
+
+  {{- $rest := cond (eq $pages.PageNumber 1) (after 1 .) . }}
+  {{- if $rest }}
+  <section class="mx-blog__more" aria-labelledby="mx-blog-more">
+    <h2 id="mx-blog-more" class="mx-blog__more-title">More posts</h2>
+    <ul class="mx-post-grid">
+      {{- range $rest }}
+      <li class="mx-post-card">
+        {{ partial "mx/cover.html" . }}
+        <div class="mx-post-card__body">
+          <p class="mx-post__meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time><span aria-hidden="true">·</span><span>{{ .ReadingTime }} min</span></p>
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{ with .Description | default .Summary }}<p class="mx-post__excerpt">{{ . | plainify | truncate 140 }}</p>{{ end }}
+        </div>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- else if eq (len $posts) 1 }}
+  <aside class="mx-blog__soon">
+    <p><strong>More posts are on the way.</strong> Release notes, architecture deep dives and how-tos will land here. Follow along with RSS, or join the discussion in the meantime.</p>
+    <a class="mx-pillar__link" href="{{ "community/" | relURL }}">Join the community <span aria-hidden="true">→</span></a>
+  </aside>
+  {{- end }}
+
+  {{- if or $pages.HasPrev $pages.HasNext }}
+  <nav class="mx-pager" aria-label="Blog pages">
+    {{- with $pages.Prev }}<a class="mx-pager__link mx-pager__link--prev" href="{{ .URL }}"><span class="mx-pager__dir"><span aria-hidden="true">←</span> Newer posts</span><span class="mx-pager__title">Previous page</span></a>{{ else }}<span></span>{{ end -}}
+    {{- with $pages.Next }}<a class="mx-pager__link mx-pager__link--next" href="{{ .URL }}"><span class="mx-pager__dir">Older posts <span aria-hidden="true">→</span></span><span class="mx-pager__title">Next page</span></a>{{ end -}}
+  </nav>
+  {{- end }}
+  {{- else }}
+  <p class="mx-blog__soon">No posts have been published yet.</p>
+  {{- end }}
 </div>
 {{ end }}

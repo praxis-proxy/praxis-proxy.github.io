@@ -1,0 +1,6 @@
+<section class="home-section gateway-journeys" aria-labelledby="gateway-journeys-title">
+  <div class="home-section__heading"><p class="home-section__eyebrow">From first request to your own deployment</p><h2 id="gateway-journeys-title">Make the gateway yours.</h2><p>Start with a working request, then add the capabilities your application needs.</p></div>
+  <div class="gateway-journeys__grid">{{ range $i, $entry := hugo.Data.gateway_journeys }}
+    <article><span class="home-section__eyebrow">0{{ add $i 1 }}</span><h3><a href="{{ site.Home.RelRef (dict "path" $entry.page) }}">{{ $entry.title }}</a></h3><p>{{ $entry.summary }}</p></article>
+  {{ end }}</div>
+</section>

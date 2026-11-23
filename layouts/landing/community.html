@@ -1,0 +1,138 @@
+{{ define "main" }}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $build := hugo.Data.enhancements_build -}}
+{{- $org := "https://github.com/praxis-proxy" -}}
+{{- $projects := slice
+  (dict "id" "ai" "repo" "ai" "label" "AI gateway" "docs" "docs/README.md")
+  (dict "id" "praxis" "repo" "praxis" "label" "Proxy foundation" "docs" "docs/README.md")
+  (dict "id" "policy" "repo" "policy" "label" "Policy" "docs" "docs/content/index.md")
+  (dict "id" "grid" "repo" "grid" "label" "Grid" "docs" "docs/README.md") -}}
+{{- $arrow := `<svg class="mx-ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` | safeHTML -}}
+<div class="mx-comm">
+  <header class="mx-comm__hero">
+    <div class="mx-comm__glow" aria-hidden="true"></div>
+    <div class="mx-comm__hero-copy">
+      <p class="mx-eyebrow">Community</p>
+      <h1>Build Praxis<br><span>in the open.</span></h1>
+      <p class="mx-comm__lede">Ask questions, report what breaks, send code, and shape the roadmap. The gateway is built across a few open repositories, and design decisions happen in public proposals.</p>
+      <div class="mx-props__actions">
+        <a class="mx-btn mx-btn--primary" href="https://github.com/praxis-proxy/praxis/discussions">Join the discussions</a>
+        <a class="mx-btn mx-btn--ghost" href="https://cloud-native.slack.com/archives/C0BK0RSP5RC">#praxis on CNCF Slack <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="mx-comm__note">New to CNCF Slack? <a href="https://slack.cncf.io">Get an invite</a> first.</p>
+    </div>
+    <ul class="mx-comm__stats" aria-label="At a glance">
+      <li><strong>{{ len $projects }}</strong><span>open repositories</span></li>
+      {{- with $build }}<li><strong>{{ .proposal_count }}</strong><span>design proposals</span></li>{{ end }}
+      <li><strong>Apache-2.0</strong><span>license</span></li>
+    </ul>
+  </header>
+
+  <section class="mx-section mx-comm__paths" aria-labelledby="mx-comm-paths">
+    <header class="mx-section__header">
+      <p class="mx-eyebrow">Find your path</p>
+      <h2 id="mx-comm-paths">Start where your question lives</h2>
+      <p>Send each question or change to the repository that owns the behavior.</p>
+    </header>
+    <div class="mx-comm__grid">
+      <section class="mx-comm__card" style="--c: #a78bfa" aria-labelledby="mx-comm-help">
+        <span class="mx-comm__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1.1.9-1.1 1.6v.4M12 16.6v.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <h3 id="mx-comm-help">Get help</h3>
+        <p>Read the project documentation first, then ask in the discussions or the project's issue tracker.</p>
+        <ul class="mx-comm__links">
+          {{- range $projects }}
+          <li><a href="{{ partial "mx/doc-href.html" (dict "product" .id "source" .docs) }}"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i>{{ .label }}<span class="mx-comm__ver">{{ (index $products .id).default }}</span></a></li>
+          {{- end }}
+        </ul>
+      </section>
+      <section class="mx-comm__card" style="--c: #f87171" aria-labelledby="mx-comm-issue">
+        <span class="mx-comm__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span>
+        <h3 id="mx-comm-issue">Report an issue</h3>
+        <p>File bugs and feedback where the behavior lives. Each issue form opens on GitHub.</p>
+        <ul class="mx-comm__links">
+          {{- range $projects }}
+          <li><a href="{{ $org }}/{{ .repo }}/issues/new"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i>{{ .label }}<code class="mx-comm__repo">{{ .repo }}</code>{{ $arrow }}</a></li>
+          {{- end }}
+        </ul>
+      </section>
+      <section class="mx-comm__card" style="--c: #34d399" aria-labelledby="mx-comm-code">
+        <span class="mx-comm__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m8.5 8-4 4 4 4M15.5 8l4 4-4 4M13.5 5.5l-3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3 id="mx-comm-code">Contribute code</h3>
+        <p>Code, examples and the authoritative documentation live in each project repository.</p>
+        <ul class="mx-comm__links">
+          {{- range $projects }}
+          <li><a href="{{ $org }}/{{ .repo }}/blob/main/CONTRIBUTING.md"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i>{{ .label }}<code class="mx-comm__repo">{{ .repo }}</code>{{ $arrow }}</a></li>
+          {{- end }}
+        </ul>
+      </section>
+      <section class="mx-comm__card" style="--c: #fbbf24" aria-labelledby="mx-comm-prop">
+        <span class="mx-comm__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3.5h8l4 4v13H6v-17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3.5v4h4M9 12h6M9 15.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <h3 id="mx-comm-prop">Propose a change</h3>
+        <p>Larger and cross-project changes start as a written proposal that maintainers review in public.</p>
+        <ul class="mx-comm__links">
+          <li><a href="{{ "enhancements/" | relURL }}"><i class="mx-repo-dot" aria-hidden="true"></i>Browse proposals{{ with $build }}<span class="mx-comm__ver">{{ .proposal_count }}</span>{{ end }}</a></li>
+          {{- with $build }}
+          <li><a href="{{ .process_url }}"><i class="mx-repo-dot" aria-hidden="true"></i>How the process works{{ $arrow }}</a></li>
+          <li><a href="{{ .contributing_url }}"><i class="mx-repo-dot" aria-hidden="true"></i>Write a proposal{{ $arrow }}</a></li>
+          {{- end }}
+        </ul>
+      </section>
+    </div>
+  </section>
+
+  {{- with site.GetPage "/enhancements" }}
+  {{- $recent := first 3 (sort .RegularPages "Params.enhancement_number" "desc") -}}
+  {{- with $recent }}
+  <section class="mx-section" aria-labelledby="mx-comm-recent">
+    <header class="mx-section__header mx-comm__row-head">
+      <div>
+        <p class="mx-eyebrow">On the table</p>
+        <h2 id="mx-comm-recent">Newest proposals</h2>
+      </div>
+      <a class="mx-pillar__link mx-comm__all" href="{{ "enhancements/" | relURL }}">All proposals <span aria-hidden="true">→</span></a>
+    </header>
+    <ul class="mx-props__grid">
+      {{- range . }}
+      {{- $s := .Params.enhancement_status -}}
+      {{- $m := index $build.status_meta $s -}}
+      <li class="mx-prop mx-st--{{ $s }}">
+        <p class="mx-prop__top"><span class="mx-prop__num">#{{ .Params.enhancement_number }}</span><span class="mx-status mx-st--{{ $s }}">{{ $m.label | default $s }}</span></p>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{ with .Description }}<p class="mx-prop__sum">{{ . }}</p>{{ end }}
+        {{- with .Params.enhancement_repos }}<p class="mx-prop__foot"><span class="mx-prop__repos"><span class="visually-hidden">Projects: </span>{{ range . }}<span class="mx-repo"><i class="mx-repo-dot mx-repo-dot--{{ . }}" aria-hidden="true"></i>{{ . }}</span>{{ end }}</span></p>{{ end }}
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+  {{- end }}
+
+  <section class="mx-section" aria-labelledby="mx-comm-trust">
+    <header class="mx-section__header">
+      <p class="mx-eyebrow">How we work</p>
+      <h2 id="mx-comm-trust">Governance, conduct and security</h2>
+      <p>Everyone is expected to follow the code of conduct. Report vulnerabilities privately, following each project's security policy.</p>
+    </header>
+    <div class="mx-comm__trust">
+      <a class="mx-comm__tile" href="{{ $org }}/praxis/blob/main/CODE_OF_CONDUCT.md"><strong>Code of conduct</strong><span>Expectations for everyone taking part</span>{{ $arrow }}</a>
+      <a class="mx-comm__tile" href="{{ $org }}/praxis/blob/main/GOVERNANCE.md"><strong>Governance</strong><span>How decisions are made and by whom</span>{{ $arrow }}</a>
+      <a class="mx-comm__tile" href="{{ $org }}/praxis/blob/main/MAINTAINERS.md"><strong>Maintainers</strong><span>Who reviews and releases Praxis</span>{{ $arrow }}</a>
+      <div class="mx-comm__tile mx-comm__tile--security">
+        <strong>Security policies</strong><span>Report vulnerabilities privately</span>
+        <ul>{{ range $projects }}<li><a href="{{ $org }}/{{ .repo }}/blob/main/SECURITY.md"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i>{{ .label }}</a></li>{{ end }}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-cta-band" aria-labelledby="mx-comm-cta">
+    <div>
+      <h2 id="mx-comm-cta">Not sure where to start?</h2>
+      <p>Run the gateway, then tell us what worked and what didn't. First-run feedback is one of the most useful contributions.</p>
+    </div>
+    <div class="mx-hero__actions">
+      <a class="mx-btn mx-btn--primary" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run the gateway</a>
+      <a class="mx-btn mx-btn--ghost" href="https://github.com/praxis-proxy/praxis/discussions">Share feedback <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</div>
+{{ end }}

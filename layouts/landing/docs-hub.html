@@ -1,0 +1,139 @@
+{{ define "main" }}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $nav := hugo.Data.docs_navigation.products -}}
+{{- $ai := index $products "ai" -}}
+{{- $aiRelease := index (where $ai.versions "slug" $ai.default) 0 -}}
+{{- $image := printf "ghcr.io/praxis-proxy/ai:%s" (strings.TrimPrefix "v" $aiRelease.tag) -}}
+{{- $startHref := partial "docs-start.html" (dict "product" "ai") -}}
+{{- $blocks := hugo.Data.gateway_blocks -}}
+{{- $icon := dict
+  "connect" `<path d="M9 7H6a4 4 0 0 0 0 8h3M15 7h3a4 4 0 0 1 0 8h-3M8 11h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`
+  "configure" `<path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="17" r="2" stroke="currentColor" stroke-width="1.7"/>`
+  "operate" `<path d="M4 18V9m5 9V5m5 13v-6m5 6V8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`
+  "extend" `<path d="m8.5 8-4 4 4 4M15.5 8l4 4-4 4M13.5 5.5l-3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`
+  "ref" `<path d="M5 4.5h10l4 4v11H5v-15Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`
+  "config" `<path d="M7 8 3 12l4 4M17 8l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12h.01M14 12h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>`
+  "features" `<path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.5l-1.8-5.9-5.7-1.8L10.2 9 12 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>`
+  "changelog" `<path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5v4h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`
+  "examples" `<rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>`
+-}}
+{{- $journeyIcons := slice "connect" "configure" "operate" "extend" -}}
+<div class="mx-hub">
+  <header class="mx-hub__hero">
+    <div class="mx-props__glow" aria-hidden="true"></div>
+    <p class="mx-eyebrow">Documentation</p>
+    <h1>{{ .Title }}</h1>
+    <p class="mx-props__lede">{{ .Description }}</p>
+    <button class="mx-hub__search" type="button" aria-label="Search documentation" aria-haspopup="dialog" aria-controls="praxis-search-dialog" data-search-dialog-trigger>
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.6" stroke="currentColor" stroke-width="1.8"/><path d="m12.7 12.7 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Search filters, guides and examples…</span>
+      <kbd aria-hidden="true">⌘K</kbd>
+    </button>
+    <p class="mx-hub__popular"><span>Popular:</span>
+      <a href="{{ partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/filters/reference.md") }}">Filter reference</a>
+      <a href="{{ partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/anthropic-messages.md") }}">Anthropic Messages</a>
+      <a href="{{ partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/filters/token_rate_limit.md") }}">Token rate limits</a>
+      <a href="{{ "examples/" | relURL }}">Examples</a>
+    </p>
+  </header>
+
+  <section class="mx-hub__start" aria-labelledby="mx-hub-start">
+    <div class="mx-hub__start-copy">
+      <p class="mx-eyebrow">Step 1 · Start here</p>
+      <h2 id="mx-hub-start">Send your first request through the gateway</h2>
+      <p>Run the published {{ $aiRelease.tag }} image with Docker and forward an OpenAI Responses request with curl.</p>
+      <ul class="mx-hub__prereq" aria-label="Prerequisites">
+        <li>Docker with Linux AMD64 (native or emulated)</li>
+        <li>An OpenAI API key with model access</li>
+        <li>Outbound internet access</li>
+      </ul>
+      <a class="mx-btn mx-btn--primary task-card__action" href="{{ $startHref }}">Run the gateway <span aria-hidden="true">→</span></a>
+      <p class="mx-hub__fine">This path demonstrates provider forwarding. Managed state, tools, guardrails and client authorization need their own configuration.</p>
+    </div>
+    <figure class="mx-hub__term" aria-labelledby="mx-hub-term-cap">
+      <div class="mx-hub__term-bar"><span class="mx-window__dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Terminal</span></div>
+      <pre><code><span class="mx-t-c"># 1 · start the gateway with praxis-ai.yaml from the quickstart</span>
+<span class="mx-t-p">$</span> docker run --rm --platform linux/amd64 \
+    --publish 127.0.0.1:8080:8080 \
+    --volume "$PWD/praxis-ai.yaml:/etc/praxis/praxis-ai.yaml:ro" \
+    {{ $image }} -c /etc/praxis/praxis-ai.yaml
+
+<span class="mx-t-c"># 2 · send a Responses request through it</span>
+<span class="mx-t-p">$</span> curl -i http://127.0.0.1:8080/v1/responses \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"model":"gpt-4o","input":"Hello"}'
+<span class="mx-t-ok">HTTP/1.1 200 OK</span></code></pre>
+      <figcaption id="mx-hub-term-cap">Commands from the quickstart, shortened. The full guide includes the configuration, validation and cleanup.</figcaption>
+    </figure>
+  </section>
+
+  <section class="mx-hub__section" aria-labelledby="mx-hub-journeys">
+    <header class="mx-hub__head"><h2 id="mx-hub-journeys">Then make it yours</h2><p>Follow the path from a working request to your own deployment.</p></header>
+    <ol class="mx-hub__journeys">
+      {{- range $i, $entry := hugo.Data.gateway_journeys }}
+      <li><a href="{{ (site.GetPage $entry.page).RelPermalink }}">
+        <span class="mx-hub__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">{{ index $icon (index $journeyIcons $i) | safeHTML }}</svg></span>
+        <span class="mx-hub__step">Step {{ add $i 2 }}</span>
+        <strong>{{ $entry.title }}</strong>
+        <span>{{ $entry.summary }}</span>
+      </a></li>
+      {{- end }}
+    </ol>
+  </section>
+
+  <section class="mx-hub__section" aria-labelledby="mx-hub-blocks">
+    <header class="mx-hub__head mx-hub__head--row">
+      <div><h2 id="mx-hub-blocks">Browse by building block</h2><p>Every capability of the gateway, with its current status.</p></div>
+      <a class="mx-pillar__link" href="{{ "gateway/" | relURL }}">Anatomy of the gateway <span aria-hidden="true">→</span></a>
+    </header>
+    <ul class="mx-hub__blocks">
+      {{- range $blocks.tiers }}
+      {{- $tier := . -}}
+      {{- range where $blocks.blocks "tier" $tier.id }}
+      <li style="--hue: {{ $tier.hue }}"><a href="{{ printf "gateway/#block-%s" .id | relURL }}"><i aria-hidden="true"></i><span>{{ .title }}</span>{{ if ne .status "available" }}<span class="mx-bstat mx-bstat--{{ .status }}">{{ title .status }}</span>{{ end }}</a></li>
+      {{- end }}
+      {{- end }}
+    </ul>
+  </section>
+
+  <section class="mx-hub__section" aria-labelledby="mx-hub-ref">
+    <header class="mx-hub__head"><h2 id="mx-hub-ref">Look something up</h2><p>Exact settings for the current releases.</p></header>
+    <div class="mx-hub__refs">
+      {{- range slice
+        (dict "i" "ref" "t" "Filter reference" "d" "Every gateway filter and its options." "h" (partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/filters/reference.md")))
+        (dict "i" "config" "t" "Runtime configuration" "d" "Listeners, clusters, TLS and the filter pipeline." "h" (partial "mx/doc-href.html" (dict "product" "praxis" "source" "docs/operating/configuration.md")))
+        (dict "i" "features" "t" "Capabilities and build features" "d" "What each release includes and how to select it." "h" (partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/features.md")))
+        (dict "i" "examples" "t" "Example configurations" "d" "Complete configs by release and category." "h" ("examples/" | relURL))
+        (dict "i" "changelog" "t" "Changelog" "d" "What changed in each release of every project." "h" ("changelog/" | relURL)) }}
+      <a class="mx-hub__ref" href="{{ .h }}"><span class="mx-hub__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">{{ index $icon .i | safeHTML }}</svg></span><strong>{{ .t }}</strong><span>{{ .d }}</span></a>
+      {{- end }}
+    </div>
+  </section>
+
+  <section class="mx-hub__section" aria-labelledby="mx-hub-more">
+    <header class="mx-hub__head"><h2 id="mx-hub-more">Other starting points</h2><p>Run the foundation on its own, embed the policy library, or route inference across Kubernetes sites.</p></header>
+    <ul class="mx-hub__others">
+      {{- range slice
+        (dict "id" "praxis" "t" "Standalone proxy" "d" "An HTTP reverse proxy and TCP forwarder with built-in filters." "start" ("guides/first-proxy/" | relURL) "label" "Run your first proxy")
+        (dict "id" "policy" "t" "Policy library" "d" "Embed identity, authorization and data controls in a Rust host." "label" "Policy quickstart")
+        (dict "id" "grid" "t" "Grid" "d" "Discover inference providers across Kubernetes sites. Technical preview." "label" "Install Grid") }}
+      {{- $p := index $products .id -}}
+      {{- $href := .start -}}
+      {{- if not $href }}{{ with index (where (where (where site.Pages "Params.product" .id) "Params.version" $p.default) "Params.source_path" (index $nav .id).start) 0 }}{{ $href = .RelPermalink }}{{ end }}{{ end -}}
+      <li class="mx-hub__other">
+        <p class="mx-hub__other-top"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i><strong>{{ .t }}</strong><code>{{ $p.default }}</code></p>
+        <p>{{ .d }}</p>
+        <p class="mx-hub__other-links"><a class="task-card__action" href="{{ $href }}">{{ .label }} <span aria-hidden="true">→</span></a><a href="{{ printf "%s/%s/" .id $p.default | relURL }}">Docs</a></p>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+
+  <aside class="mx-hub__note">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v4.5M10 6.4v.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    <p><strong>About versions.</strong> Each part of the gateway publishes its own releases, and matching version numbers do not mean a tested combination. Archived and unreleased Development docs are available from each version selector.</p>
+  </aside>
+  {{ partial "landing-contribution.html" . }}
+</div>
+{{ end }}

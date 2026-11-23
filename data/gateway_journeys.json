@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Connect applications",
+    "summary": "Understand the API boundary before choosing a backend.",
+    "page": "/gateway/connect/"
+  },
+  {
+    "title": "Configure the gateway",
+    "summary": "Choose routing, state, tools and request controls.",
+    "page": "/gateway/configure/"
+  },
+  {
+    "title": "Operate your deployment",
+    "summary": "Plan credentials, storage, telemetry and resource limits.",
+    "page": "/gateway/operate/"
+  },
+  {
+    "title": "Extend Praxis",
+    "summary": "Build custom behavior with the underlying Rust framework.",
+    "page": "/guides/extend/"
+  }
+]

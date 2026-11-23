@@ -1,6 +1,6 @@
 {{- $products := hugo.Data.docs_build_versions.products -}}
 {{- $navigation := hugo.Data.docs_navigation.products -}}
-{{- $order := slice "praxis" "ai" "policy" "grid" -}}
+{{- $order := slice "ai" "praxis" "policy" "grid" -}}
 {{- $titles := dict "praxis" "Run an HTTP or TCP proxy" "ai" "Send requests to AI services" "policy" "Control access to tools and data" "grid" "Route inference across Kubernetes sites" -}}
 {{- $descriptions := dict "praxis" "Choose where requests go and add header or security rules with built-in filters." "ai" "Route model and agent traffic through a gateway connected to AI providers." "policy" "Decide who can do what, pass identity between services, and limit data exposure." "grid" "Discover inference providers across Kubernetes sites and publish routing state for Praxis AI gateways." -}}
 {{- $prerequisites := dict "praxis" "Docker Engine with Linux AMD64 support (native or emulated), and curl. The first proxy tutorial forwards a request to a local backend." "ai" "Docker Engine with Linux AMD64 support (native or emulated), curl, and an OpenAI API key for requests to the live provider." "policy" "Rust and a host application. This path embeds the library; gateway policy integration belongs to the host project’s documentation." "grid" "Review the technical-preview scope and installation requirements for the Kubernetes clusters you plan to connect." -}}
@@ -10,7 +10,7 @@
   <div class="home-section__heading">
     <p class="home-section__eyebrow">Choose by task</p>
     <h2 id="task-chooser-title">Choose your starting path.</h2>
-    <p>Choose a project directly. AI gateway setup does not require completing the core proxy tutorial.</p>
+    <p>Run the AI gateway first, or follow a separate path for the proxy framework, Policy library, or Grid.</p>
   </div>
   {{- else -}}
   <h2 id="task-chooser-title" class="visually-hidden">Choose your starting path</h2>

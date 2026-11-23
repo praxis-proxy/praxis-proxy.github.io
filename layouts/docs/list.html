@@ -1,11 +1,11 @@
 {{ define "main" }}
 {{- $navigation := index hugo.Data.docs_navigation.products (.Params.product | default "") -}}
 {{- $overview := and $navigation (eq .Params.source_path $navigation.overview) -}}
-<article class="td-content{{ if $overview }} docs-project-home{{ end }}">
-  <h1>{{ .Title }}</h1>
-  {{ if not $overview }}{{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}{{ end }}
-  {{ .Content }}
+<article class="td-content mx-article{{ if $overview }} docs-project-home{{ end }}">
+  {{ partial "mx/page-head.html" (dict "page" . "lead" (not $overview)) }}
+  {{ partial "mx/content.html" . }}
   {{ if not $overview }}{{ partial "section-index.html" . }}{{ end }}
+  {{ partial "mx/pager.html" . }}
   {{ partial "page-meta-lastmod.html" . }}
 </article>
 {{ end }}

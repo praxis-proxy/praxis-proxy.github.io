@@ -1,0 +1,69 @@
+{{- /* The AI gateway as a stack of building blocks.
+  Context: dict "full" (bool: render detail cards below the stack), "id" (heading id).
+  Source of truth: data/gateway_blocks.json. */ -}}
+{{- $data := hugo.Data.gateway_blocks -}}
+{{- $full := .full -}}
+{{- $hid := .id | default "mx-anatomy-title" -}}
+{{- $gateway := "gateway/" | relURL -}}
+{{- $statusLabel := dict "available" "Available" "experimental" "Experimental" "proposed" "Proposed" -}}
+<section class="mx-anatomy{{ if $full }} mx-anatomy--full{{ end }}" aria-labelledby="{{ $hid }}">
+  <header class="mx-anatomy__head">
+    <p class="mx-eyebrow">Anatomy of an AI gateway</p>
+    <h2 id="{{ $hid }}">Every request crosses<br><span>every layer.</span></h2>
+    <p>An AI gateway is more than a proxy with model names. It speaks the model APIs, routes across providers, meters and limits every token, screens content, and shows you what happened, on a foundation built to stream.</p>
+    <ul class="mx-anatomy__legend" aria-label="Status legend">
+      <li><span class="mx-bstat mx-bstat--available">Available</span> in the current release</li>
+      <li><span class="mx-bstat mx-bstat--experimental">Experimental</span> opt-in, off by default</li>
+      <li><span class="mx-bstat mx-bstat--proposed">Proposed</span> open design proposal</li>
+    </ul>
+  </header>
+
+  <div class="mx-stack" data-motion-scene>
+    <div class="mx-stack__beam" aria-hidden="true"><span>request</span></div>
+    {{- range $i, $tier := $data.tiers }}
+    {{- $blocks := where $data.blocks "tier" $tier.id }}
+    <div class="mx-stack__row mx-stack__row--{{ $tier.id }}" style="--hue: {{ $tier.hue }}; --i: {{ $i }}">
+      <p class="mx-stack__tier">{{ $tier.label }}</p>
+      <ul class="mx-stack__tiles">
+        {{- range $blocks }}
+        <li class="mx-tile mx-tile--{{ .status }}">
+          <a href="{{ if $full }}#block-{{ .id }}{{ else }}{{ $gateway }}#block-{{ .id }}{{ end }}">
+            <span class="mx-tile__top"><strong>{{ .title }}</strong><span class="mx-bstat mx-bstat--{{ .status }}">{{ index $statusLabel .status }}</span></span>
+            <span class="mx-tile__sum">{{ .summary }}</span>
+          </a>
+        </li>
+        {{- end }}
+      </ul>
+    </div>
+    {{- end }}
+    <p class="mx-stack__base" aria-hidden="true"><span>models and tools</span></p>
+  </div>
+
+  {{- if $full }}
+  <div class="mx-blocks">
+    {{- range $data.tiers }}
+    {{- $tier := . -}}
+    {{- range where $data.blocks "tier" $tier.id }}
+    <article class="mx-block mx-block--{{ .status }}" id="block-{{ .id }}" style="--hue: {{ $tier.hue }}">
+      <header>
+        <p class="mx-block__tier">{{ $tier.label }}</p>
+        <h3>{{ .title }} <span class="mx-bstat mx-bstat--{{ .status }}">{{ index $statusLabel .status }}</span></h3>
+        <p class="mx-block__sum">{{ .summary }}</p>
+      </header>
+      <ul class="mx-block__points">{{ range .points }}<li>{{ . }}</li>{{ end }}</ul>
+      {{ with .note }}<p class="mx-block__note">{{ . }}</p>{{ end }}
+      <p class="mx-block__links">
+        {{- range .links }}<a href="{{ partial "mx/doc-href.html" (dict "product" .product "source" .source) }}">{{ .label }} <span aria-hidden="true">→</span></a>{{ end -}}
+        {{- with .proposal }}<a href="{{ .path | relURL }}">Read proposal #{{ .number }} <span aria-hidden="true">→</span></a>{{ end -}}
+      </p>
+      {{- with .next }}
+      <p class="mx-block__next"><span>Proposed next:</span> {{ range $i, $n := . }}{{ if $i }} · {{ end }}<a href="{{ $n.path | relURL }}">{{ $n.label }}</a>{{ end }}</p>
+      {{- end }}
+    </article>
+    {{- end }}
+    {{- end }}
+  </div>
+  {{- else }}
+  <p class="mx-anatomy__more"><a class="mx-pillar__link" href="{{ $gateway }}">Explore every building block <span aria-hidden="true">→</span></a></p>
+  {{- end }}
+</section>

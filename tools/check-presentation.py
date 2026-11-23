@@ -3,6 +3,7 @@
 import argparse
 import gzip
 import json
+import tomllib
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -69,6 +70,7 @@ def main():
     defaults = {key: config['default'] for key, config in catalog['products'].items()}
     versions = {key: {r['version'] for r in config['releases']} | {'dev'}
                 for key, config in catalog['products'].items()}
+    draft = tomllib.loads((ROOT / 'hugo.toml').read_text())['params'].get('gateway_draft', False)
     checked = 0
     for path in public.rglob('index.html'):
         text = path.read_text()
@@ -82,6 +84,8 @@ def main():
                     and relative[1] in versions[relative[0]]
                     and relative[1] != defaults[relative[0]])
         expected = 'noindex, follow' if archived else 'index, follow'
+        if draft:
+            expected = 'noindex, nofollow'
         assert page.robots == [expected], f'{path}: unexpected robots {page.robots}'
         checked += 1
     assert checked > 0, 'Build the website first'
@@ -137,7 +141,7 @@ def main():
     config = Page((public / config_url.strip('/') / 'index.html').read_text())
     assert config.docs_current == [config_url], 'Imported docs must keep exact current sidebar state'
     assert '/guides/use-filters/' in config.docs_links, 'Imported docs must link back to Praxis guides'
-    for route in ('index.html', 'start/index.html'):
+    for route in ('start/index.html', 'docs/index.html'):
         page = Page((public / route).read_text())
         assert set(page.task_links) == expected_tasks, f'{route}: missing task starting guide'
     for route in ('start', 'docs', 'search', 'community', 'examples', 'visual-guides',

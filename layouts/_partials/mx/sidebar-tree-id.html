@@ -1,0 +1,13 @@
+{{- /* The curated sidebar tree for a page, or "" when the page keeps derived navigation
+  (archived and development releases, pages outside the docs). */ -}}
+{{- $page := . -}}
+{{- $productID := $page.Params.product | default "" -}}
+{{- if and (not $productID) (eq $page.Section "guides") }}{{ $productID = "praxis" }}{{ end -}}
+{{- if and (not $productID) (in (slice "gateway" "examples") $page.Section) }}{{ $productID = "ai" }}{{ end -}}
+{{- $tree := "" -}}
+{{- with $productID -}}
+  {{- $product := index hugo.Data.docs_build_versions.products . -}}
+  {{- $version := (partial "docs-context.html" $page).version | default $product.default -}}
+  {{- if eq $version $product.default }}{{ $tree = index hugo.Data.docs_sidebar.product_tree . | default "" }}{{ end -}}
+{{- end -}}
+{{- return $tree -}}

@@ -52,6 +52,14 @@ ownership decisions.
   prints a warning listing those pages so they can be curated. Use the
   [Diátaxis framework](https://diataxis.fr/) to classify a page by its
   reader's need, not its filename.
+- `data/docs_sidebar.json` is the curated sidebar for each documentation tab
+  (Gateway, which joins the AI and core projects, then Policy and Grid) at
+  each project's default release. Order it as get started, task guides,
+  concepts, reference, then extend and contribute, and give pages
+  reader-facing labels. An entry that no longer resolves fails the build, so
+  update it when a default release moves or renames a page. Pages it does not
+  place stay reachable under "More". Archived and development releases keep
+  the navigation derived from `docs_navigation.json`.
 - `data/example_metadata.json` holds curated task names, summaries,
   prerequisites, outcomes, and featured examples. Keep it aligned with the
   original source path and actual example behavior. Derive lists from source

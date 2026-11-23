@@ -129,9 +129,6 @@
 .td-content .highlight { display: flex; align-items: stretch; margin-block: 1.6rem; overflow: hidden; border: 1px solid var(--praxis-border); border-radius: .85rem; background: var(--praxis-panel); box-shadow: 0 .5rem 1.5rem color-mix(in srgb, var(--praxis-text) 5%, transparent); }
 [data-bs-theme='light'] .td-content .highlight { background: #f3f5fa; }
 .td-content .highlight pre { flex: 1 1 auto; min-width: 0; padding: 1rem 1.25rem; border: 0; border-radius: 0; }
-.td-content .highlight > .click-to-copy { flex: 0 0 auto; align-self: flex-start; padding: .5rem; }
-.td-content .highlight > .click-to-copy button.td-click-to-copy { display: flex; position: static; width: 2rem; height: 2rem; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--praxis-border); border-radius: 50%; background: var(--praxis-panel); color: var(--praxis-muted); }
-.td-content .highlight > .click-to-copy button.td-click-to-copy:hover, .td-content .highlight > .click-to-copy button.td-click-to-copy:focus-visible { border-color: var(--praxis-accent); background: var(--praxis-panel); color: var(--praxis-accent); }
 .docs-sidebar__identity { border-radius: .35rem; }
 .docs-sidebar-group > label { font-size: .82rem; }
 .docs-sidebar-item > a { padding-block: .4rem; font-size: .84rem; }

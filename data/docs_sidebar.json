@@ -1,0 +1,548 @@
+{
+ "_comment": "Curated sidebar for each documentation tab at its default release. Items: '<product>:<source_path>[|label]' resolves against that product's default release; 'page:<path>[|label]'; 'examples:<product>|label'; 'link:<path>|label|tag' leaves the tab. {group,items} renders collapsible; {rest,label} lists published pages not placed elsewhere. Archived and development releases keep the derived navigation.",
+ "product_tree": {
+  "ai": "gateway",
+  "praxis": "gateway",
+  "policy": "policy",
+  "grid": "grid"
+ },
+ "trees": {
+  "gateway": {
+   "label": "Praxis",
+   "tag": "Gateway and proxy foundation",
+   "products": [
+    "ai",
+    "praxis"
+   ],
+   "sections": [
+    {
+     "id": "start",
+     "label": "Get started",
+     "items": [
+      "page:/gateway|Overview",
+      "page:/ai/container-quickstart|Quickstart",
+      "ai:docs/client-provider-paths.md|Choose a client and provider",
+      "ai:docs/recipes/README.md|Recipes",
+      "page:/guides/first-proxy|Run a standalone proxy",
+      "page:/guides/install|Install and run",
+      "ai:docs/quickstart.md|Build from source",
+      "examples:ai|Configuration examples"
+     ]
+    },
+    {
+     "id": "connect",
+     "label": "Connect",
+     "items": [
+      "page:/gateway/connect|Connect applications",
+      "ai:docs/filters/openai_responses_proxy.md|OpenAI Responses",
+      "ai:docs/anthropic-messages.md|Anthropic Messages",
+      "ai:docs/recipes/anthropic.md|Run an Anthropic client",
+      "ai:docs/recipes/providers.md|Cloud providers",
+      "ai:docs/filters/openai_chat_completions_to_vertexai_gemini.md|Vertex AI Gemini",
+      "ai:docs/filters/openai_chat_completions_to_azureai_chat_completions.md|Azure AI",
+      {
+       "group": "Provider credentials",
+       "items": [
+        "ai:docs/filters/credential_inject.md|API keys",
+        "ai:docs/filters/aws_sigv4_sign.md|AWS SigV4",
+        "ai:docs/filters/azure_ad.md|Microsoft Entra ID",
+        "ai:docs/filters/gcp_adc.md|Google ADC",
+        "ai:docs/filters/callout_credentials.md|Credentials from a callout"
+       ]
+      },
+      "ai:docs/conformance/translation-matrix.md|Translation support matrix"
+     ]
+    },
+    {
+     "id": "route",
+     "label": "Route",
+     "items": [
+      "ai:docs/recipes/routing.md|Route models and providers",
+      "ai:docs/filters/intelligent_route.md|Intelligent routing",
+      "ai:docs/filters/model_to_provider.md|Map models to providers",
+      "ai:docs/filters/provider_route.md|Provider routing",
+      "praxis:docs/operating/load-balancing.md|Load balancing",
+      "praxis:docs/operating/health-checking.md|Health checks"
+     ]
+    },
+    {
+     "id": "control",
+     "label": "Control",
+     "items": [
+      "page:/gateway/configure|Configure gateway behavior",
+      "ai:docs/recipes/guardrails-token-usage.md|Screen requests and track tokens",
+      "ai:docs/filters/token_rate_limit.md|Token rate limits",
+      "ai:docs/filters/token_ceiling.md|Token ceilings",
+      "ai:docs/filters/ai_guardrails.md|Guardrails",
+      "ai:docs/filters/identity_header_guard.md|Identity headers",
+      "praxis:docs/operating/security-hardening.md|Security hardening",
+      "policy:docs/content/index.md|Policy engine|Policy"
+     ]
+    },
+    {
+     "id": "observe",
+     "label": "Observe",
+     "items": [
+      "ai:docs/filters/token_count.md|Count tokens",
+      "ai:docs/filters/external_metering.md|External metering",
+      "ai:docs/filters/token_usage_metrics.md|Token usage metrics",
+      "ai:docs/filters/token_usage_headers.md|Token usage headers",
+      "ai:docs/filters/time_to_first_token.md|Time to first token",
+      "ai:docs/architecture/opentelemetry.md|OpenTelemetry routing",
+      "praxis:docs/operating/observability.md|Logs, metrics and traces"
+     ]
+    },
+    {
+     "id": "agents",
+     "label": "Agents and tools",
+     "badge": "Experimental",
+     "items": [
+      "ai:docs/recipes/managed-responses.md|Managed Responses and tools",
+      "ai:docs/filters/mcp.md|MCP",
+      "ai:docs/filters/a2a.md|A2A",
+      "ai:docs/filters/openai_agentic_loop.md|Agentic loop",
+      "ai:docs/filters/openai_conversations.md|Conversations",
+      "ai:docs/filters/openai_responses_store.md|Responses storage",
+      "ai:docs/filters/openai_web_search_dispatch.md|Web search",
+      "ai:docs/filters/openai_file_search_dispatch.md|File search"
+     ]
+    },
+    {
+     "id": "operate",
+     "label": "Operate",
+     "items": [
+      "page:/gateway/operate|Operate the gateway",
+      "ai:docs/operations.md|Operations guide",
+      "page:/guides/operate|Configure and operate a proxy",
+      "page:/guides/use-filters|Choose and configure filters",
+      "praxis:docs/operating/configuration.md|Runtime configuration",
+      "praxis:docs/operating/tls.md|TLS",
+      "praxis:docs/operating/build-features.md|Build features",
+      "ai:docs/capacity-planning.md|Capacity planning",
+      "ai:docs/fips.md|FIPS 140-3",
+      {
+       "group": "Proxy operations",
+       "items": [
+        "praxis:docs/operating/capacity-planning.md|Capacity planning",
+        "praxis:docs/operating/fips.md|FIPS 140-3"
+       ]
+      },
+      {
+       "group": "Upgrades",
+       "items": [
+        "ai:docs/migrating-to-0.2.md|Migrate to 0.2",
+        "ai:docs/store/schema-migration.md|Responses store schema upgrade",
+        "ai:docs/store/legacy-item-position-repair.md|Repair conversation item positions"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "concepts",
+     "label": "Concepts",
+     "items": [
+      "praxis:docs/architecture/life-of-a-request.md|Life of a request",
+      "praxis:docs/architecture/overview.md|Architecture",
+      "praxis:docs/architecture/pipeline-concepts.md|Filter pipeline",
+      "praxis:docs/filters/branch-chains.md|Branch chains",
+      "praxis:docs/architecture/payload-processing.md|Payload processing",
+      "praxis:docs/architecture/body-buffering.md|Body buffering",
+      "ai:docs/architecture/ai-inference.md|AI inference",
+      "ai:docs/architecture/agentic-protocols.md|Agentic protocols",
+      "ai:docs/architecture/routing-facts.md|Routing facts",
+      "ai:docs/architecture/response-store.md|Response store",
+      {
+       "group": "More architecture",
+       "items": [
+        "praxis:docs/architecture/connection-lifecycle.md",
+        "praxis:docs/architecture/http-correctness.md",
+        "praxis:docs/architecture/tcp-proxy.md",
+        "praxis:docs/architecture/upstream-binding.md",
+        "praxis:docs/architecture/pingora-handler-lifecycle.md",
+        "praxis:docs/architecture/crate-layout.md",
+        "ai:docs/architecture/outbound-callouts.md",
+        "ai:docs/architecture/postgres-cryptographic-boundary.md",
+        "ai:docs/architecture/cryptographic-inventory.md",
+        "ai:docs/architecture/responses-retained-payload.md"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "reference",
+     "label": "Reference",
+     "items": [
+      "ai:docs/features.md|Gateway capabilities",
+      "page:/praxis/capabilities|Proxy capabilities",
+      "praxis:docs/features.md|Proxy features",
+      {
+       "group": "Compatibility",
+       "items": [
+        "ai:docs/conformance/README.md|OpenAI conformance",
+        "ai:docs/conformance/openresponses-translation.md|OpenResponses translation",
+        "ai:docs/conformance/openresponses-acceptance.md|OpenResponses acceptance",
+        "ai:docs/conformance/openai-responses-state-conformance.md|Stateful agentic loop"
+       ]
+      },
+      "praxis:docs/benchmarks.md|Benchmarks",
+      "examples:praxis|Proxy configuration examples",
+      "ai:docs/README.md|Gateway project overview",
+      "praxis:docs/README.md|Proxy foundation overview",
+      "link:/changelog/|Changelog"
+     ]
+    },
+    {
+     "id": "filters",
+     "label": "Filters",
+     "items": [
+      "ai:docs/filters/reference.md|Gateway filter reference",
+      "praxis:docs/filters/reference.md|Proxy filter reference",
+      "ai:docs/filters/README.md|All gateway filters",
+      "praxis:docs/filters/README.md|All proxy filters",
+      {
+       "group": "Gateway filters",
+       "items": [
+        "ai:docs/filters/ai_operation.md",
+        "ai:docs/filters/anthropic_messages_protocol.md",
+        "ai:docs/filters/anthropic_messages_request.md",
+        "ai:docs/filters/anthropic_messages_to_chat_completions.md",
+        "ai:docs/filters/anthropic_messages_to_chat_completions_stream.md",
+        "ai:docs/filters/anthropic_messages_to_vertexai_anthropic.md",
+        "ai:docs/filters/anthropic_web_search.md",
+        "ai:docs/filters/http_callout.md",
+        "ai:docs/filters/inflight_tracker.md",
+        "ai:docs/filters/llmisvc_model_provider_resolver.md",
+        "ai:docs/filters/model_to_header.md",
+        "ai:docs/filters/openai_chat_completions_request.md",
+        "ai:docs/filters/openai_chat_completions_streaming_selector.md",
+        "ai:docs/filters/openai_chat_completions_to_anthropic.md",
+        "ai:docs/filters/openai_chat_completions_to_anthropic_stream.md",
+        "ai:docs/filters/openai_client_tool_compat.md",
+        "ai:docs/filters/openai_doc_extract.md",
+        "ai:docs/filters/openai_file_resolve.md",
+        "ai:docs/filters/openai_mcp_dispatch.md",
+        "ai:docs/filters/openai_mcp_tool_resolve.md",
+        "ai:docs/filters/openai_responses_compact.md",
+        "ai:docs/filters/openai_responses_model_rewrite.md",
+        "ai:docs/filters/openai_responses_rehydrate.md",
+        "ai:docs/filters/openai_responses_request.md",
+        "ai:docs/filters/openai_responses_to_chat_completions.md",
+        "ai:docs/filters/openai_stream_events.md",
+        "ai:docs/filters/openai_tool_parse.md",
+        "ai:docs/filters/project_state_owner_headers.md",
+        "ai:docs/filters/prompt_enrich.md",
+        "ai:docs/filters/state_owner.md",
+        "ai:docs/filters/stream_usage_inject.md"
+       ]
+      },
+      {
+       "group": "Proxy: traffic management",
+       "items": [
+        "praxis:docs/filters/http/traffic_management/circuit_breaker.md",
+        "praxis:docs/filters/http/traffic_management/endpoint_selector.md",
+        "praxis:docs/filters/http/traffic_management/grpc_detection.md",
+        "praxis:docs/filters/http/traffic_management/grpc_timeout.md",
+        "praxis:docs/filters/http/traffic_management/iterative_request_router.md",
+        "praxis:docs/filters/http/traffic_management/load_balancer.md",
+        "praxis:docs/filters/http/traffic_management/rate_limit.md",
+        "praxis:docs/filters/http/traffic_management/redirect.md",
+        "praxis:docs/filters/http/traffic_management/router.md",
+        "praxis:docs/filters/http/traffic_management/static_response.md",
+        "praxis:docs/filters/http/traffic_management/sticky_sessions.md",
+        "praxis:docs/filters/http/traffic_management/timeout.md"
+       ]
+      },
+      {
+       "group": "Proxy: transformation",
+       "items": [
+        "praxis:docs/filters/http/transformation/grpc_status.md",
+        "praxis:docs/filters/http/transformation/headers.md",
+        "praxis:docs/filters/http/transformation/path_rewrite.md",
+        "praxis:docs/filters/http/transformation/url_rewrite.md"
+       ]
+      },
+      {
+       "group": "Proxy: security",
+       "items": [
+        "praxis:docs/filters/http/security/basic_auth.md",
+        "praxis:docs/filters/http/security/cors.md",
+        "praxis:docs/filters/http/security/credential_injection.md",
+        "praxis:docs/filters/http/security/csrf.md",
+        "praxis:docs/filters/http/security/forwarded_headers.md",
+        "praxis:docs/filters/http/security/guardrails.md",
+        "praxis:docs/filters/http/security/ip_acl.md",
+        "praxis:docs/filters/http/security/peer_identity_trust.md",
+        "praxis:docs/filters/http/security/policy.md"
+       ]
+      },
+      {
+       "group": "Proxy: payload processing",
+       "items": [
+        "praxis:docs/filters/http/payload_processing/compression.md",
+        "praxis:docs/filters/http/payload_processing/grpc_web.md",
+        "praxis:docs/filters/http/payload_processing/json_body.md",
+        "praxis:docs/filters/http/payload_processing/json_body_field.md",
+        "praxis:docs/filters/http/payload_processing/json_rpc.md"
+       ]
+      },
+      {
+       "group": "Proxy: observability",
+       "items": [
+        "praxis:docs/filters/http/observability/access_log.md",
+        "praxis:docs/filters/http/observability/cloud_events.md",
+        "praxis:docs/filters/http/observability/request_id.md",
+        "praxis:docs/filters/http/observability/trace_context.md"
+       ]
+      },
+      {
+       "group": "Proxy: TCP",
+       "items": [
+        "praxis:docs/filters/tcp/traffic_management/sni_router.md",
+        "praxis:docs/filters/tcp/traffic_management/tcp_load_balancer.md",
+        "praxis:docs/filters/tcp/observability/tcp_access_log.md"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "extend",
+     "label": "Extend",
+     "items": [
+      "page:/guides/extend|Extend Praxis",
+      "praxis:docs/quickstart.md|Build the proxy from source",
+      "praxis:docs/filters/http-filter-tutorial.md|Write an HTTP filter",
+      "praxis:docs/filters/extensions.md|Proxy extensions",
+      "ai:docs/filters/extensions.md|Gateway extensions",
+      "ai:docs/developing/filter-hosts.md|Embed gateway filters",
+      "praxis:docs/developing/adding-filters.md|Add a built-in filter",
+      "ai:docs/developing/adding-filters.md|Add a built-in gateway filter",
+      "praxis:docs/developing/adding-protocols.md|Add a protocol",
+      {
+       "group": "Contribute to the proxy",
+       "items": [
+        "praxis:docs/developing/getting-started.md|Development setup",
+        "praxis:docs/developing/conventions.md",
+        "praxis:docs/developing/dependencies.md",
+        "praxis:docs/developing/review-criteria.md",
+        "praxis:docs/developing/type-design.md",
+        "praxis:docs/developing/project-management.md",
+        "praxis:docs/developing/fips.md|FIPS tooling",
+        "praxis:docs/release.md|Release process"
+       ]
+      },
+      {
+       "group": "Contribute to the gateway",
+       "items": [
+        "ai:docs/developing/getting-started.md|Development setup",
+        "ai:docs/developing/project-management.md",
+        "ai:docs/developing/type-design.md",
+        "ai:docs/developing/fips.md|FIPS tooling",
+        "ai:docs/developing/flow-visualizers.md",
+        "ai:docs/release.md|Release process"
+       ]
+      },
+      {
+       "group": "Testing and qualification",
+       "items": [
+        "ai:docs/developing/gpu-nightly-suite.md",
+        "ai:docs/developing/llmd-integration-testing.md",
+        "ai:docs/developing/vllm-qualification.md",
+        "ai:docs/developing/cli-vllm-through-praxis.md|Code harness through vLLM",
+        "ai:docs/developing/openshell-cli-vllm-through-praxis.md|Code harness in OpenShell",
+        "ai:docs/developing/openai-anthropic-compatibility.md|Chat Completions to Messages compatibility",
+        "ai:docs/anthropic-messages-replay-test-plan.md|Messages replay test plan",
+        "ai:docs/documentation-audit.md|Documentation audit"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "more",
+     "label": "More",
+     "items": [
+      {
+       "rest": "ai",
+       "label": "Other gateway pages"
+      },
+      {
+       "rest": "praxis",
+       "label": "Other proxy pages"
+      }
+     ]
+    }
+   ]
+  },
+  "policy": {
+   "label": "Policy",
+   "tag": "Policy engine",
+   "products": [
+    "policy"
+   ],
+   "sections": [
+    {
+     "id": "start",
+     "label": "Get started",
+     "items": [
+      "policy:docs/content/index.md|Overview",
+      "policy:docs/content/quickstart.md|Quickstart",
+      "praxis:docs/filters/http/security/policy.md|Use with the gateway|Gateway",
+      "policy:docs/content/use-cases.md|Use cases",
+      "policy:docs/content/vision.md|A reference monitor for agents"
+     ]
+    },
+    {
+     "id": "guides",
+     "label": "Guides",
+     "items": [
+      "policy:docs/content/http-routing.md|HTTP routing",
+      "policy:docs/content/identity-claim-mapping.md|Add a claim mapper preset",
+      "policy:docs/content/identity-delegation.md|Identity and token exchange",
+      "policy:docs/content/patterns.md|Policy patterns",
+      "policy:docs/content/testing.md|Test policies",
+      "policy:docs/content/deployment.md|Deploy",
+      "policy:docs/content/upgrade-apl.md|Upgrade an APL configuration"
+     ]
+    },
+    {
+     "id": "concepts",
+     "label": "Concepts",
+     "items": [
+      "policy:docs/content/overview.md|How the Policy Engine works",
+      "policy:docs/content/pipeline.md|Plugins and the pipeline",
+      "policy:docs/content/cmf.md|Common Message Format",
+      "policy:docs/content/cmf-extensions.md|CMF extensions",
+      "policy:docs/content/extensions.md|Extensions and capability gating",
+      "policy:docs/content/threat-model.md|Threat model"
+     ]
+    },
+    {
+     "id": "apl",
+     "label": "Policy language (APL)",
+     "items": [
+      "policy:docs/content/apl/index.md|APL overview",
+      "policy:docs/content/apl/apl-grammar.md|Grammar",
+      "policy:docs/content/apl/attributes.md|Static attributes",
+      "policy:docs/content/apl/effects.md|Effects and sequencing",
+      "policy:docs/content/apl/identity.md|Identity and IdP integration",
+      "policy:docs/content/apl/delegation.md|Delegation and token exchange",
+      "policy:docs/content/apl/pdp.md|PDP integration",
+      "policy:docs/content/apl/restrict.md|Backend restriction",
+      "policy:docs/content/apl/tainting.md|Session taint",
+      "policy:docs/content/apl/elicitation.md|Human-in-the-loop elicitation"
+     ]
+    },
+    {
+     "id": "reference",
+     "label": "Reference",
+     "items": [
+      "policy:docs/content/configuration.md|Configuration",
+      "policy:docs/content/builtins.md|Builtins",
+      "policy:docs/content/assertions.md|Assertions wire contract",
+      "policy:docs/content/crates.md|Crates",
+      "policy:docs/content/benchmarks.md|Benchmarks",
+      "link:/changelog/#policy|Changelog"
+     ]
+    },
+    {
+     "id": "more",
+     "label": "More",
+     "items": [
+      {
+       "rest": "policy",
+       "label": "Other Policy pages"
+      }
+     ]
+    }
+   ]
+  },
+  "grid": {
+   "label": "Grid",
+   "tag": "Technical preview",
+   "products": [
+    "grid"
+   ],
+   "sections": [
+    {
+     "id": "start",
+     "label": "Get started",
+     "items": [
+      "page:/grid|Project page",
+      "grid:docs/README.md|Overview",
+      "grid:docs/technical-preview-scope.md|Preview scope and limits",
+      "grid:docs/installation/README.md|Install Grid",
+      "grid:docs/installation/existing-clusters.md|Install on existing clusters",
+      "grid:docs/installation/aws.md|Install on AWS",
+      "grid:docs/installation/enrollment.md|Enroll a site",
+      "examples:grid|Configuration examples"
+     ]
+    },
+    {
+     "id": "operate",
+     "label": "Operate",
+     "items": [
+      "grid:docs/adding-provider.md|Add an inference provider",
+      "grid:docs/routing.md|Routing guide",
+      "grid:docs/site-selection.md|Cross-site selection",
+      "grid:docs/architecture/operations.md|Operations",
+      "grid:docs/architecture/provider-draining.md|Drain a provider",
+      "grid:docs/architecture/opentelemetry.md|OpenTelemetry",
+      "grid:docs/fips.md|FIPS support",
+      "grid:docs/installation/migration-0.3.x.md|Migrate CRD fields to 0.3"
+     ]
+    },
+    {
+     "id": "concepts",
+     "label": "Concepts",
+     "items": [
+      "grid:docs/architecture/overview.md|Architecture",
+      "grid:docs/architecture/routing.md|Routing and overlay",
+      "grid:docs/architecture/scoring.md|Provider scoring",
+      "grid:docs/architecture/prefix-affinity.md|Prefix affinity",
+      "grid:docs/architecture/enrollment.md|Enrollment",
+      "grid:docs/architecture/external-ingress.md|External client ingress",
+      "grid:docs/architecture/auth.md|Authentication and access",
+      "grid:docs/architecture/signed-gossip-trust.md|Signed gossip trust",
+      "grid:docs/architecture/signals.md|Signal propagation",
+      "grid:docs/architecture/signals-scaling.md|Scaling the signals listener",
+      "grid:docs/architecture/polling-metrics.md|Polling load signals"
+     ]
+    },
+    {
+     "id": "reference",
+     "label": "Reference",
+     "items": [
+      "grid:docs/architecture/crds.md|Custom resources",
+      "grid:docs/architecture/consumer-config.md|Generated consumer config",
+      "grid:docs/metrics.md|Metrics",
+      "link:/changelog/#grid|Changelog"
+     ]
+    },
+    {
+     "id": "extend",
+     "label": "Contribute",
+     "items": [
+      "grid:docs/developing/README.md|Developing Grid",
+      "grid:docs/development.md|Development",
+      "grid:docs/conventions.md|Conventions",
+      "grid:docs/developing/conventions.md|Development conventions",
+      "grid:docs/developing/forge.md|Forge tooling",
+      "grid:docs/developing/type-design.md|Type design",
+      "grid:docs/developing/unicode-audit.md|Unicode audit",
+      "grid:docs/architecture/ci-kind-e2e.md|CI kind end-to-end",
+      "grid:docs/release.md|Release process"
+     ]
+    },
+    {
+     "id": "more",
+     "label": "More",
+     "items": [
+      {
+       "rest": "grid",
+       "label": "Other Grid pages"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

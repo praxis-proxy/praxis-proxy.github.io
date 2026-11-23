@@ -48,7 +48,9 @@
 <link rel="describedby" href="{{ .Permalink | safeURL }}">
 {{ end -}}
 
-{{ if partial "praxis-archived.html" . }}
+{{ if site.Params.gateway_draft }}
+<meta name="robots" content="noindex, nofollow">
+{{ else if partial "praxis-archived.html" . }}
 <meta name="robots" content="noindex, follow">
 {{ else if hugo.IsProduction }}
 <meta name="robots" content="index, follow">
