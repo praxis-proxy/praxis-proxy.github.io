@@ -37,6 +37,7 @@
             {{ if not (.Param "ui.breadcrumb_disable") -}}
               {{ partial "breadcrumb.html" . -}}
             {{ end -}}
+            {{ partial "gateway-draft.html" . }}
             {{ block "main" . }}{{ end }}
           </main>
         </div>

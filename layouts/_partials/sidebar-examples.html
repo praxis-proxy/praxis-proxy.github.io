@@ -78,6 +78,52 @@
   {{- $extraRoots = where $extraRoots "RelPermalink" "ne" $configPath -}}
   {{- $extraExamples := where $catalogPages "IsSection" false -}}
   {{- $catalogURL := printf "%s/%s/examples/" $page.Params.product $page.Params.version | relURL -}}
+  {{- if .inline -}}
+        {{- with $configRoot }}
+        {{- if not $inCatalog }}
+        <li class="examples-sidebar__top-link{{ if eq $page.RelPermalink .RelPermalink }} active{{ else if strings.HasPrefix $page.RelPermalink .RelPermalink }} active-path{{ end }}"><a href="{{ .RelPermalink }}"{{ if eq $page.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>All configurations</a></li>
+        {{- end }}
+        {{- end }}
+        <li class="examples-sidebar__category-browser">
+          <details open>
+            <summary>Browse categories</summary>
+            <ul>
+              {{- if $configRoot -}}
+                {{- if $inCatalog -}}
+                  {{- $isCurrent := eq $configRoot.RelPermalink $page.RelPermalink -}}
+                  <li class="examples-sidebar__category{{ if $isCurrent }} active{{ end }}">
+                    <a href="{{ $configRoot.RelPermalink }}"{{ if $isCurrent }} aria-current="page"{{ end }}>All configurations</a>
+                    <ul>{{ partial "sidebar-examples.html" (dict "context" $page "branch" $configRoot) }}</ul>
+                  </li>
+                {{- else -}}
+                  {{- partial "sidebar-examples.html" (dict "context" $page "branch" $configRoot) -}}
+                {{- end -}}
+              {{- end -}}
+              {{- range sort $extraRoots "LinkTitle" -}}
+                {{- $isCurrent := eq .RelPermalink $page.RelPermalink -}}
+                {{- $isAncestor := strings.HasPrefix $page.RelPermalink .RelPermalink -}}
+                <li class="examples-sidebar__category{{ if $isCurrent }} active{{ else if $isAncestor }} active-path{{ end }}">
+                  <a href="{{ .RelPermalink }}"{{ if $isCurrent }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a>
+                  {{- if $isAncestor }}<ul>{{ partial "sidebar-examples.html" (dict "context" $page "branch" .) }}</ul>{{ end -}}
+                </li>
+              {{- end -}}
+              {{- if and (not $inCatalog) (not $inConfigTree) (gt (len $extraExamples) 0) -}}
+                <li class="examples-sidebar__example-group">
+                  <details{{ if eq $page.Parent.RelPermalink $catalogPath }} open{{ end }}>
+                    <summary>Examples in {{ $catalog.LinkTitle }}</summary>
+                    <ul>
+                      {{- range sort $extraExamples "LinkTitle" -}}
+                        {{- $isCurrent := eq .RelPermalink $page.RelPermalink -}}
+                        <li class="examples-sidebar__example{{ if $isCurrent }} active{{ end }}"><a href="{{ .RelPermalink }}"{{ if $isCurrent }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+                      {{- end -}}
+                    </ul>
+                  </details>
+                </li>
+              {{- end -}}
+            </ul>
+          </details>
+        </li>
+  {{- else -}}
   <div id="td-sidebar-menu" class="td-sidebar__inner docs-sidebar examples-sidebar">
     <div class="td-sidebar__search d-flex d-md-none align-items-center justify-content-between">
       <span>Browse examples</span>
@@ -134,4 +180,5 @@
       </ul>
     </nav>
   </div>
+  {{- end -}}
 {{- end -}}

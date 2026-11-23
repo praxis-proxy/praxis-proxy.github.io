@@ -1,0 +1,16 @@
+{{- /* Generated, decorative cover art for a blog post. Context: the page. Hue comes from the title, so each post keeps a stable look. */ -}}
+{{- $seed := hash.FNV32a .Title -}}
+{{- $h1 := mod $seed 360 -}}
+{{- $h2 := mod (add $h1 70) 360 -}}
+{{- $rings := add 3 (mod $seed 3) -}}
+<div class="mx-cover" style="--h1: {{ $h1 }}; --h2: {{ $h2 }}" aria-hidden="true">
+  <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+    <defs><pattern id="mx-cover-grid-{{ $seed }}" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0v20" fill="none" stroke="currentColor" stroke-opacity=".12"/></pattern></defs>
+    <rect width="400" height="220" fill="url(#mx-cover-grid-{{ $seed }})"/>
+    {{- range $i := seq 1 $rings }}
+    <circle cx="{{ add 230 (mul $i 6) }}" cy="{{ sub 120 (mul $i 4) }}" r="{{ mul $i 26 }}" fill="none" stroke="currentColor" stroke-opacity="{{ printf "%.2f" (div 0.5 $i) }}"/>
+    {{- end }}
+    <path d="M0 160 C90 150 120 80 210 92 S330 40 400 52" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity=".55"/>
+    <circle cx="210" cy="92" r="5" fill="currentColor"/>
+  </svg>
+</div>

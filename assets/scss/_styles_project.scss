@@ -766,3 +766,6 @@ body.praxis-blog .td-outer { padding-inline: 0; }
 .praxis-enhancements-criteria-panel, .td-default main .praxis-enhancements-criteria-panel { margin-top: 1.5rem; padding: 1rem 1.25rem; border: 1px solid var(--praxis-border); border-left: 4px solid var(--praxis-accent); border-radius: 0.5rem; background: var(--praxis-panel); }
 .praxis-enhancements-criteria-panel h2 { margin: 0 0 0.35rem; font-size: 1.15rem; }
 .praxis-enhancements-criteria-panel > p { margin: 0; color: var(--praxis-muted); font-size: 0.95rem; }
+
+// Prototype Mintlify-inspired shell; keep last so it refines the rules above.
+@import "mintlify";

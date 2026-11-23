@@ -29,3 +29,9 @@ Follow {{< docs-link product="praxis" source="docs/filters/http-filter-tutorial.
 For AI-specific filters, build and develop in the independently versioned Praxis AI project: {{< docs-link product="ai" source="docs/developing/getting-started.md" label="AI development setup" >}} and {{< docs-link product="ai" source="docs/developing/adding-filters.md" label="adding an AI filter" >}}.
 
 See the [operator path]({{< relref "../operate/_index.md" >}}) for configuration tasks that do not need custom Rust code.
+
+## Reference gateway and custom compositions
+
+The proposed charter commits to a curated upstream gateway built through public extension interfaces. That proposal is still under discussion. The current release references above describe the interfaces available today.
+
+For a custom composition, its maintainers must validate inspection coverage, streaming, error handling, limits and audit behavior. Replacing an integration through a common interface does not establish equivalent detection effectiveness or upstream support. Build-time exclusion and runtime deactivation are different concerns.

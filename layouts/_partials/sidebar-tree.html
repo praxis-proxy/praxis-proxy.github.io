@@ -7,7 +7,73 @@
 {{- with $productID -}}{{- $product = index hugo.Data.docs_build_versions.products . -}}{{- end -}}
 {{- $version := (partial "docs-context.html" $page).version -}}
 {{- if and $product (not $version) -}}{{- $version = $product.default -}}{{- end -}}
-{{- if eq $page.Params.topic "Examples" -}}
+{{- $treeID := partial "mx/sidebar-tree-id.html" $page -}}
+{{- if and $treeID (not $productID) -}}{{- $productID = "ai" -}}{{- $product = index hugo.Data.docs_build_versions.products "ai" -}}{{- $version = $product.default -}}{{- end -}}
+{{- if $treeID -}}
+  {{- $tree := partialCached "mx/sidebar-data.html" $treeID $treeID -}}
+  {{- $inExamples := eq $page.Params.topic "Examples" -}}
+  <div id="td-sidebar-menu" class="td-sidebar__inner docs-sidebar mx-sidebar mx-sidebar--tree">
+    <div class="mx-sidebar__head">
+      <a class="mx-sidebar__project" href="{{ index (index $tree.sections 0).items 0 "href" }}">
+        <span class="mx-sidebar__project-mark mx-tab__dot--{{ $productID }}" aria-hidden="true"></span>
+        <span>{{ $tree.label }}<small>{{ $tree.tag }}</small></span>
+      </a>
+      <label class="mx-version docs-version-control">
+        <span class="visually-hidden">{{ $product.name }} documentation version</span>
+        {{- if eq $treeID "gateway" }}<span class="mx-version__name" aria-hidden="true">{{ cond (eq $productID "ai") "Gateway" "Proxy" }}</span>{{ end }}
+        {{- $sourcePath := $page.Params.source_path | default (printf "website/%s" (cond (ne $page.File nil) (printf "%s" $page.File.Path) "")) -}}
+        <select data-source-path="{{ $sourcePath }}" onchange="const o=this.selectedOptions[0];const u=new window.URL(this.value,window.location.href);if(o.dataset.fallback==='true')u.searchParams.set('version_fallback',this.dataset.sourcePath);window.location.assign(u)">
+          {{- range $product.versions }}
+            {{- $matches := where (where (where hugo.Data.docs_sources "product" $productID) "version" .slug) "source_path" $sourcePath -}}
+            {{- $current := eq .slug $version -}}
+            {{- $fallback := and (not $current) (eq (len $matches) 0) -}}
+            {{- $target := $page.RelPermalink -}}
+            {{- if not $current }}{{ $target = cond $fallback (printf "%s/%s/" $productID .slug | relURL) ((strings.TrimPrefix "/" (index $matches 0).url) | relURL) }}{{ end -}}
+          <option value="{{ $target }}" data-fallback="{{ $fallback }}"{{ if $current }} selected{{ end }}>{{ .label }}{{ if $fallback }} — overview{{ end }}</option>
+          {{- end }}
+        </select>
+      </label>
+      <button class="btn btn-link td-sidebar__toggle mx-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"><span class="docs-sidebar__toggle-text">Browse</span></button>
+    </div>
+    <nav class="td-sidebar-nav collapse foldable-nav mx-nav" id="td-section-nav" aria-label="Documentation navigation">
+      {{- range $tree.sections }}
+      <section class="mx-nav__section" aria-labelledby="mx-nav-{{ $treeID }}-{{ .id }}">
+        <h2 class="mx-nav__label" id="mx-nav-{{ $treeID }}-{{ .id }}">{{ .label }}{{ with .badge }} <span class="mx-nav__badge">{{ . }}</span>{{ end }}</h2>
+        <ul class="mx-nav__list">
+          {{- range .items }}
+          {{- if eq .kind "group" }}
+            {{- $open := false -}}
+            {{- range .items }}{{ if eq .href $page.RelPermalink }}{{ $open = true }}{{ end }}{{ end }}
+          <li class="mx-nav__group">
+            <details{{ if $open }} open{{ end }}>
+              <summary><span>{{ .label }}</span><svg class="mx-nav__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+              <ul class="mx-nav__list mx-nav__list--nested">
+                {{- range .items }}
+                {{- $current := eq .href $page.RelPermalink }}
+                <li class="docs-sidebar-item{{ if $current }} active{{ end }}"><a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}</a></li>
+                {{- end }}
+              </ul>
+            </details>
+          </li>
+          {{- else }}
+            {{- $current := eq .href $page.RelPermalink -}}
+            {{- $here := and (eq .kind "examples") $inExamples (eq .product $page.Params.product) (not $current) }}
+          <li class="docs-sidebar-item{{ if $current }} active{{ else if $here }} active-path{{ end }}{{ if .tag }} mx-nav__out{{ end }}">
+            <a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}{{ with .tag }}<span class="mx-nav__tab"><span class="visually-hidden">, opens the </span>{{ . }}<span class="visually-hidden"> tab</span><span aria-hidden="true"> ↗</span></span>{{ end }}</a>
+            {{- if and (eq .kind "examples") $inExamples (eq .product $page.Params.product) }}
+            <ul class="mx-nav__list mx-nav__list--nested mx-nav__examples examples-sidebar">{{ partial "sidebar-examples.html" (dict "context" $page "inline" true) }}</ul>
+            {{- end }}
+          </li>
+          {{- end }}
+          {{- end }}
+        </ul>
+      </section>
+      {{- end }}
+      <p class="mx-nav__hub"><a href="{{ "docs/" | relURL }}">← All documentation</a></p>
+    </nav>
+    <script>addEventListener('DOMContentLoaded',()=>{const a=document.querySelector('#td-section-nav a[aria-current="page"]'),s=a&&a.closest('#td-section-nav');if(!s||s.scrollHeight<=s.clientHeight)return;const y=a.getBoundingClientRect().top-s.getBoundingClientRect().top;if(y>s.clientHeight*.7)s.scrollTop+=y-s.clientHeight/3})</script>
+  </div>
+{{- else if eq $page.Params.topic "Examples" -}}
   {{- partial "sidebar-examples.html" (dict "context" $page) -}}
 {{- else if and $productID $version -}}
   {{- $navigation := index hugo.Data.docs_navigation.products $productID -}}
@@ -25,71 +91,98 @@
   {{- $startHref := partial "docs-start.html" (dict "product" $productID "version" $version) -}}
   {{- $allDocs = where $allDocs "Params.source_path" "ne" $overviewSource -}}
   {{- if $showGuides }}{{ $allDocs = $allDocs | union $guideRoot.Pages | union (slice $guideRoot) }}{{ end -}}
-  <div id="td-sidebar-menu" class="td-sidebar__inner docs-sidebar">
-    <a class="docs-sidebar__identity" href="{{ $projectHref }}">
-      <span>{{ $product.name }}</span>
-      <small>{{ with $release }}{{ .label }}{{ else }}{{ $version }}{{ end }} documentation</small>
-    </a>
-    <div class="td-sidebar__search d-flex d-md-none align-items-center">
-      <button class="btn btn-link td-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"><span class="docs-sidebar__toggle-text">Browse</span></button>
+  {{- $iconOverview := `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8.5 10 3l7 5.5V16a1 1 0 0 1-1 1h-3.5v-5h-5v5H4a1 1 0 0 1-1-1V8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>` -}}
+  {{- $iconStart := `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3.5v13l11-6.5-11-6.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>` -}}
+  {{- $iconExamples := `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7 6-4 4 4 4m6-8 4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` -}}
+  {{- $iconProject := `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>` -}}
+  {{- $sectionIcons := dict
+    "start" `<path d="M10 2.8c2.6 1.6 4 4.3 4 7.2v3H6v-3c0-2.9 1.4-5.6 4-7.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 11.5 3.5 14v2.5H6M14 11.5l2.5 2.5v2.5H14M8.5 16v1.5h3V16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="10" cy="8" r="1.4" fill="currentColor"/>`
+    "configure" `<path d="M4 5.5h7M15 5.5h1M4 10h2M10 10h6M4 14.5h8M16 14.5h0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="13" cy="5.5" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="10" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="14.5" r="1.8" stroke="currentColor" stroke-width="1.6"/>`
+    "operate" `<path d="M3.5 13.5a6.5 6.5 0 1 1 13 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m10 13.5 3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.3" fill="currentColor"/>`
+    "understand" `<path d="M3 4.5c2.5-.8 4.8-.5 7 1 2.2-1.5 4.5-1.8 7-1V15c-2.5-.8-4.8-.5-7 1-2.2-1.5-4.5-1.8-7-1V4.5ZM10 5.5V16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>`
+    "reference" `<path d="m7 6-4 4 4 4m6-8 4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`
+    "extend" `<path d="M8 3.5h4v2.2a1.6 1.6 0 1 0 3 0V5.5h1.5V10h-1.3a1.6 1.6 0 1 0 0 3h1.3v3.5H12v-1.3a1.6 1.6 0 1 0-3 0v1.3H3.5V12h1.3a1.6 1.6 0 1 0 0-3H3.5V5.5H8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`
+  -}}
+  <div id="td-sidebar-menu" class="td-sidebar__inner docs-sidebar mx-sidebar">
+    <div class="mx-sidebar__head">
+      <a class="mx-sidebar__project" href="{{ $projectHref }}">
+        <span class="mx-sidebar__project-mark mx-tab__dot--{{ $productID }}" aria-hidden="true"></span>
+        <span>{{ $product.name }}</span>
+      </a>
+      <label class="mx-version">
+        <span class="visually-hidden">{{ $product.name }} documentation version</span>
+        <select onchange="window.location.assign(this.value)">
+          {{- range $product.versions }}
+          <option value="{{ printf "%s/%s/" $productID .slug | relURL }}"{{ if eq .slug $version }} selected{{ end }}>{{ .label }}</option>
+          {{- end }}
+        </select>
+      </label>
+      <button class="btn btn-link td-sidebar__toggle mx-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"><span class="docs-sidebar__toggle-text">Browse</span></button>
     </div>
-    <p class="docs-sidebar__hub"><a href="{{ "docs/" | relURL }}">← All documentation</a></p>
-    <nav class="td-sidebar-nav collapse foldable-nav" id="td-section-nav" aria-label="Documentation navigation">
-      <ul class="td-sidebar-nav__section ul-0">
+    <nav class="td-sidebar-nav collapse foldable-nav mx-nav" id="td-section-nav" aria-label="Documentation navigation">
+      <ul class="mx-nav__list mx-nav__list--top">
         {{- if eq $productID "grid" -}}
           {{- $projectOverviewURL := "grid/" | relURL -}}
-        <li class="docs-sidebar-item{{ if eq $page.RelPermalink $projectOverviewURL }} active{{ end }}"><a href="{{ $projectOverviewURL }}"{{ if eq $page.RelPermalink $projectOverviewURL }} aria-current="page"{{ end }}>Project page</a></li>
+        <li class="docs-sidebar-item{{ if eq $page.RelPermalink $projectOverviewURL }} active{{ end }}"><a href="{{ $projectOverviewURL }}"{{ if eq $page.RelPermalink $projectOverviewURL }} aria-current="page"{{ end }}><span class="mx-nav__icon">{{ $iconProject | safeHTML }}</span>Project page</a></li>
         {{- end -}}
         {{- with index $overviewPages 0 -}}
-        <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}"><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>Overview</a></li>
+        <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}"><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}><span class="mx-nav__icon">{{ $iconOverview | safeHTML }}</span>Overview</a></li>
         {{- end -}}
         {{- if and $startHref (not $showGuides) (or $page.Params.current_release (ne $startHref $page.RelPermalink)) }}
-        <li class="docs-sidebar-get-started{{ if eq $startHref $page.RelPermalink }} active{{ end }}">
-          <a href="{{ $startHref }}"{{ if eq $startHref $page.RelPermalink }} aria-current="page"{{ end }}>Get started</a>
+        <li class="docs-sidebar-item docs-sidebar-get-started{{ if eq $startHref $page.RelPermalink }} active{{ end }}">
+          <a href="{{ $startHref }}"{{ if eq $startHref $page.RelPermalink }} aria-current="page"{{ end }}><span class="mx-nav__icon">{{ $iconStart | safeHTML }}</span>Get started</a>
         </li>
         {{- end }}
         {{- range $exampleCatalogs }}
         <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}">
-          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>Configuration examples</a>
+          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}><span class="mx-nav__icon">{{ $iconExamples | safeHTML }}</span>Configuration examples</a>
         </li>
         {{- end }}
-        {{- range ($navigation.sections | default hugo.Data.docs_navigation.sections) }}
-          {{- $need := .id -}}
-          {{- $label := .label -}}
-          {{- $needPages := where $allDocs "Params.navigation_section" $need -}}
-          {{- $inGroup := and (ne $page.Params.source_path $overviewSource) (eq $page.Params.navigation_section $need) -}}
-          {{- if gt (len $needPages) 0 -}}
-            {{- $needID := printf "docs-need-%s-%s" $productID ($need | anchorize) -}}
-            <li class="td-sidebar-nav__section-title td-sidebar-nav__section docs-sidebar-group with-child{{ if $inGroup }} active-path{{ end }}">
-              <input type="checkbox" id="{{ $needID }}"{{ if $inGroup }} checked{{ end }}>
-              <label for="{{ $needID }}"><span>{{ $label }}</span></label>
-              <ul class="ul-1 foldable">
-                {{- $topicGroups := $needPages.GroupByParam "topic" -}}
-                {{- $topicOrder := $navigation.topic_order -}}
-                {{- range $topicGroups -}}
-                  {{- if not (in $topicOrder .Key) -}}
-                    {{- $topicOrder = $topicOrder | append .Key -}}
-                  {{- end -}}
-                {{- end -}}
-                {{- range $topicOrder -}}
-                  {{- range (where $topicGroups "Key" .) -}}
-                    <li class="docs-sidebar-topic">
-                      <span>{{ .Key }}</span>
-                      <ul class="ul-2">
-                        {{- range (.Pages.ByParam "order") }}
-                          <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}">
-          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>{{ if and $navigation.source_start_label (eq .Params.source_path $navigation.start) }}{{ $navigation.source_start_label }}{{ else }}{{ .LinkTitle }}{{ end }}</a>
-                          </li>
+      </ul>
+      {{- range ($navigation.sections | default hugo.Data.docs_navigation.sections) }}
+        {{- $need := .id -}}
+        {{- $label := .label -}}
+        {{- $needPages := where $allDocs "Params.navigation_section" $need -}}
+        {{- if gt (len $needPages) 0 -}}
+          {{- $topicGroups := $needPages.GroupByParam "topic" -}}
+          {{- $topicOrder := $navigation.topic_order -}}
+          {{- range $topicGroups -}}
+            {{- if not (in $topicOrder .Key) -}}
+              {{- $topicOrder = $topicOrder | append .Key -}}
+            {{- end -}}
+          {{- end -}}
+          {{- $single := eq (len $topicGroups) 1 -}}
+          <section class="mx-nav__section" aria-labelledby="mx-nav-{{ $productID }}-{{ $need | anchorize }}">
+            <h2 class="mx-nav__label" id="mx-nav-{{ $productID }}-{{ $need | anchorize }}">{{ with index $sectionIcons $need }}<svg class="mx-nav__label-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">{{ . | safeHTML }}</svg>{{ end }}{{ $label }}</h2>
+            <ul class="mx-nav__list">
+            {{- range $topicOrder -}}
+              {{- range (where $topicGroups "Key" .) -}}
+                {{- $groupPages := .Pages.ByParam "order" -}}
+                {{- $containsCurrent := false -}}
+                {{- range $groupPages }}{{ if eq .RelPermalink $page.RelPermalink }}{{ $containsCurrent = true }}{{ end }}{{ end -}}
+                {{- if $single -}}
+                  {{- range $groupPages }}
+                  <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}"><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>{{ if and $navigation.source_start_label (eq .Params.source_path $navigation.start) }}{{ $navigation.source_start_label }}{{ else }}{{ .LinkTitle }}{{ end }}</a></li>
+                  {{- end }}
+                {{- else }}
+                  <li class="mx-nav__group">
+                    <details{{ if $containsCurrent }} open{{ end }}>
+                      <summary><span>{{ .Key }}</span><svg class="mx-nav__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+                      <ul class="mx-nav__list mx-nav__list--nested">
+                        {{- range $groupPages }}
+                        <li class="docs-sidebar-item{{ if eq .RelPermalink $page.RelPermalink }} active{{ end }}"><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $page.RelPermalink }} aria-current="page"{{ end }}>{{ if and $navigation.source_start_label (eq .Params.source_path $navigation.start) }}{{ $navigation.source_start_label }}{{ else }}{{ .LinkTitle }}{{ end }}</a></li>
                         {{- end }}
                       </ul>
-                    </li>
-                  {{- end }}
-                {{- end }}
-              </ul>
-            </li>
-          {{- end -}}
-        {{- end }}
-      </ul>
+                    </details>
+                  </li>
+                {{- end -}}
+              {{- end -}}
+            {{- end }}
+            </ul>
+          </section>
+        {{- end -}}
+      {{- end }}
+      <p class="mx-nav__hub"><a href="{{ "docs/" | relURL }}">← All documentation</a></p>
     </nav>
   </div>
 {{- else -}}

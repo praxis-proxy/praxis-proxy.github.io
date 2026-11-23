@@ -8,6 +8,16 @@
 {{- $motion := resources.Get "js/praxis-motion.js" -}}
 {{- if hugo.IsProduction }}{{ $motion = $motion | minify | fingerprint }}{{ end -}}
 <script defer src="{{ $motion.RelPermalink }}"></script>
+{{- if .IsHome -}}
+{{- $pillars := resources.Get "js/mx-pillars.js" -}}
+{{- if hugo.IsProduction }}{{ $pillars = $pillars | minify | fingerprint }}{{ end -}}
+<script defer src="{{ $pillars.RelPermalink }}"></script>
+{{- end -}}
+{{- if and (eq .Section "enhancements") .IsSection -}}
+{{- $props := resources.Get "js/mx-proposals.js" -}}
+{{- if hugo.IsProduction }}{{ $props = $props | minify | fingerprint }}{{ end -}}
+<script defer src="{{ $props.RelPermalink }}"></script>
+{{- end -}}
 {{- if .HasShortcode "flow-walkthrough" -}}
 {{- $player := resources.Get "js/flow-walkthrough.js" -}}
 {{- if hugo.IsProduction }}{{ $player = $player | minify | fingerprint }}{{ end -}}

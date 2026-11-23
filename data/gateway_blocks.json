@@ -1,0 +1,88 @@
+{
+  "_comment": "Building blocks of the AI gateway, top of the stack first. status: available | experimental | proposed. Links resolve with mx/doc-href against each project's default release; proposals link by path.",
+  "tiers": [
+    { "id": "agents", "label": "Agents", "hue": "#ec4899" },
+    { "id": "insight", "label": "Insight", "hue": "#0ea5e9" },
+    { "id": "control", "label": "Control", "hue": "#f59e0b" },
+    { "id": "traffic", "label": "Traffic", "hue": "#8b5cf6" },
+    { "id": "foundation", "label": "Foundation", "hue": "#10b981" }
+  ],
+  "blocks": [
+    {
+      "id": "agents", "tier": "agents", "title": "Agents, tools and state", "status": "experimental",
+      "summary": "Route agent traffic and run bounded tool exchanges.",
+      "points": ["Classify and route MCP and A2A traffic", "Store and rehydrate Responses history; serve Conversations", "Agentic loop for MCP and web-search tool calls"],
+      "note": "Responses state, Conversations and the agentic loop are experimental and off by default.",
+      "links": [{ "label": "MCP", "product": "ai", "source": "docs/filters/mcp.md" }, { "label": "Agentic loop", "product": "ai", "source": "docs/filters/openai_agentic_loop.md" }]
+    },
+    {
+      "id": "observability", "tier": "insight", "title": "Observability", "status": "available",
+      "summary": "See latency, tokens and errors on every request path.",
+      "points": ["Time to first token for streaming responses", "Token usage metrics and Prometheus /metrics", "OpenTelemetry tracing and structured access logs"],
+      "next": [{ "label": "Trace context propagation", "path": "/enhancements/00654_trace-context-propagation/" }, { "label": "OTLP metrics export", "path": "/enhancements/00795_otlp-metrics-export-spike/" }],
+      "links": [{ "label": "OpenTelemetry", "product": "ai", "source": "docs/architecture/opentelemetry.md" }, { "label": "Time to first token", "product": "ai", "source": "docs/filters/time_to_first_token.md" }]
+    },
+    {
+      "id": "metering", "tier": "insight", "title": "Metering", "status": "available",
+      "summary": "Count what every request consumes, across provider formats.",
+      "points": ["Unified token counts from provider responses", "Pre-request balance checks and post-response usage reporting", "Token usage returned in response headers"],
+      "links": [{ "label": "Token counting", "product": "ai", "source": "docs/filters/token_count.md" }, { "label": "External metering", "product": "ai", "source": "docs/filters/external_metering.md" }]
+    },
+    {
+      "id": "tokenomics", "tier": "control", "title": "Tokenomics", "status": "proposed",
+      "summary": "Budgets for inference, and control over how fast they are spent.",
+      "points": ["Token, rate and cost limits per application", "Weighted costs so expensive models spend more budget", "Consumption reporting and optional alerts"],
+      "proposal": { "number": "00121", "path": "/enhancements/00121_tokenomics/" },
+      "links": []
+    },
+    {
+      "id": "limits", "tier": "control", "title": "Rate limits and quotas", "status": "available",
+      "summary": "Keep usage inside the limits you set before it reaches a model.",
+      "points": ["Token rate limits with tiered enforcement and 429 responses", "Token ceilings on request size and requested output", "Request rate limits, circuit breakers and timeouts"],
+      "links": [{ "label": "Token rate limits", "product": "ai", "source": "docs/filters/token_rate_limit.md" }, { "label": "Token ceilings", "product": "ai", "source": "docs/filters/token_ceiling.md" }]
+    },
+    {
+      "id": "guardrails", "tier": "control", "title": "Guardrails", "status": "available",
+      "summary": "Screen content through the guardrail provider you choose.",
+      "points": ["External guardrail providers pass, block or redact content", "Fails closed unless you explicitly opt out", "Configured per route, with documented streaming limits"],
+      "links": [{ "label": "Guardrails", "product": "ai", "source": "docs/filters/ai_guardrails.md" }]
+    },
+    {
+      "id": "identity", "tier": "control", "title": "Identity and authorization", "status": "available",
+      "summary": "Decide who and which agent may call which model or tool.",
+      "points": ["Validated user, agent and workload identity", "Pluggable decisions with Cedar, CEL or OPA", "Per-upstream token delegation and an audit event per decision"],
+      "links": [{ "label": "Security features", "product": "praxis", "source": "docs/features.md" }, { "label": "Identity headers", "product": "ai", "source": "docs/filters/identity_header_guard.md" }]
+    },
+    {
+      "id": "routing", "tier": "traffic", "title": "Model routing", "status": "available",
+      "summary": "Send each request to the right model and backend.",
+      "points": ["Classify by API format, model, streaming and tools", "Route by model or MCP tool name", "Rewrite client-facing model names"],
+      "links": [{ "label": "Intelligent routing", "product": "ai", "source": "docs/filters/intelligent_route.md" }, { "label": "Provider routing", "product": "ai", "source": "docs/filters/provider_route.md" }]
+    },
+    {
+      "id": "providers", "tier": "traffic", "title": "Frontier and cloud providers", "status": "available",
+      "summary": "Reach hosted and self-hosted models with their native authentication.",
+      "points": ["OpenAI, Anthropic and Chat Completions-compatible backends such as vLLM", "Azure OpenAI, AWS Bedrock Converse and Vertex AI Gemini", "AWS SigV4, Entra ID and Google ADC upstream credentials"],
+      "note": "Provider adapters work within their documented limitations.",
+      "links": [{ "label": "Vertex AI Gemini", "product": "ai", "source": "docs/filters/openai_chat_completions_to_vertexai_gemini.md" }, { "label": "AWS SigV4", "product": "ai", "source": "docs/filters/aws_sigv4_sign.md" }]
+    },
+    {
+      "id": "apis", "tier": "traffic", "title": "Model APIs", "status": "available",
+      "summary": "Keep your clients' API shape; the gateway does the translating.",
+      "points": ["OpenAI Responses and Chat Completions", "Anthropic Messages, natively or translated", "Streaming translation included"],
+      "links": [{ "label": "Anthropic Messages", "product": "ai", "source": "docs/anthropic-messages.md" }, { "label": "Responses proxy", "product": "ai", "source": "docs/filters/openai_responses_proxy.md" }]
+    },
+    {
+      "id": "extend", "tier": "foundation", "title": "Extensibility", "status": "available",
+      "summary": "Add your own filters in Rust and compile them in.",
+      "points": ["Implement HttpFilter or TcpFilter in your own crate", "Conditional filters and branch chains", "Compiled for native execution"],
+      "links": [{ "label": "Write a filter", "product": "praxis", "source": "docs/filters/http-filter-tutorial.md" }, { "label": "Extensions", "product": "praxis", "source": "docs/filters/extensions.md" }]
+    },
+    {
+      "id": "foundation", "tier": "foundation", "title": "Proxy foundation", "status": "available",
+      "summary": "A Rust proxy core that streams bytes and fails closed.",
+      "points": ["Zero-copy streaming and StreamBuffer inspection", "Load balancing, health checks and atomic config reload", "Rustls TLS and unsafe_code = \"deny\""],
+      "links": [{ "label": "Core features", "product": "praxis", "source": "docs/features.md" }, { "label": "Payload processing", "product": "praxis", "source": "docs/architecture/payload-processing.md" }]
+    }
+  ]
+}

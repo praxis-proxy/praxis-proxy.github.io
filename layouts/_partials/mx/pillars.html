@@ -1,0 +1,245 @@
+{{- /* Landing: four capability pillars, each with an illustrative animated scene.
+  Without JavaScript every panel renders in sequence; mx-pillars.js turns them into tabs.
+  Claims come from the Praxis and Praxis AI feature pages on each project's default release. */ -}}
+{{- $securityHref := partial "mx/doc-href.html" (dict "product" "praxis" "source" "docs/operating/security-hardening.md") -}}
+{{- $payloadHref := partial "mx/doc-href.html" (dict "product" "praxis" "source" "docs/architecture/payload-processing.md") -}}
+{{- $aiHref := partial "mx/doc-href.html" (dict "product" "ai" "source" "docs/features.md") -}}
+{{- $check := `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>` | safeHTML -}}
+<section class="mx-pillars" aria-labelledby="mx-pillars-title" data-mx-pillars>
+  <div class="mx-pillars__aurora" aria-hidden="true"></div>
+  <div class="mx-pillars__inner">
+    <header class="mx-pillars__header">
+      <p class="mx-eyebrow">Why Praxis</p>
+      <h2 id="mx-pillars-title">A governed entry point<br><span>to your models and tools.</span></h2>
+      <p>Translate provider APIs, stream large payloads, and stop unwanted requests before they reach a model, on a Rust core you can extend.</p>
+    </header>
+
+    <div class="mx-pillars__ui">
+      <div class="mx-pillars__rail">
+        <div class="mx-pillars__tabs" role="tablist" aria-label="Capabilities" aria-orientation="vertical">
+          <button class="mx-pillars__tab" type="button" role="tab" id="mx-ptab-ai" aria-controls="mx-pillar-ai" aria-selected="true" style="--c: var(--mx-c-ai)">
+            <span class="mx-pillars__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.5l-1.8-5.9-5.7-1.8L10.2 9 12 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M18.5 16.5 19.2 18.8l2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7.7-2.3Z" fill="currentColor"/></svg></span>
+            <strong>AI gateway</strong><span>Route and translate model APIs</span>
+            <i class="mx-pillars__bar" aria-hidden="true"></i>
+          </button>
+          <button class="mx-pillars__tab" type="button" role="tab" id="mx-ptab-secure" aria-controls="mx-pillar-secure" aria-selected="false" style="--c: var(--mx-c-secure)">
+            <span class="mx-pillars__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 8 7 9.5 4.1-1.5 7-5.2 7-9.5V6l-7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><rect x="9" y="10.5" width="6" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M10.3 10.5V9.3a1.7 1.7 0 0 1 3.4 0v1.2" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <strong>Governed</strong><span>Token limits, guardrails, fail closed</span>
+            <i class="mx-pillars__bar" aria-hidden="true"></i>
+          </button>
+          <button class="mx-pillars__tab" type="button" role="tab" id="mx-ptab-payload" aria-controls="mx-pillar-payload" aria-selected="false" style="--c: var(--mx-c-payload)">
+            <span class="mx-pillars__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="4.5" rx="1.2" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="10" width="18" height="4.5" rx="1.2" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="18" height="4.5" rx="1.2" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 6.2h3M6.5 12.2h5M6.5 18.2h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+            <strong>High payload</strong><span>Inspect big bodies, no stall</span>
+            <i class="mx-pillars__bar" aria-hidden="true"></i>
+          </button>
+          <button class="mx-pillars__tab" type="button" role="tab" id="mx-ptab-speed" aria-controls="mx-pillar-speed" aria-selected="false" style="--c: var(--mx-c-speed)">
+            <span class="mx-pillars__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+            <strong>Rust core</strong><span>Streams bytes, extends in Rust</span>
+            <i class="mx-pillars__bar" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button class="mx-pillars__pause" type="button" aria-pressed="false" data-mx-pause>
+          <svg class="mx-pillars__pause-off" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="mx-pillars__pause-on" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8 5 3.2Z" fill="currentColor"/></svg>
+          <span>Pause animations</span>
+        </button>
+      </div>
+
+      <div class="mx-pillars__panels">
+        {{- /* ------------------------------------------------------------ ai */}}
+        <div class="mx-pillar" role="tabpanel" id="mx-pillar-ai" aria-labelledby="mx-ptab-ai" tabindex="0" style="--c: var(--mx-c-ai)">
+          <div class="mx-stage mx-stage--ai">
+            <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-ai-title">
+              <title id="mx-ai-title">The gateway classifies a client request, translates it when needed, and routes it in turn to vLLM, AWS Bedrock, Vertex AI and Azure OpenAI; the streamed answer flows back to the client.</title>
+              {{- $prov := slice (dict "n" "vLLM" "y" 62 "t" "Messages → Chat Completions" "d" "0s") (dict "n" "AWS Bedrock" "y" 112 "t" "Chat Completions → Converse" "d" "-9s") (dict "n" "Vertex AI" "y" 162 "t" "Chat Completions → Gemini" "d" "-6s") (dict "n" "Azure OpenAI" "y" 212 "t" "Chat Completions → Azure" "d" "-3s") }}
+              {{- range $prov }}
+              <path class="mx-sc__wire mx-ai__wire" style="animation-delay: {{ .d }}" d="M372 150 C406 150 406 {{ add .y 18 }} 440 {{ add .y 18 }}"/>
+              {{- end }}
+              {{- range $p := $prov }}
+              <g class="mx-ai__prov" style="animation-delay: {{ $p.d }}"><rect x="440" y="{{ $p.y }}" width="144" height="36" rx="10"/><circle cx="458" cy="{{ add $p.y 18 }}" r="4"/><text x="470" y="{{ add $p.y 22 }}">{{ $p.n }}</text></g>
+              <circle class="mx-ai__req" r="4" style="animation-delay: {{ $p.d }}; offset-path: path('M372 150 C406 150 406 {{ add $p.y 18 }} 440 {{ add $p.y 18 }}')"/>
+              {{- range $k := seq 0 3 }}
+              <circle class="mx-ai__tok" r="2.6" style="animation-delay: calc({{ $p.d }} - {{ printf "%.2f" (mul $k 0.16) }}s); offset-path: path('M440 {{ add $p.y 18 }} C406 {{ add $p.y 18 }} 406 150 372 150')"/>
+              {{- end }}
+              {{- end }}
+              <line class="mx-sc__wire" x1="168" y1="150" x2="202" y2="150"/>
+              <circle class="mx-ai__hop" r="4" style="offset-path: path('M168 150 L202 150')"/>
+              <rect class="mx-sc__node mx-ai__core" x="202" y="62" width="170" height="176" rx="16"/>
+              <text class="mx-sc__name" x="287" y="88" text-anchor="middle">Praxis</text>
+              <g class="mx-ai__chips" text-anchor="middle">
+                <g class="mx-ai__chip mx-ai__chip--1"><rect x="222" y="102" width="130" height="24" rx="12"/><text x="287" y="118">classify</text></g>
+                <g class="mx-ai__chip mx-ai__chip--2"><rect x="222" y="134" width="130" height="24" rx="12"/><text x="287" y="150">translate</text></g>
+                <g class="mx-ai__chip mx-ai__chip--3"><rect x="222" y="166" width="130" height="24" rx="12"/><text x="287" y="182">route</text></g>
+              </g>
+              {{- range $i, $p := $prov }}
+              <text class="mx-sc__tiny mx-ai__swap mx-ai__swap--{{ $i }}" x="287" y="218" text-anchor="middle" style="animation-delay: {{ $p.d }}">{{ $p.t }}</text>
+              {{- end }}
+              <rect class="mx-sc__node" x="16" y="62" width="152" height="176" rx="16"/>
+              <text class="mx-sc__tiny mx-ai__fmt mx-ai__fmt--a" x="92" y="84" text-anchor="middle">Anthropic Messages</text>
+              <text class="mx-sc__tiny mx-ai__fmt mx-ai__fmt--b" x="92" y="84" text-anchor="middle">Chat Completions</text>
+              <rect class="mx-ai__bubble" x="28" y="96" width="128" height="40" rx="10"/>
+              <text class="mx-ai__prompt" x="38" y="113">summarize the</text>
+              <text class="mx-ai__prompt" x="38" y="127">incident report</text>
+              <text class="mx-ai__answer mx-ai__answer--1" x="30" y="164">The outage began when</text>
+              <text class="mx-ai__answer mx-ai__answer--2" x="30" y="184">a stale route sent all</text>
+              <text class="mx-ai__answer mx-ai__answer--3" x="30" y="204">traffic to one pool ▍</text>
+              <text class="mx-sc__readout" x="300" y="262" text-anchor="middle">streamed back token by token · token usage exposed in response headers</text>
+            </svg>
+          </div>
+          <div class="mx-pillar__copy">
+            <div>
+              <h3>One gateway for your model traffic <span class="mx-badge">Alpha</span></h3>
+              <p>The gateway classifies OpenAI Responses, Chat Completions and Anthropic Messages traffic, routes by API format, model or MCP tool name, and translates between provider APIs, streaming included.</p>
+              <a class="mx-pillar__link" href="{{ $aiHref }}">Gateway capabilities <span aria-hidden="true">→</span></a>
+            </div>
+            <ul class="mx-facts">
+              <li>{{ $check }}<span>Anthropic Messages clients on Chat Completions-compatible backends such as vLLM</span></li>
+              <li>{{ $check }}<span>Chat Completions adapted to Azure OpenAI, Bedrock Converse and Vertex AI Gemini, within their documented limits</span></li>
+              <li>{{ $check }}<span>MCP and A2A classification and routing</span></li>
+              <li>{{ $check }}<span>Token usage extracted across supported provider formats</span></li>
+            </ul>
+          </div>
+        </div>
+        {{- /* ------------------------------------------------------------ secure */}}
+        <div class="mx-pillar" role="tabpanel" id="mx-pillar-secure" aria-labelledby="mx-ptab-secure" tabindex="0" style="--c: var(--mx-c-secure)">
+          <div class="mx-stage mx-stage--secure">
+            <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-se-title">
+              <title id="mx-se-title">Requests pass through token_ceiling, token_rate_limit and ai_guardrails filters. An oversized request is rejected, a client over its token budget gets 429, a request the guardrail provider blocks stops there, and the rest reach the model provider over TLS.</title>
+              <line class="mx-sc__wire" x1="92" y1="150" x2="508" y2="150"/>
+              {{- range $g := slice (dict "x" 230 "n" "token_ceiling" "d" "-1s" "k" "b1") (dict "x" 330 "n" "token_rate_limit" "d" "-3s" "k" "b2") (dict "x" 430 "n" "ai_guardrails" "d" "-5s" "k" "b3") }}
+              <g class="mx-se__gate mx-se__gate--{{ $g.k }}" style="animation-delay: {{ $g.d }}">
+                <rect x="{{ sub $g.x 6 }}" y="96" width="12" height="108" rx="6"/>
+                <text class="mx-sc__tiny" x="{{ $g.x }}" y="84" text-anchor="middle">{{ $g.n }}</text>
+              </g>
+              {{- end }}
+              {{- range $p := slice (dict "k" "pass" "d" "0s") (dict "k" "b1" "d" "-1s" "s" "rejected" "x" 230) (dict "k" "pass" "d" "-2s") (dict "k" "b2" "d" "-3s" "s" "429" "x" 330) (dict "k" "pass" "d" "-4s") (dict "k" "b3" "d" "-5s" "s" "blocked" "x" 430) }}
+              <g class="mx-se__pkt mx-se__pkt--{{ $p.k }}" style="animation-delay: {{ $p.d }}"><rect x="-11" y="-8" width="22" height="16" rx="4"/><path d="M-5 0h10"/></g>
+              {{- with $p.s }}
+              <text class="mx-se__code mx-se__code--{{ $p.k }}" x="{{ sub $p.x 12 }}" y="226" text-anchor="middle" style="animation-delay: {{ $p.d }}">{{ . }}</text>
+              {{- end }}
+              {{- end }}
+              <rect class="mx-sc__node" x="20" y="110" width="72" height="80" rx="14"/>
+              <text class="mx-sc__name" x="56" y="155" text-anchor="middle">agents</text>
+              <rect class="mx-sc__node mx-se__up" x="508" y="110" width="72" height="80" rx="14"/>
+              <g class="mx-se__lock"><rect x="535" y="134" width="18" height="14" rx="3"/><path d="M539 134v-4a5 5 0 0 1 10 0v4"/></g>
+              <text class="mx-sc__name" x="544" y="172" text-anchor="middle">provider</text>
+              <text class="mx-sc__tiny" x="544" y="206" text-anchor="middle">TLS verified</text>
+              <text class="mx-sc__readout" x="300" y="258" text-anchor="middle">controls run before the model provider sees the request</text>
+            </svg>
+          </div>
+          <div class="mx-pillar__copy">
+            <div>
+              <h3>Governed before it reaches a model</h3>
+              <p>Token ceilings, token rate limits and external guardrail providers sit in the request path. Underneath, the foundation treats security as a primary design constraint: secure defaults, upstream TLS verification, and it fails closed on ambiguous configuration.</p>
+              <a class="mx-pillar__link" href="{{ $securityHref }}">Security hardening guide <span aria-hidden="true">→</span></a>
+            </div>
+            <ul class="mx-facts">
+              <li>{{ $check }}<span><code>unsafe_code = "deny"</code> across the workspace</span></li>
+              <li>{{ $check }}<span>Rustls: no OpenSSL, no C FFI in the TLS path</span></li>
+              <li>{{ $check }}<span>Root execution rejected; admin endpoints stay on loopback</span></li>
+              <li>{{ $check }}<span>Token ceilings, token rate limits and guardrail providers</span></li>
+            </ul>
+          </div>
+        </div>
+
+        {{- /* ------------------------------------------------------------ payload */}}
+        <div class="mx-pillar" role="tabpanel" id="mx-pillar-payload" aria-labelledby="mx-ptab-payload" tabindex="0" style="--c: var(--mx-c-payload)">
+          <div class="mx-stage mx-stage--payload">
+            <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-pl-title">
+              <title id="mx-pl-title">StreamBuffer: a filter inspects each chunk of a large body as it arrives while Praxis holds the chunks back from the upstream, then releases the whole buffer once the filter approves.</title>
+              <defs>
+                <clipPath id="mx-pl-raw"><rect x="92" y="0" width="108" height="280"/></clipPath>
+                <clipPath id="mx-pl-ok"><rect x="200" y="0" width="308" height="280"/></clipPath>
+              </defs>
+              <g class="mx-pl__steps" text-anchor="middle">
+                <g class="mx-pl__step mx-pl__step--1"><rect x="96" y="22" width="128" height="26" rx="13"/><text x="160" y="39">1 · inspect</text></g>
+                <g class="mx-pl__step mx-pl__step--2"><rect x="236" y="22" width="128" height="26" rx="13"/><text x="300" y="39">2 · hold upstream</text></g>
+                <g class="mx-pl__step mx-pl__step--3"><rect x="376" y="22" width="128" height="26" rx="13"/><text x="440" y="39">3 · release</text></g>
+              </g>
+              <rect class="mx-pl__tray" x="210" y="108" width="282" height="84" rx="12"/>
+              <text class="mx-sc__tiny" x="351" y="212" text-anchor="middle">StreamBuffer</text>
+              <g clip-path="url(#mx-pl-raw)"><g class="mx-pl__train mx-pl__train--raw">
+                {{- range $i := seq 0 7 }}<rect x="{{ mul $i -32 }}" y="124" width="26" height="52" rx="4"/>{{ end -}}
+              </g></g>
+              <g clip-path="url(#mx-pl-ok)"><g class="mx-pl__train mx-pl__train--ok">
+                {{- range $i := seq 0 7 }}<rect x="{{ mul $i -32 }}" y="124" width="26" height="52" rx="4"/><path d="M{{ add (mul $i -32) 7 }} 151l4 4 8-9"/>{{ end -}}
+              </g></g>
+              <line class="mx-pl__beam" x1="200" y1="100" x2="200" y2="200"/>
+              <text class="mx-sc__tiny mx-pl__beam-label" x="200" y="92" text-anchor="middle">filter reads</text>
+              <rect class="mx-sc__node" x="20" y="110" width="72" height="80" rx="14"/>
+              <text class="mx-sc__name" x="56" y="155" text-anchor="middle">client</text>
+              <rect class="mx-sc__node mx-pl__up" x="508" y="110" width="72" height="80" rx="14"/>
+              <text class="mx-sc__name" x="544" y="155" text-anchor="middle">upstream</text>
+              <text class="mx-sc__readout" x="300" y="252" text-anchor="middle">optional max_bytes answers 413 when a body is too large</text>
+            </svg>
+          </div>
+          <div class="mx-pillar__copy">
+            <div>
+              <h3>Big bodies, inspected without stalling</h3>
+              <p>Each filter declares how it reads a body. <strong>Stream</strong> passes chunks straight through. <strong>StreamBuffer</strong> hands chunks to a filter as they arrive while holding them back from the upstream, then releases the buffer once the content checks out.</p>
+              <a class="mx-pillar__link" href="{{ $payloadHref }}">Payload processing <span aria-hidden="true">→</span></a>
+            </div>
+            <ul class="mx-facts">
+              <li>{{ $check }}<span>Peek-then-stream for body routing, JSON-RPC parsing and payload scanning</span></li>
+              <li>{{ $check }}<span>AI request classification builds on the same StreamBuffer model</span></li>
+              <li>{{ $check }}<span>Global hard ceilings on request and response size</span></li>
+              <li>{{ $check }}<span>gzip, brotli and zstd response compression</span></li>
+            </ul>
+          </div>
+        </div>
+
+        {{- /* ------------------------------------------------------------ speed */}}
+        <div class="mx-pillar" role="tabpanel" id="mx-pillar-speed" aria-labelledby="mx-ptab-speed" tabindex="0" style="--c: var(--mx-c-speed)">
+          <div class="mx-stage mx-stage--speed">
+            <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-sp-title">
+              <title id="mx-sp-title">Request body chunks stream from the client through the Praxis filter chain to the upstream without waiting for the whole body.</title>
+              <defs>
+                <linearGradient id="mx-sp-tail" x1="0" x2="1"><stop offset="0" stop-color="#38bdf8" stop-opacity="0"/><stop offset="1" stop-color="#7dd3fc" stop-opacity=".85"/></linearGradient>
+                <clipPath id="mx-sp-clip"><rect x="92" y="0" width="416" height="280"/></clipPath>
+              </defs>
+              <g class="mx-sp__streaks">
+                <rect x="0" y="62" width="90" height="1.5" rx=".75" fill="url(#mx-sp-tail)" style="--d:-.2s; --t:1.9s"/>
+                <rect x="0" y="88" width="60" height="1.5" rx=".75" fill="url(#mx-sp-tail)" style="--d:-1.1s; --t:1.4s"/>
+                <rect x="0" y="212" width="120" height="1.5" rx=".75" fill="url(#mx-sp-tail)" style="--d:-.7s; --t:1.7s"/>
+                <rect x="0" y="236" width="70" height="1.5" rx=".75" fill="url(#mx-sp-tail)" style="--d:-1.5s; --t:2.2s"/>
+                <rect x="0" y="40" width="50" height="1.5" rx=".75" fill="url(#mx-sp-tail)" style="--d:-.4s; --t:2.6s"/>
+              </g>
+              <text class="mx-sc__label" x="300" y="100" text-anchor="middle">foundation · stream mode</text>
+              <rect class="mx-sc__tube" x="112" y="114" width="376" height="72" rx="36"/>
+              <g class="mx-sp__gates">
+                <line x1="196" y1="122" x2="196" y2="178" style="--d:-.6s"/><line x1="266" y1="122" x2="266" y2="178" style="--d:-.45s"/>
+                <line x1="336" y1="122" x2="336" y2="178" style="--d:-.3s"/><line x1="406" y1="122" x2="406" y2="178" style="--d:-.15s"/>
+              </g>
+              <g class="mx-sc__tiny" text-anchor="middle"><text x="196" y="204">ai_operation</text><text x="266" y="204">router</text><text x="336" y="204">your_filter</text><text x="406" y="204">balancer</text></g>
+              <g clip-path="url(#mx-sp-clip)">
+                {{- range $i := seq 0 11 }}
+                <g class="mx-sp__chunk" style="--y: {{ index (slice 138 150 162) (mod $i 3) }}px; animation-delay: -{{ printf "%.2f" (mul $i 0.15) }}s"><rect class="mx-sp__tail" x="-70" y="-3" width="70" height="6" rx="3" fill="url(#mx-sp-tail)"/><rect x="0" y="-5" width="16" height="10" rx="3"/></g>
+                {{- end }}
+              </g>
+              <rect class="mx-sc__node" x="20" y="110" width="72" height="80" rx="14"/>
+              <text class="mx-sc__name" x="56" y="155" text-anchor="middle">client</text>
+              <rect class="mx-sc__node mx-sc__node--live" x="508" y="110" width="72" height="80" rx="14"/>
+              <text class="mx-sc__name" x="544" y="155" text-anchor="middle">upstream</text>
+              <text class="mx-sc__readout" x="300" y="252" text-anchor="middle">each chunk moves on as it arrives · no whole-body wait</text>
+            </svg>
+          </div>
+          <div class="mx-pillar__copy">
+            <div>
+              <h3>A Rust core you can build on</h3>
+              <p>The gateway runs on a proxy foundation written in Rust. Bodies stream by default: each chunk goes to the next hop as soon as it arrives. Implement the <code>HttpFilter</code> trait in your own crate and compile it in next to the built-in filters.</p>
+              <a class="mx-pillar__link" href="{{ "guides/extend/" | relURL }}">Extend the gateway in Rust <span aria-hidden="true">→</span></a>
+            </div>
+            <ul class="mx-facts">
+              <li>{{ $check }}<span>Zero-copy streaming by default</span></li>
+              <li>{{ $check }}<span>Round-robin, least-connections, consistent-hash, P2C, weighted</span></li>
+              <li>{{ $check }}<span>Active and passive health checks, circuit breaker</span></li>
+              <li>{{ $check }}<span>Custom filters compiled into your own build</span></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <p class="mx-pillars__note">Animations are illustrative; they show behavior, not measured performance.</p>
+  </div>
+</section>

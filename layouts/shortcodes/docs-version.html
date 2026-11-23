@@ -1,1 +1,1 @@
-{{ partial "docs-controls.html" .Page }}
+{{ if not (partial "mx/sidebar-tree-id.html" .Page) }}{{ partial "docs-controls.html" .Page }}{{ end }}

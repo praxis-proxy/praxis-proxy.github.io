@@ -9,7 +9,11 @@ body_class = "guides-page"
 
 Start with a task you want to accomplish. These guides explain the settings, show a complete example, and describe the result to expect.
 
-## Run Praxis
+## Run the AI gateway
+
+[Send your first request through the gateway]({{< relref "ai/container-quickstart.md" >}}), then [connect an application]({{< relref "gateway/connect.md" >}}), [configure behavior]({{< relref "gateway/configure.md" >}}), and [plan deployment operations]({{< relref "gateway/operate.md" >}}).
+
+## Run the standalone proxy
 
 - [Install and run Praxis]({{< relref "install.md" >}}): start with the release image; build from source for development or gated features.
 - [Run your first reverse proxy]({{< relref "first-proxy.md" >}}): forward a request to a local backend.

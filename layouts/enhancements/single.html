@@ -2,51 +2,97 @@
 {{- $build := hugo.Data.enhancements_build -}}
 {{- $status := .Params.enhancement_status -}}
 {{- $meta := index $build.status_meta $status -}}
-<article class="praxis-enhancements-page praxis-enhancement">
-  <p class="praxis-enhancements-back"><a href="{{ "enhancements/" | relURL }}">← All enhancement proposals</a></p>
-  <header class="praxis-enhancements-header">
-    <p class="praxis-enhancements-number">Proposal #{{ .Params.enhancement_number }}</p>
+{{- $sourceURL := printf "%s/blob/%s/%s" .Params.source_repo .Params.source_commit .Params.source_path -}}
+<article class="mx-prop-page mx-st--{{ $status }}">
+  <header class="mx-prop-page__head">
+    <nav class="mx-prop-page__crumbs" aria-label="Breadcrumb">
+      <a href="{{ "enhancements/" | relURL }}">Proposals</a><span aria-hidden="true">/</span>
+      {{- if $meta.count }}<a href="{{ printf "enhancements/#status-%s" $status | relURL }}">{{ $meta.label | default $status }}</a>{{ else }}<span>{{ $meta.label | default $status }}</span>{{ end -}}
+      <span aria-hidden="true">/</span><span aria-current="page">#{{ .Params.enhancement_number }}</span>
+    </nav>
+    <p class="mx-prop-page__badges">
+      <span class="mx-status mx-st--{{ $status }}">{{ $meta.label | default $status }}</span>
+      <span class="mx-prop__num">Proposal #{{ .Params.enhancement_number }}</span>
+      {{- range .Params.enhancement_repos }}<span class="mx-repo"><i class="mx-repo-dot mx-repo-dot--{{ . }}" aria-hidden="true"></i>{{ . }}</span>{{ end }}
+    </p>
     <h1>{{ .Title }}</h1>
-    <p class="praxis-enhancements-status">
-      <span class="praxis-enhancements-badge">{{ $meta.label | default $status }}</span>
-      {{ with $meta.gloss }}<span class="praxis-enhancements-gloss">{{ . }}</span>{{ end }}
-    </p>
-    {{ partial "enhancements/lifecycle.html" (dict "build" $build "current" $status "link" true) }}
-    {{- with .Params.enhancement_graduation_criteria }}
-    <section class="praxis-enhancements-criteria-panel" aria-labelledby="enhancement-graduation-criteria">
-      <h2 id="enhancement-graduation-criteria">{{ partial "enhancements/criteria-heading.html" $meta }}</h2>
-      <p>Conditions that must hold before a maintainer advances this proposal{{ with $meta.next_label }} to {{ . }}{{ end }}.</p>
-      <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
-    </section>
-    {{- end }}
-    <dl class="praxis-enhancements-meta">
-      {{- with .Params.enhancement_repos }}<div><dt>Projects</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
-      {{- with .Params.enhancement_authors }}<div><dt>Authors</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
-      {{- with .Params.enhancement_stakeholders }}<div><dt>Stakeholders</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
-      {{- range slice (slice "enhancement_issue" "Issue") (slice "enhancement_discussion" "Discussion") (slice "enhancement_epic" "Epic") (slice "enhancement_experimental_impl" "Experimental implementation") }}
-      {{- $key := index . 0 }}{{ $label := index . 1 }}
-      {{- with index $.Params $key }}
-      <div><dt>{{ $label }}</dt><dd>{{ range $i, $url := . }}{{ if $i }}, {{ end }}<a href="{{ $url }}">{{ $url | replaceRE "^https://github.com/" "" }}</a>{{ end }}</dd></div>
-      {{- else }}
-      {{- if and (eq $key "enhancement_epic") $.Params.enhancement_epic_label }}<div><dt>Epic</dt><dd>{{ $.Params.enhancement_epic_label }}</dd></div>{{ end }}
-      {{- end }}
-      {{- end }}
-      {{- range slice (slice "enhancement_supersedes" "Supersedes") (slice "enhancement_superseded_by" "Superseded by") (slice "enhancement_related" "Related") }}
-      {{- $key := index . 0 }}{{ $label := index . 1 }}
-      {{- with index $.Params $key }}
-      <div><dt>{{ $label }}</dt><dd>
-        {{- range $i, $ref := . }}{{ if $i }}, {{ end }}{{ with $ref.url }}<a href="{{ strings.TrimPrefix "/" . | relURL }}">#{{ $ref.number }} {{ $ref.title }}</a>{{ else }}#{{ $ref.number }}{{ end }}{{ end -}}
-      </dd></div>
-      {{- end }}
-      {{- end }}
-    </dl>
+    {{ with .Description }}<p class="mx-prop-page__lede">{{ . }}</p>{{ end }}
+    <div class="mx-prop-page__actions">
+      {{ with .Params.edit_url }}<a class="mx-btn mx-btn--primary mx-btn--sm" href="{{ . }}">Suggest a change</a>{{ end }}
+      {{ with .Params.enhancement_discussion }}<a class="mx-btn mx-btn--ghost mx-btn--sm" href="{{ index . 0 }}">Join the discussion <span aria-hidden="true">↗</span></a>{{ end }}
+      <a class="mx-btn mx-btn--ghost mx-btn--sm" href="{{ $sourceURL }}">View source <span aria-hidden="true">↗</span></a>
+    </div>
   </header>
-  <div class="td-content">{{ .Content }}</div>
-  <footer class="praxis-enhancements-footer">
-    <p>
-      Imported from <a href="{{ .Params.source_repo }}/blob/{{ .Params.source_commit }}/{{ .Params.source_path }}"><code>{{ .Params.source_path }}</code> at <code>{{ substr .Params.source_commit 0 12 }}</code></a>.
-      {{ with .Params.edit_url }}<a href="{{ . }}">Suggest a change</a> in the enhancements repository.{{ end }}
-    </p>
-  </footer>
+
+  <div class="mx-prop-page__layout">
+    <div class="mx-prop-page__body praxis-docs-layout">
+      <div class="td-content mx-article">{{ .Content }}</div>
+      <footer class="mx-prop-page__footer">
+        <p>Imported from <a href="{{ $sourceURL }}"><code>{{ .Params.source_path }}</code> at <code>{{ substr .Params.source_commit 0 12 }}</code></a>. Status reflects that snapshot; it is not a release commitment.{{ with .Params.edit_url }} <a href="{{ . }}">Suggest a change</a> in the enhancements repository.{{ end }}</p>
+      </footer>
+    </div>
+
+    <aside class="mx-prop-page__aside" aria-label="Proposal details">
+      <section class="mx-panel">
+        <h2 class="mx-panel__title">Status</h2>
+        <p class="mx-panel__status"><span class="mx-status mx-st--{{ $status }}">{{ $meta.label | default $status }}</span></p>
+        {{ with $meta.gloss }}<p class="mx-panel__note">{{ . }}.</p>{{ end }}
+        <ol class="mx-stepper" aria-label="Proposal lifecycle">
+          {{- $reached := true -}}
+          {{- $inLifecycle := in $build.lifecycle $status -}}
+          {{- range $build.lifecycle }}
+          {{- $m := index $build.status_meta . -}}
+          {{- $isCurrent := eq . $status -}}
+          <li class="mx-stepper__step{{ if $isCurrent }} is-current{{ else if and $inLifecycle $reached }} is-done{{ end }}"{{ if $isCurrent }} aria-current="step"{{ end }}>
+            <span class="mx-stepper__dot" aria-hidden="true"></span>
+            <span>{{ $m.label }}{{ if and $inLifecycle $reached (not $isCurrent) }}<span class="visually-hidden"> (passed)</span>{{ end }}</span>
+          </li>
+          {{- if $isCurrent }}{{ $reached = false }}{{ end -}}
+          {{- end }}
+        </ol>
+        {{- if not $inLifecycle }}<p class="mx-panel__note">{{ $meta.label | default $status }} is outside the main lifecycle.</p>{{ end }}
+      </section>
+
+      {{- with .Params.enhancement_graduation_criteria }}
+      <section class="mx-panel" aria-labelledby="enhancement-graduation-criteria">
+        <h2 class="mx-panel__title" id="enhancement-graduation-criteria">{{ partial "enhancements/criteria-heading.html" $meta }}</h2>
+        <p class="mx-panel__note">Conditions that must hold before a maintainer advances this proposal{{ with $meta.next_label }} to {{ . }}{{ end }}.</p>
+        <ul class="mx-criteria">{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+      </section>
+      {{- end }}
+
+      <section class="mx-panel">
+        <h2 class="mx-panel__title">Details</h2>
+        <dl class="mx-meta">
+          {{- with .Params.enhancement_authors }}<div><dt>Authors</dt><dd>{{ range . }}<a class="mx-handle" href="https://github.com/{{ . }}">@{{ . }}</a>{{ end }}</dd></div>{{ end }}
+          {{- with .Params.enhancement_stakeholders }}<div><dt>Stakeholders</dt><dd>{{ range . }}<a class="mx-handle" href="https://github.com/{{ . }}">@{{ . }}</a>{{ end }}</dd></div>{{ end }}
+          {{- range slice (slice "enhancement_issue" "Issue") (slice "enhancement_discussion" "Discussion") (slice "enhancement_epic" "Epic") (slice "enhancement_experimental_impl" "Experimental implementation") }}
+          {{- $key := index . 0 }}{{ $label := index . 1 }}
+          {{- with index $.Params $key }}
+          <div><dt>{{ $label }}</dt><dd>{{ range $i, $url := . }}<a href="{{ $url }}">{{ $url | replaceRE "^https://github.com/" "" }}</a>{{ end }}</dd></div>
+          {{- else }}
+          {{- if and (eq $key "enhancement_epic") $.Params.enhancement_epic_label }}<div><dt>Epic</dt><dd>{{ $.Params.enhancement_epic_label }}</dd></div>{{ end }}
+          {{- end }}
+          {{- end }}
+          {{- range slice (slice "enhancement_supersedes" "Supersedes") (slice "enhancement_superseded_by" "Superseded by") (slice "enhancement_related" "Related") }}
+          {{- $key := index . 0 }}{{ $label := index . 1 }}
+          {{- with index $.Params $key }}
+          <div><dt>{{ $label }}</dt><dd>
+            {{- range $ref := . }}{{ with $ref.url }}<a href="{{ strings.TrimPrefix "/" . | relURL }}">#{{ $ref.number }} {{ $ref.title }}</a>{{ else }}<span>#{{ $ref.number }}</span>{{ end }}{{ end -}}
+          </dd></div>
+          {{- end }}
+          {{- end }}
+        </dl>
+      </section>
+
+      {{- $toc := .TableOfContents -}}
+      {{- if and $toc (ne $toc `<nav id="TableOfContents"></nav>`) }}
+      <section class="mx-panel mx-panel--toc">
+        <h2 class="mx-panel__title">On this page</h2>
+        {{ $toc }}
+      </section>
+      {{- end }}
+    </aside>
+  </div>
 </article>
 {{ end }}

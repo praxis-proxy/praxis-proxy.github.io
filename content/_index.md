@@ -1,14 +1,9 @@
 +++
-title = "Praxis ecosystem"
-description = "Explore Praxis proxy, Praxis AI, Praxis Policy Engine, and Praxis Grid for multi-site inference routing."
+title = "Praxis: an AI gateway, composable by design"
+description = "Connect applications and agents to models and tools through a configurable AI gateway built on a composable Rust framework."
 +++
 
-{{< project-story >}}
-{{< praxis-spotlight >}}
-
+{{< gateway-journeys >}}
 {{< gateway-spotlight >}}
-
-{{< policy-spotlight >}}
-{{< /project-story >}}
-
+{{< praxis-spotlight >}}
 {{< community-cta >}}

@@ -1658,6 +1658,24 @@
           "default_only": true
         },
         {
+          "title": "Connect your application",
+          "summary": "Choose an API path and check provider compatibility.",
+          "page": "/gateway/connect",
+          "default_only": true
+        },
+        {
+          "title": "Configure gateway behavior",
+          "summary": "Select routing, state, tools and controls.",
+          "page": "/gateway/configure",
+          "default_only": true
+        },
+        {
+          "title": "Operate your deployment",
+          "summary": "Plan credentials, storage and resource limits.",
+          "page": "/gateway/operate",
+          "default_only": true
+        },
+        {
           "title": "Build and send your first request",
           "summary": "Follow this snapshot\u2019s source-build quickstart.",
           "source": "docs/quickstart.md",

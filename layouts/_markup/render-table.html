@@ -1,4 +1,4 @@
-<table tabindex="0" aria-label="{{ .Page.Title }}, table {{ add .Ordinal 1 }}"
+<div class="mx-table"><table tabindex="0" aria-label="{{ .Page.Title }}, table {{ add .Ordinal 1 }}"
   {{- range $key, $value := .Attributes }}
     {{- if and $value (not (in (slice "tabindex" "aria-label") $key)) }}
       {{- printf " %s=%q" $key $value | safeHTMLAttr }}
@@ -18,4 +18,4 @@
     {{- end }}
   {{ printf "</%s>" .tag | safeHTML }}
   {{- end }}
-</table>
+</table></div>

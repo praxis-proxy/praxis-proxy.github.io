@@ -1,29 +1,41 @@
 {{- $page := . -}}
 {{- $darkMode := partialCached "dark-mode-config.html" "dark-mode-global" -}}
+{{- $products := hugo.Data.docs_build_versions.products -}}
 {{- $communityURL := "community/" | relURL -}}
 {{- $blogURL := "blog/" | relURL -}}
 {{- $docsURL := "docs/" | relURL -}}
+{{- $examplesURL := "examples/" | relURL -}}
 {{- $enhancementsURL := "enhancements/" | relURL -}}
-{{- $docsActive := or .Params.product (in (slice "docs" "guides" "examples" "search" "start") .Section) -}}
+{{- $docsActive := or .Params.product (in (slice "docs" "guides" "gateway" "examples" "search" "start") .Section) -}}
 {{- $communityActive := strings.HasPrefix $page.RelPermalink $communityURL -}}
 {{- $blogActive := strings.HasPrefix $page.RelPermalink $blogURL -}}
 {{- $enhancementsActive := strings.HasPrefix $page.RelPermalink $enhancementsURL -}}
+{{- $currentProduct := .Params.product | default "" -}}
+{{- if and (not $currentProduct) (eq .Section "guides") }}{{ $currentProduct = "praxis" }}{{ end -}}
+{{- if and (not $currentProduct) (in (slice "gateway" "docs" "start" "examples" "search") .Section) }}{{ $currentProduct = "ai" }}{{ end -}}
+{{- $examplesActive := or (eq .Params.topic "Examples") (eq .Section "examples") -}}
+{{- $showTabs := $docsActive -}}
 <a class="visually-hidden-focusable praxis-skip-link" href="#main-content">Skip to content</a>
 {{- if partial "chrome-render.html" (dict "page" . "region" "navbar") -}}
-<nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll" aria-label="Main navigation">
-  <div class="td-navbar-container container-fluid">
+<nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll mx-navbar{{ if $showTabs }} mx-navbar--tabs{{ end }}" aria-label="Main navigation">
+  <div class="td-navbar-container container-fluid mx-navbar__row">
     <a class="navbar-brand" aria-label="Praxis home" href="{{ .Site.Home.RelPermalink }}">
       <img class="navbar-brand__logo navbar-brand__logo--light" src="{{ "images/branding/horizontal/black/praxis-horizontal-black.svg" | relURL }}" alt="{{ .Site.Title }}" width="128" height="50">
       <img class="navbar-brand__logo navbar-brand__logo--dark" src="{{ "images/branding/horizontal/white/praxis-horizontal-white.svg" | relURL }}" alt="" width="128" height="50" aria-hidden="true">
     </a>
+    <button class="mx-search" type="button" aria-label="Search documentation" aria-haspopup="dialog" aria-controls="praxis-search-dialog" data-search-dialog-trigger>
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.6" stroke="currentColor" stroke-width="1.8"/><path d="m12.7 12.7 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="mx-search__label">Search docs…</span>
+      <kbd class="mx-search__kbd" aria-hidden="true">⌘K</kbd>
+    </button>
     <div class="praxis-navbar-tools">
-      <button class="nav-link praxis-search-trigger" type="button" aria-label="Search documentation" aria-haspopup="dialog" aria-controls="praxis-search-dialog" data-search-dialog-trigger>
-        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.6" stroke="currentColor" stroke-width="1.8"/><path d="m12.7 12.7 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Search</span>
-      </button>
+      <a class="mx-icon-link" href="https://github.com/praxis-proxy" aria-label="Praxis on GitHub">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.42c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+      </a>
       {{- if $darkMode.showMenu -}}
       {{ partial "praxis-theme-toggle.html" . }}
       {{- end -}}
+      <a class="mx-cta" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Get started</a>
       <button class="navbar-toggler praxis-navbar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#praxis-navbar-menu" aria-controls="praxis-navbar-menu" aria-expanded="false" aria-label="Toggle main menu">
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -37,6 +49,18 @@
       </ul>
     </div>
   </div>
+  {{- if $showTabs }}
+  <div class="mx-tabs">
+    <ul class="mx-tabs__list" aria-label="Projects">
+      {{- $tabTree := index hugo.Data.docs_sidebar.product_tree $currentProduct | default "gateway" -}}
+      {{- range $tab := slice (dict "id" "gateway" "dot" "ai" "label" "Gateway" "href" ("gateway/" | relURL)) (dict "id" "policy" "dot" "policy" "label" "Policy" "href" (printf "policy/%s/" (index $products "policy").default | relURL)) (dict "id" "grid" "dot" "grid" "label" "Grid" "href" (printf "grid/%s/" (index $products "grid").default | relURL)) -}}
+        {{- $active := eq $tab.id $tabTree -}}
+        <li><a class="mx-tab{{ if $active }} is-active{{ end }}" href="{{ $tab.href }}"{{ if $active }} aria-current="location"{{ end }}>
+          <span class="mx-tab__dot mx-tab__dot--{{ $tab.dot }}" aria-hidden="true"></span>{{ $tab.label }}</a></li>
+      {{- end }}
+    </ul>
+  </div>
+  {{- end }}
 </nav>
 {{- else -}}
   {{- $cover := and (.HasShortcode "blocks/cover") (not .Site.Params.ui.navbar_translucent_over_cover_disable) -}}

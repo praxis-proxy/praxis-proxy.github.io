@@ -1,5 +1,5 @@
 +++
-title = "Run Praxis AI in Docker"
+title = "Run the AI gateway"
 description = "Run Praxis AI in Docker and route an OpenAI request through it."
 type = "guides"
 body_class = "guides-page"
@@ -79,3 +79,9 @@ curl -i http://127.0.0.1:8080/v1/responses \
 The request uses OpenAI's `gpt-4o` model and needs valid provider credentials, access to that model, and network access from the container. A successful request returns HTTP `200` and a Responses JSON object containing generated output. If the provider returns an error, check its response body, the key, model access, and the proxy logs.
 
 Stop the container with Ctrl+C. Remove the example key from the client shell with `unset OPENAI_API_KEY`, and remove `praxis-ai.yaml` when you no longer need it.
+
+## What you have running
+
+This pipeline classifies and forwards requests to OpenAI. The provider handles the Responses API in this example. It does not enable gateway-managed conversation storage, tool execution, guardrails or client authorization.
+
+Next, [connect your application]({{< relref "gateway/connect.md" >}}), [choose gateway capabilities]({{< relref "gateway/configure.md" >}}), or [plan deployment operations]({{< relref "gateway/operate.md" >}}).

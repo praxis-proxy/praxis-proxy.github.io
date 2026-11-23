@@ -66,7 +66,7 @@ const attempt = async (label, work) => {
           const current = [...(nav?.querySelectorAll('a[aria-current="page"]') || [])].map(a => new URL(a.href).pathname);
           const currentLink = nav?.querySelector('a[aria-current="page"]');
           const currentBox = currentLink?.getBoundingClientRect(), navBox = nav?.getBoundingClientRect();
-          const version = document.querySelector('.docs-version-control select');
+          const version = document.querySelector('.docs-version-control select, #td-sidebar-menu .mx-version select');
           const crumbs = document.querySelector('nav[aria-label="breadcrumb"]');
           const badDetails = [...(nav?.querySelectorAll('details') || [])].filter(d => {
             const children = [...d.children];
@@ -119,15 +119,18 @@ const attempt = async (label, work) => {
         if (product) {
           const [id, version] = product;
           if (width === 390) await page.locator('#td-section-nav a[aria-current="page"]').waitFor({ state: 'visible' });
-          assert.equal(state.sidebarLabel, 'Examples navigation', `${name} sidebar context`);
+          // Default releases share the curated documentation tree; other releases keep their own example navigation.
+          const curated = version === defaults[id].default;
+          assert.equal(state.sidebarLabel, curated ? 'Documentation navigation' : 'Examples navigation', `${name} sidebar context`);
           assert.equal(state.sidebarCurrent.length, 1, `${name} needs exactly one current sidebar link`);
           assert.equal(state.sidebarCurrent[0], state.canonical, `${name} sidebar current link/canonical`);
           assert(state.currentInSidebarViewport, `${name} current link must fit in the sidebar viewport without scrolling`);
-          assert(state.sidebarLinks.every(href => href.startsWith(`/${id}/${version}/`)), `${name} sidebar leaves selected version`);
+          if (!curated) assert(state.sidebarLinks.every(href => href.startsWith(`/${id}/${version}/`)), `${name} sidebar leaves selected version`);
+          else assert(state.sidebarLinks.filter(href => new RegExp(`^/${id}/(v[0-9.]+|dev)/`).test(href)).every(href => href.startsWith(`/${id}/${version}/`)), `${name} sidebar leaves selected version`);
           assert.equal(state.selectedVersionPath, url, `${name} selected version route`);
           assert(state.selectedVersion.toLowerCase().includes(version === 'dev' ? 'development' : version), `${name} version label`);
           assert.equal(state.crumbCurrent, state.h1, `${name} final breadcrumb/H1`);
-          assert.deepEqual(state.projectCurrent, [{ path: state.path, current: `docs-project-${id}` }], `${name} project docs context`);
+          assert.deepEqual(state.projectCurrent, curated ? [] : [{ path: state.path, current: `docs-project-${id}` }], `${name} project docs context`);
           assert(state.crumbPaths.every(href => href === `/${id}/` || !href.startsWith(`/${id}/`) || href.startsWith(`/${id}/${version}/`)), `${name} breadcrumb leaves selected version`);
           const current = page.locator('#td-section-nav a[aria-current="page"]');
           await current.waitFor({ state: 'visible' });
@@ -197,12 +200,13 @@ const attempt = async (label, work) => {
         const hotReload = route('praxis', 'v0.7.2', 'examples/configs/operations/hot-reload.yaml');
         await page.locator(`a[href="${hotReload}"]`).first().click();
         await page.waitForURL(url => new URL(url).pathname === hotReload);
-        const versionSelect = page.locator('.docs-version-control select');
-        await versionSelect.selectOption({ label: 'v0.7.1' });
+        const versionSelect = page.locator('.docs-version-control select, #td-sidebar-menu .mx-version select');
+        const pick = async (select, version) => select.selectOption(await select.locator('option').evaluateAll((options, v) => options.find(o => o.textContent.trim().split(' ').includes(v)).value, version));
+        await pick(versionSelect, 'v0.7.1');
         const archiveHotReload = route('praxis', 'v0.7.1', 'examples/configs/operations/hot-reload.yaml');
         await page.waitForURL(url => new URL(url).pathname === archiveHotReload);
         assert.equal(await versionSelect.evaluate(e => new URL(e.value, location.href).pathname), archiveHotReload, 'Version switch must preserve the example');
-        await versionSelect.selectOption({ label: 'v0.7.2' });
+        await pick(versionSelect, 'v0.7.2');
         await page.waitForURL(url => new URL(url).pathname === hotReload);
         const siblingHrefs = await page.locator('#td-section-nav a[href^="/praxis/v0.7.2/examples/configs/operations/"]').evaluateAll((links, current) => links.map(a => a.getAttribute('href')).filter(href => href !== current), hotReload);
         assert(siblingHrefs.length > 0, 'Hot Reload should expose a version-matched sibling in the sidebar');

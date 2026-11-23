@@ -14,7 +14,7 @@ const report = { pages: [], axe: [], journeys: [] };
   fs.mkdirSync(output, { recursive: true });
   const browser = await chromium.launch({ executablePath: process.env.QA_BROWSER_PATH || '/usr/bin/google-chrome' });
   try {
-    const routes = ['docs/', `ai/${catalog.ai.default}/`, 'ai/dev/', 'ai/dev/quickstart/', 'ai/dev/client-provider-paths/', `praxis/${catalog.praxis.default}/`, 'praxis/dev/', 'praxis/dev/quickstart/', 'guides/first-proxy/', 'guides/use-filters/', `policy/${catalog.policy.default}/`, 'ai/v0.7.0/'];
+    const routes = ['', 'gateway/connect/', 'gateway/configure/', 'gateway/operate/', 'docs/', `ai/${catalog.ai.default}/`, 'ai/dev/', 'ai/dev/quickstart/', 'ai/dev/client-provider-paths/', `praxis/${catalog.praxis.default}/`, 'praxis/dev/', 'praxis/dev/quickstart/', 'guides/first-proxy/', 'guides/use-filters/', `policy/${catalog.policy.default}/`, 'ai/v0.7.0/'];
     for (const theme of ['light', 'dark']) {
       const context = await browser.newContext({ reducedMotion: 'reduce' });
       await context.addInitScript(value => localStorage.setItem('td-color-theme', value), theme);
@@ -32,27 +32,29 @@ const report = { pages: [], axe: [], journeys: [] };
             titleTop: document.querySelector('h1').getBoundingClientRect().top,
             project: document.querySelector('.docs-project-control select')?.id,
             projectTarget: document.querySelector('.docs-project-control select')?.value,
+            activeTab: document.querySelector('.mx-tab.is-active')?.textContent.trim(),
             globalLinks: [...document.querySelectorAll('#praxis-navbar-menu a')].map(a => a.textContent.trim()),
             navbarBottom: document.querySelector('.td-navbar').getBoundingClientRect().bottom,
             current: [...document.querySelectorAll('#td-section-nav a[aria-current="page"]')].map(a => a.pathname),
           }));
           assert.deepEqual(state.globalLinks, ['Docs', 'Blog', 'Community']);
-          if (route !== 'docs/') {
-            assert(state.project, `Project selector ${route}`);
-            assert.equal(new URL(state.projectTarget, page.url()).pathname, routePath(route));
+          if (route !== 'docs/' && route !== '' && !route.startsWith('gateway/')) {
+            // Default releases switch projects with the tabs; other releases keep the in-page selector.
+            assert(state.project || state.activeTab, `Project context ${route}`);
+            if (state.project) assert.equal(new URL(state.projectTarget, page.url()).pathname, routePath(route));
           }
           assert(!state.overflow, `Overflow ${route}/${theme}/${width}`);
           assert.equal(state.headingCount, 1, route);
           assert(state.titleTop >= state.navbarBottom, `Title hidden by header ${route}`);
-          if (route !== 'docs/') assert.deepEqual(state.current, [routePath(route)], `Selected page ${route}`);
-          if (['docs/', 'ai/dev/', 'ai/dev/quickstart/'].includes(route) && [390, 1440].includes(width)) {
+          if (route !== 'docs/' && route !== '' && !route.startsWith('gateway/')) assert.deepEqual(state.current, [routePath(route)], `Selected page ${route}`);
+          if (['', 'gateway/connect/', 'gateway/configure/', 'gateway/operate/', 'docs/', 'ai/dev/', 'ai/dev/quickstart/'].includes(route) && [390, 1440].includes(width)) {
             await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
             const issues = await page.evaluate(async () => (await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] } })).violations.map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) })));
             report.axe.push({ route, theme, width, issues });
             assert.deepEqual(issues, []);
           }
           report.pages.push({ route, theme, width, ...state });
-          if (['docs/', 'ai/dev/', 'ai/dev/quickstart/'].includes(route) && [390, 1440].includes(width)) {
+          if (['', 'gateway/connect/', 'gateway/configure/', 'gateway/operate/', 'docs/', 'ai/dev/', 'ai/dev/quickstart/'].includes(route) && [390, 1440].includes(width)) {
             await page.screenshot({ path: path.join(output, `${route.replaceAll('/', '-')}${theme}-${width}.png`) });
           }
         }
@@ -65,14 +67,14 @@ const report = { pages: [], axe: [], journeys: [] };
       const aiStart = page.locator(`main a.task-card__action[href="${routePath('ai/container-quickstart/')}"]`);
       await aiStart.click();
       await page.getByRole('navigation', { name: 'Next step', exact: true }).getByRole('link').click();
-      assert.equal(new URL(page.url()).pathname, routePath(`ai/${catalog.ai.default}/features/`));
+      assert.equal(new URL(page.url()).pathname, routePath("gateway/connect/"));
       await page.goto(url(`ai/${catalog.ai.default}/`));
       await page.getByRole('link', { name: 'Preview the unreleased guide' }).click();
       assert.equal(new URL(page.url()).pathname, routePath('ai/dev/quickstart/'));
       assert((await page.locator('.docs-version-banner').innerText()).includes('Unreleased'));
       await page.getByRole('navigation', { name: 'Next step', exact: true }).getByRole('link').click();
       assert.equal(new URL(page.url()).pathname, routePath('ai/dev/client-provider-paths/'));
-      assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'), 'noindex, follow');
+      assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'), fs.readFileSync(path.join(root, 'hugo.toml'), 'utf8').includes('gateway_draft = true') ? 'noindex, nofollow' : 'noindex, follow');
       await page.goto(url(`ai/${catalog.ai.default}/#architecture`));
       await page.locator('#architecture').waitFor({ state: 'visible' });
       assert(await page.locator('.docs-source-index').getAttribute('open') !== null, 'Historical fragment opens retained source index');
@@ -87,8 +89,9 @@ const report = { pages: [], axe: [], journeys: [] };
       await page.goto(url('ai/dev/quickstart/'));
       await page.locator('.docs-project-control select').selectOption(routePath(`policy/${catalog.policy.default}/`));
       await page.waitForURL(url(`policy/${catalog.policy.default}/`));
-      await page.locator('.docs-project-control select').selectOption(routePath(`praxis/${catalog.praxis.default}/`));
-      await page.waitForURL(url(`praxis/${catalog.praxis.default}/`));
+      await page.locator('.mx-tabs').getByRole('link', { name: 'Gateway' }).click();
+      await page.waitForURL(url('gateway/'));
+      await page.goto(url(`praxis/${catalog.praxis.default}/`));
       await page.locator('.docs-version-control select').selectOption(routePath('praxis/dev/'));
       await page.waitForURL(url('praxis/dev/'));
       assert.equal(await page.locator('.docs-project-control select').getAttribute('id'), 'docs-project-praxis');

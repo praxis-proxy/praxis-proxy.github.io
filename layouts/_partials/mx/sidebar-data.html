@@ -1,0 +1,84 @@
+{{- /* Resolve one curated sidebar tree from data/docs_sidebar.json.
+  Context: the tree id. Returns sections with resolved links and no page state,
+  so callers may cache it per tree and mark the current page themselves. */ -}}
+{{- $treeID := . -}}
+{{- $data := hugo.Data.docs_sidebar -}}
+{{- $tree := index $data.trees $treeID -}}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $placed := slice -}}
+{{- $resolve := dict -}}
+{{- /* One pass per product keeps lookups to that product's default release. */ -}}
+{{- range $id, $p := $products -}}
+  {{- $pages := where (where site.Pages "Params.product" $id) "Params.version" $p.default -}}
+  {{- $resolve = merge $resolve (dict $id $pages) -}}
+{{- end -}}
+{{- $sections := slice -}}
+{{- range $tree.sections -}}
+  {{- $items := slice -}}
+  {{- range .items -}}
+    {{- $entry := . -}}
+    {{- $groupItems := slice -}}
+    {{- $members := slice -}}
+    {{- $isGroup := false -}}
+    {{- if reflect.IsMap $entry -}}
+      {{- if $entry.rest -}}
+        {{- $isGroup = true -}}
+        {{- $members = slice -}}
+      {{- else -}}
+        {{- $isGroup = true -}}
+        {{- $members = $entry.items -}}
+      {{- end -}}
+    {{- else -}}
+      {{- $members = slice $entry -}}
+    {{- end -}}
+    {{- range $members -}}
+      {{- $parts := split . "|" -}}
+      {{- $target := index $parts 0 -}}
+      {{- $label := "" -}}{{- if gt (len $parts) 1 }}{{ $label = index $parts 1 }}{{ end -}}
+      {{- $tag := "" -}}{{- if gt (len $parts) 2 }}{{ $tag = index $parts 2 }}{{ end -}}
+      {{- $kind := index (split $target ":") 0 -}}
+      {{- $ref := strings.TrimPrefix (printf "%s:" $kind) $target -}}
+      {{- $href := "" -}}
+      {{- $title := "" -}}
+      {{- $product := "" -}}
+      {{- if eq $kind "page" -}}
+        {{- with site.GetPage $ref }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: missing page %s" $treeID $ref }}{{ end -}}
+      {{- else if eq $kind "link" -}}
+        {{- $href = $ref | relURL -}}
+      {{- else if eq $kind "examples" -}}
+        {{- $product = $ref -}}
+        {{- with index (where (index $resolve $ref) "Params.example_catalog" true) 0 }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: missing %s example catalog" $treeID $ref }}{{ end -}}
+      {{- else -}}
+        {{- $product = $kind -}}
+        {{- with index (where (index $resolve $kind) "Params.source_path" $ref) 0 }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: %s %s is not published at its default release; update data/docs_sidebar.json" $treeID $kind $ref }}{{ end -}}
+      {{- end -}}
+      {{- $placed = $placed | append $href -}}
+      {{- $link := dict "kind" $kind "href" $href "label" ($label | default $title) "tag" $tag "product" $product -}}
+      {{- if $isGroup }}{{ $groupItems = $groupItems | append $link }}{{ else }}{{ $items = $items | append $link }}{{ end -}}
+    {{- end -}}
+    {{- if $isGroup -}}
+      {{- if $entry.rest }}{{ $items = $items | append (dict "kind" "rest" "product" $entry.rest "label" $entry.label) }}{{ else }}{{ $items = $items | append (dict "kind" "group" "label" $entry.group "items" $groupItems) }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $sections = $sections | append (dict "id" .id "label" .label "badge" (.badge | default "") "items" $items) -}}
+{{- end -}}
+{{- /* Second pass: published pages that no entry placed, so new upstream pages stay reachable. */ -}}
+{{- $final := slice -}}
+{{- range $sections -}}
+  {{- $sec := . -}}
+  {{- $items := slice -}}
+  {{- range .items -}}
+    {{- if eq .kind "rest" -}}
+      {{- $restLabel := .label -}}
+      {{- $rest := slice -}}
+      {{- range sort (where (index $resolve .product) "Params.topic" "ne" "Examples") "LinkTitle" -}}
+        {{- if not (in $placed .RelPermalink) }}{{ $rest = $rest | append (dict "kind" "doc" "href" .RelPermalink "label" .LinkTitle "tag" "" "product" .Params.product) }}{{ end -}}
+      {{- end -}}
+      {{- with $rest }}{{ $items = $items | append (dict "kind" "group" "label" $restLabel "items" .) }}{{ end -}}
+    {{- else -}}
+      {{- $items = $items | append . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $items }}{{ $final = $final | append (dict "id" $sec.id "label" $sec.label "badge" $sec.badge "items" .) }}{{ end -}}
+{{- end -}}
+{{- return (dict "label" $tree.label "tag" $tree.tag "sections" $final) -}}

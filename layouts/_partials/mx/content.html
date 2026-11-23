@@ -1,0 +1,15 @@
+{{- /* Render page content; tutorials become a numbered Steps flow split at each h2. */ -}}
+{{- $page := . -}}
+{{- $steps := or (eq $page.Section "guides") (eq $page.Params.reader_need "Tutorial") -}}
+{{- $html := string $page.Content -}}
+{{- $parts := split $html "<h2" -}}
+{{- if and $steps (gt (len $parts) 2) -}}
+{{ index $parts 0 | safeHTML }}
+<ol class="mx-stepflow">
+  {{- range after 1 $parts }}
+  <li class="mx-stepflow__step">{{ printf "<h2%s" . | safeHTML }}</li>
+  {{- end }}
+</ol>
+{{- else -}}
+{{ $page.Content }}
+{{- end -}}

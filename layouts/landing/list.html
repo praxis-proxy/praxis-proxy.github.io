@@ -8,6 +8,9 @@
       <p>{{ .Description }}</p>
     </header>
     {{- end -}}
+    {{ if eq .Section "gateway" }}
+    <nav class="gateway-local-nav" aria-label="Gateway guides"><a href="{{ "docs/" | relURL }}">Documentation</a>{{ range hugo.Data.gateway_journeys }}{{ $target := site.GetPage .page }}<a href="{{ $target.RelPermalink }}"{{ if eq $.RelPermalink $target.RelPermalink }} aria-current="page"{{ end }}>{{ .title }}</a>{{ end }}</nav>
+    {{ end }}
     {{ .Content }}
     {{ partial "landing-contribution.html" . }}
   </article>

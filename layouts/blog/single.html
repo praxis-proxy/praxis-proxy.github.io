@@ -1,31 +1,51 @@
 {{ define "main" }}
-<div class="praxis-blog-post">
+{{- $toc := .TableOfContents -}}
+{{- $hasToc := and $toc (ne $toc `<nav id="TableOfContents"></nav>`) -}}
+<div class="mx-post-page">
   <article>
-    <header class="praxis-blog-post__header">
+    <header class="mx-post-page__head">
+      <nav class="mx-prop-page__crumbs" aria-label="Breadcrumb"><a href="{{ "blog/" | relURL }}">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{{ .Date.Format "January 2006" }}</span></nav>
+      <p class="mx-post__meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time><span aria-hidden="true">·</span><span>{{ .ReadingTime }} min read</span></p>
       <h1>{{ .Title }}</h1>
-      <p class="praxis-blog-meta">
-        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
-        <span aria-hidden="true">·</span>
-        <span>{{ .ReadingTime }} min read</span>
-      </p>
-      <p class="praxis-blog-author">
-        <img src="{{ "favicon.svg" | relURL }}" width="40" height="40" alt="">
-        <span>{{ .Params.author | default "Praxis contributors" }}</span>
-      </p>
+      {{ with .Description }}<p class="mx-post-page__lede">{{ . }}</p>{{ end }}
+      <div class="mx-post-page__byline">
+        <p class="mx-post__author"><img src="{{ "favicon.svg" | relURL }}" width="32" height="32" alt=""><span>{{ .Params.author | default "Praxis contributors" }}</span></p>
+        <button class="mx-action" type="button" data-mx-copy-link aria-label="Copy link to this post"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 9.5 9.5 6.5M7 4.5l1-1a2.8 2.8 0 0 1 4 4l-1 1M9 11.5l-1 1a2.8 2.8 0 0 1-4-4l1-1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span data-mx-copy-label>Copy link</span></button>
+      </div>
+      {{ partial "mx/cover.html" . }}
     </header>
-    <div class="praxis-blog-post__body td-content">{{ .Content }}</div>
+
+    <div class="mx-post-page__layout{{ if $hasToc }} has-toc{{ end }}">
+      <div class="mx-post-page__body praxis-docs-layout"><div class="td-content mx-article">{{ .Content }}</div></div>
+      {{- if $hasToc }}
+      <aside class="mx-post-page__toc" aria-label="On this page"><p class="mx-panel__title">On this page</p>{{ $toc }}</aside>
+      {{- end }}
+    </div>
+
     {{- with .Params.tags }}
-    <footer class="praxis-blog-post__tags">
-      <h2>Tags</h2>
-      <ul class="praxis-blog-tags">
-        {{- range . }}<li><a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">{{ . }}</a></li>{{ end -}}
-      </ul>
+    <footer class="mx-post-page__tags">
+      <h2 class="visually-hidden">Tags</h2>
+      <ul>{{ range . }}<li><a href="{{ printf "tags/%s/" (. | urlize) | relURL }}">#{{ . }}</a></li>{{ end }}</ul>
     </footer>
     {{- end }}
   </article>
-  <nav class="praxis-blog-pagination" aria-label="Blog post navigation">
-    {{- with .NextInSection }}<a href="{{ .RelPermalink }}"><small>Older post</small><span>« {{ .Title }}</span></a>{{ else }}<span></span>{{ end -}}
-    {{- with .PrevInSection }}<a href="{{ .RelPermalink }}"><small>Newer post</small><span>{{ .Title }} »</span></a>{{ else }}<a href="{{ "blog/" | relURL }}"><small>Back to the archive</small><span>All posts →</span></a>{{ end -}}
+
+  {{- if or .NextInSection .PrevInSection }}
+  <nav class="mx-pager" aria-label="More posts">
+    {{- with .NextInSection }}<a class="mx-pager__link mx-pager__link--prev" href="{{ .RelPermalink }}" rel="prev"><span class="mx-pager__dir"><span aria-hidden="true">←</span> Older post</span><span class="mx-pager__title">{{ .Title }}</span></a>{{ end -}}
+    {{- with .PrevInSection }}<a class="mx-pager__link mx-pager__link--next" href="{{ .RelPermalink }}" rel="next"><span class="mx-pager__dir">Newer post <span aria-hidden="true">→</span></span><span class="mx-pager__title">{{ .Title }}</span></a>{{ end -}}
   </nav>
+  {{- end }}
+
+  <section class="mx-cta-band mx-post-page__cta" aria-labelledby="mx-post-cta">
+    <div>
+      <h2 id="mx-post-cta">Try the gateway</h2>
+      <p>Send your first request through Praxis in a few minutes, then tell us how it went.</p>
+    </div>
+    <div class="mx-hero__actions">
+      <a class="mx-btn mx-btn--primary" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run the gateway</a>
+      <a class="mx-btn mx-btn--ghost" href="{{ "blog/" | relURL }}">All posts <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
 </div>
 {{ end }}

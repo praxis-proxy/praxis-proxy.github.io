@@ -1,0 +1,32 @@
+{{- /* Mintlify-style page header: topic, title, lead, release chip, reading time and page actions. */ -}}
+{{- $page := .page -}}
+{{- $showLead := true -}}{{- if isset . "lead" }}{{ $showLead = .lead }}{{ end -}}
+{{- $productID := $page.Params.product | default "" -}}
+{{- if and (eq $page.Section "guides") (not $productID) }}{{ $productID = "praxis" }}{{ end -}}
+{{- $navigation := index hugo.Data.docs_navigation.products $productID -}}
+{{- $eyebrow := $page.Params.topic | default "" -}}
+{{- if not $eyebrow -}}
+  {{- range ($navigation.sections | default hugo.Data.docs_navigation.sections) -}}
+    {{- if eq .id $page.Params.navigation_section }}{{ $eyebrow = .label }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- $release := "" -}}
+{{- with index hugo.Data.docs_build_versions.products $productID -}}
+  {{- $ctx := partial "docs-context.html" $page -}}
+  {{- $release = printf "%s %s" .name ($ctx.label | default ($ctx.version | default .default)) -}}
+{{- end -}}
+<header class="mx-article__header">
+  {{ with $eyebrow }}<p class="mx-eyebrow">{{ . }}</p>{{ end }}
+  <h1>{{ $page.Title }}</h1>
+  {{ if $showLead }}{{ with $page.Description }}<p class="lead">{{ . }}</p>{{ end }}{{ end }}
+  <div class="mx-page-meta">
+    {{ with $release }}<span class="mx-chip"><span class="mx-chip__dot mx-tab__dot--{{ $productID }}" aria-hidden="true"></span>{{ . }}</span>{{ end }}
+    {{ with $page.ReadingTime }}<span class="mx-page-meta__item">{{ . }} min read</span>{{ end }}
+    <span class="mx-page-meta__spacer"></span>
+    <button class="mx-action" type="button" data-mx-copy-link>
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span data-mx-copy-label>Copy link</span>
+    </button>
+    {{ partial "docs-contribution-meta.html" $page }}
+  </div>
+</header>

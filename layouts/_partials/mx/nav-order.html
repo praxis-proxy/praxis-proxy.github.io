@@ -1,0 +1,30 @@
+{{- /* Ordered pages for one project release, matching the sidebar order. */ -}}
+{{- $page := . -}}
+{{- $productID := $page.Params.product | default "" -}}
+{{- if and (eq $page.Section "guides") (not $productID) }}{{ $productID = "praxis" }}{{ end -}}
+{{- $ordered := slice -}}
+{{- with $productID -}}
+  {{- $product := index hugo.Data.docs_build_versions.products . -}}
+  {{- $version := (partial "docs-context.html" $page).version | default $product.default -}}
+  {{- $navigation := index hugo.Data.docs_navigation.products . -}}
+  {{- $allDocs := where (where site.Pages "Params.product" .) "Params.version" $version -}}
+  {{- $allDocs = where $allDocs "Params.topic" "ne" "Examples" -}}
+  {{- $overviewSource := "docs/README.md" -}}
+  {{- if eq . "policy" }}{{ $overviewSource = "docs/content/index.md" }}{{ end -}}
+  {{- range where $allDocs "Params.source_path" $overviewSource }}{{ $ordered = $ordered | append . }}{{ end -}}
+  {{- $allDocs = where $allDocs "Params.source_path" "ne" $overviewSource -}}
+  {{- $guideRoot := site.GetPage "/guides" -}}
+  {{- if and (eq . "praxis") (eq $version $product.default) $guideRoot }}{{ $allDocs = $allDocs | union $guideRoot.Pages }}{{ end -}}
+  {{- range ($navigation.sections | default hugo.Data.docs_navigation.sections) -}}
+    {{- $needPages := where $allDocs "Params.navigation_section" .id -}}
+    {{- $groups := $needPages.GroupByParam "topic" -}}
+    {{- $topicOrder := $navigation.topic_order -}}
+    {{- range $groups }}{{ if not (in $topicOrder .Key) }}{{ $topicOrder = $topicOrder | append .Key }}{{ end }}{{ end -}}
+    {{- range $topicOrder -}}
+      {{- range (where $groups "Key" .) -}}
+        {{- range (.Pages.ByParam "order") }}{{ $ordered = $ordered | append . }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $ordered -}}
