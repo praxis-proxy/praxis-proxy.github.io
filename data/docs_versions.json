@@ -4,7 +4,8 @@
       "name": "Praxis",
       "description": "A configurable HTTP and TCP proxy for routing traffic and applying built-in filters.",
       "content_root": "docs",
-      "default": "v0.7.2",
+      "release_policy": "published",
+      "default": "v0.8.0",
       "development": {
         "ref": "main",
         "sha": "569ea47c5b58b8b29df1e7c534a8ba626c613612"
@@ -23,11 +24,18 @@
       ],
       "releases": [
         {
+          "version": "v0.8.0",
+          "label": "v0.8.0",
+          "tag": "v0.8.0",
+          "sha": "c3d2ae3628cf3167780e58c5e8b38580d0241399",
+          "default": true
+        },
+        {
           "version": "v0.7.2",
           "label": "v0.7.2",
           "tag": "v0.7.2",
           "sha": "1de023cba3fee967f828c9ff35f27596f8f6792c",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.7.1",
@@ -147,7 +155,8 @@
       "name": "Praxis Policy Engine",
       "description": "A policy runtime for authorization, identity, delegation, and data controls.",
       "content_root": "docs/content",
-      "default": "v0.4.0",
+      "release_policy": "published",
+      "default": "v0.7.0",
       "development": {
         "ref": "main",
         "sha": "156d253ef7d93a163c92493b40ff38aa743ffd96"
@@ -165,11 +174,18 @@
       ],
       "releases": [
         {
+          "version": "v0.7.0",
+          "label": "v0.7.0",
+          "tag": "v0.7.0",
+          "sha": "156d253ef7d93a163c92493b40ff38aa743ffd96",
+          "default": true
+        },
+        {
           "version": "v0.4.0",
           "label": "v0.4.0",
           "tag": "v0.4.0",
           "sha": "fb94b2b81e5909b72949323921625de7ba7ce328",
-          "default": true
+          "default": false
         },
         {
           "version": "v0.3.1",
