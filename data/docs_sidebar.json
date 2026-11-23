@@ -187,7 +187,8 @@
       "praxis:docs/benchmarks.md|Benchmarks",
       "examples:praxis|Proxy configuration examples",
       "ai:docs/README.md|Gateway project overview",
-      "praxis:docs/README.md|Proxy foundation overview"
+      "praxis:docs/README.md|Proxy foundation overview",
+      "link:/changelog/|Changelog"
      ]
     },
     {
@@ -438,7 +439,8 @@
       "policy:docs/content/builtins.md|Builtins",
       "policy:docs/content/assertions.md|Assertions wire contract",
       "policy:docs/content/crates.md|Crates",
-      "policy:docs/content/benchmarks.md|Benchmarks"
+      "policy:docs/content/benchmarks.md|Benchmarks",
+      "link:/changelog/#policy|Changelog"
      ]
     },
     {
@@ -511,7 +513,8 @@
      "items": [
       "grid:docs/architecture/crds.md|Custom resources",
       "grid:docs/architecture/consumer-config.md|Generated consumer config",
-      "grid:docs/metrics.md|Metrics"
+      "grid:docs/metrics.md|Metrics",
+      "link:/changelog/#grid|Changelog"
      ]
     },
     {

@@ -1,0 +1,99 @@
+{{ define "main" }}
+{{- /* Release-matched changelog: read CHANGELOG.md from each project's source
+  snapshot (the default release the docs describe). Projects without one list
+  their published releases with links to the GitHub release notes. */ -}}
+{{- $products := hugo.Data.docs_build_versions.products -}}
+{{- $order := slice
+  (dict "id" "ai" "label" "AI gateway")
+  (dict "id" "praxis" "label" "Proxy foundation")
+  (dict "id" "policy" "label" "Policy")
+  (dict "id" "grid" "label" "Grid") -}}
+{{- $limit := 6 -}}
+{{- $ext := `<svg class="mx-ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` | safeHTML -}}
+<div class="mx-log">
+  <header class="mx-log__hero">
+    <p class="mx-eyebrow">Releases</p>
+    <h1>{{ .Title }}</h1>
+    <p class="mx-props__lede">{{ .Description }}</p>
+    <nav class="mx-log__jump" aria-label="Projects">
+      {{- range $order }}
+      {{- $p := index $products .id }}
+      <a href="#{{ .id }}"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i>{{ .label }}<code>{{ $p.default }}</code></a>
+      {{- end }}
+    </nav>
+  </header>
+
+  {{- range $order }}
+  {{- $id := .id -}}
+  {{- $p := index $products $id -}}
+  {{- $repo := $p.repo -}}
+  {{- $current := index (where $p.versions "slug" $p.default) 0 -}}
+  {{- $file := printf "sources/%s/CHANGELOG.md" $id -}}
+  {{- $entries := slice -}}
+  {{- if fileExists $file -}}
+    {{- $raw := readFile $file -}}
+    {{- range after 1 (split $raw "\n## ") -}}
+      {{- $lines := split . "\n" -}}
+      {{- $head := index $lines 0 -}}
+      {{- $version := strings.TrimSpace $head -}}
+      {{- with findRESubmatch `\[([^\]]+)\]` $head 1 }}{{ $version = index (index . 0) 1 }}{{ end -}}
+      {{- if ne (lower $version) "unreleased" -}}
+        {{- $date := "" -}}
+        {{- with findRESubmatch `(\d{4}-\d{2}-\d{2})` $head 1 }}{{ $date = index (index . 0) 1 }}{{ end -}}
+        {{- $body := delimit (after 1 $lines) "\n" | strings.TrimSpace -}}
+        {{- $entries = $entries | append (dict "version" $version "date" $date "body" $body) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  <section class="mx-log__project" id="{{ $id }}" aria-labelledby="mx-log-{{ $id }}">
+    <header class="mx-log__head">
+      <h2 id="mx-log-{{ $id }}"><i class="mx-repo-dot mx-repo-dot--{{ $id }}" aria-hidden="true"></i>{{ .label }}</h2>
+      <p class="mx-log__links">
+        <a href="{{ printf "%s/%s/" $id $p.default | relURL }}">{{ $p.default }} docs</a>
+        <a href="{{ $repo }}/releases">All releases{{ $ext }}</a>
+        {{- if $entries }}<a href="{{ $repo }}/blob/{{ $current.tag }}/CHANGELOG.md">CHANGELOG.md at {{ $current.tag }}{{ $ext }}</a>{{ end }}
+      </p>
+    </header>
+    {{- if $entries }}
+    <ol class="mx-log__entries">
+      {{- range first $limit $entries }}
+      {{- $tag := printf "v%s" (strings.TrimPrefix "v" .version) -}}
+      {{- $docs := where $p.versions "tag" $tag -}}
+      <li class="mx-log__entry">
+        <div class="mx-log__meta">
+          <span class="mx-log__ver">{{ $tag }}</span>
+          {{- with .date }}<time datetime="{{ . }}">{{ (time.AsTime .).Format "Jan 2, 2006" }}</time>{{ end }}
+          {{- if eq $tag $current.tag }}<span class="mx-log__badge">Docs on this site</span>{{ end }}
+        </div>
+        <div class="mx-log__body">
+          {{- $md := replaceRE `\]\(([^h#)][^)]*)\)` (printf "](%s/blob/%s/$1)" $repo $current.tag) .body -}}
+          {{- $html := $.Page.RenderString (dict "display" "block") $md -}}
+          {{- $html = replaceRE `<a class="mx-anchor"[^>]*>.*?</a>` "" $html -}}
+          {{- $html = replaceRE `<h([3-6]) id="[^"]*"[^>]*>` `<h$1 class="mx-log__kind">` $html -}}
+          {{ $html | safeHTML }}
+          <p class="mx-log__foot"><a href="{{ $repo }}/releases/tag/{{ $tag }}">Release on GitHub{{ $ext }}</a>{{ with $docs }}<a href="{{ printf "%s/%s/" $id (index . 0).slug | relURL }}">{{ $tag }} docs</a>{{ end }}</p>
+        </div>
+      </li>
+      {{- end }}
+    </ol>
+    {{- if gt (len $entries) $limit }}<p class="mx-log__more"><a href="{{ $repo }}/blob/{{ $current.tag }}/CHANGELOG.md">Earlier releases in CHANGELOG.md{{ $ext }}</a></p>{{ end }}
+    {{- else }}
+    <p class="mx-log__note">{{ .label }} {{ $current.tag }} does not ship a changelog file. Each release's notes are on GitHub.</p>
+    <ol class="mx-log__entries mx-log__entries--compact">
+      {{- range where $p.versions "slug" "!=" "dev" }}
+      <li class="mx-log__entry">
+        <div class="mx-log__meta">
+          <span class="mx-log__ver">{{ .tag }}</span>
+          {{- if .default }}<span class="mx-log__badge">Docs on this site</span>{{ end }}
+        </div>
+        <div class="mx-log__body">
+          <p class="mx-log__foot"><a href="{{ $repo }}/releases/tag/{{ .tag }}">Release notes{{ $ext }}</a><a href="{{ printf "%s/%s/" $id .slug | relURL }}">{{ .label }} docs</a></p>
+        </div>
+      </li>
+      {{- end }}
+    </ol>
+    {{- end }}
+  </section>
+  {{- end }}
+</div>
+{{ end }}
