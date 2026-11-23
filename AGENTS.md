@@ -51,7 +51,10 @@ ownership decisions.
   back to a derived reader need, topic, order, and summary, and `prepare`
   prints a warning listing those pages so they can be curated. Use the
   [Diátaxis framework](https://diataxis.fr/) to classify a page by its
-  reader's need, not its filename.
+  reader's need, not its filename. When an upstream page moves, keep the old
+  article key for releases that still publish it and add the new key, list the
+  new path in the journey step's `source_fallbacks` and the product's
+  `start_fallbacks` until every published release has it.
 - `data/docs_sidebar.json` is the curated sidebar for each documentation tab
   (Gateway, which joins the AI and core projects, then Policy and Grid) at
   each project's default release. Order it as get started, task guides,

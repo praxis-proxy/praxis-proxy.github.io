@@ -10,6 +10,12 @@
     {{- else -}}
       {{- $matches := where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .source -}}
       {{- with index $matches 0 }}{{ $target = . }}{{ end -}}
+      {{- /* A release where the page moved uses its new path. */ -}}
+      {{- range .source_fallbacks -}}
+        {{- if not $target -}}
+          {{- with index (where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .) 0 }}{{ $target = . }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
     {{- end -}}
     {{- if $target -}}
       {{- $steps = $steps | append (dict "title" .title "summary" .summary "href" $target.RelPermalink) -}}

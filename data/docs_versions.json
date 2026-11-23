@@ -7,14 +7,13 @@
       "default": "v0.7.2",
       "development": {
         "ref": "main",
-        "sha": "32a9eff78b75109f6af0798c16d84f8295821abb"
+        "sha": "569ea47c5b58b8b29df1e7c534a8ba626c613612"
       },
       "exclude": [
         "docs/proposals/**"
       ],
       "required": [
         "docs/README.md",
-        "docs/quickstart.md",
         "docs/features.md",
         "docs/filters/reference.md"
       ],
@@ -60,7 +59,7 @@
       "default": "v0.12.1",
       "development": {
         "ref": "main",
-        "sha": "dec7482aee459caf2f9dbddae332ce4a04f852dc"
+        "sha": "15232ac34291625fcdced929d70497012eb2c87e"
       },
       "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
       "extra_assets": [
@@ -69,7 +68,6 @@
       "exclude": [],
       "required": [
         "docs/README.md",
-        "docs/quickstart.md",
         "docs/features.md",
         "docs/filters/reference.md"
       ],

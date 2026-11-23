@@ -122,9 +122,11 @@ def main():
     assert f'/ai/{defaults["ai"]}/examples/' in ai_guide.docs_links
     for product in ('praxis', 'ai'):
         for version in versions[product] - {defaults[product]}:
-            archived_start = next(x['url'] for x in sources if x['product'] == product
-                                  and x['version'] == version
-                                  and x['source_path'] == navigation['products'][product]['start'])
+            starts = [navigation['products'][product]['start'],
+                      *navigation['products'][product].get('start_fallbacks', [])]
+            archived_start = next(x['url'] for start in starts for x in sources
+                                  if x['product'] == product and x['version'] == version
+                                  and x['source_path'] == start)
             overview = Page((public / product / version / 'index.html').read_text())
             assert archived_start in overview.docs_links, f'{product}/{version}: missing version-specific start'
             assert '/ai/container-quickstart/' not in overview.docs_links
