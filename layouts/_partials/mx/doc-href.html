@@ -1,6 +1,6 @@
 {{- /* Returns the RelPermalink of an imported page on its project's default release; fails the build when missing. */ -}}
 {{- $product := index hugo.Data.docs_build_versions.products .product -}}
-{{- $pages := where (where (where site.Pages "Params.product" .product) "Params.version" $product.default) "Params.source_path" .source -}}
+{{- $page := partial "mx/doc-page.html" (dict "product" .product "source" .source) -}}
 {{- $href := "" -}}
-{{- with index $pages 0 }}{{ $href = .RelPermalink }}{{ else }}{{ errorf "mx/doc-href: missing %s page for %s %s" $.source $.product $product.default }}{{ end -}}
+{{- with $page }}{{ $href = .RelPermalink }}{{ else }}{{ errorf "mx/doc-href: missing %s page for %s %s" $.source $.product $product.default }}{{ end -}}
 {{- return $href -}}

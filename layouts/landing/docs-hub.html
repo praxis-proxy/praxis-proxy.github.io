@@ -84,17 +84,9 @@
 
   <section class="mx-hub__section" aria-labelledby="mx-hub-blocks">
     <header class="mx-hub__head mx-hub__head--row">
-      <div><h2 id="mx-hub-blocks">Browse by building block</h2><p>Every capability of the gateway, with its current status.</p></div>
+      <div><h2 id="mx-hub-blocks">Browse by building block</h2><p>The gateway is built from {{ len $blocks.blocks }} building blocks. The anatomy page explains each one, its current status and where its docs live.</p></div>
       <a class="mx-pillar__link" href="{{ "gateway/" | relURL }}">Anatomy of the gateway <span aria-hidden="true">→</span></a>
     </header>
-    <ul class="mx-hub__blocks">
-      {{- range $blocks.tiers }}
-      {{- $tier := . -}}
-      {{- range where $blocks.blocks "tier" $tier.id }}
-      <li style="--hue: {{ $tier.hue }}"><a href="{{ printf "gateway/#block-%s" .id | relURL }}"><i aria-hidden="true"></i><span>{{ .title }}</span>{{ if ne .status "available" }}<span class="mx-bstat mx-bstat--{{ .status }}">{{ title .status }}</span>{{ end }}</a></li>
-      {{- end }}
-      {{- end }}
-    </ul>
   </section>
 
   <section class="mx-hub__section" aria-labelledby="mx-hub-ref">
@@ -120,7 +112,7 @@
         (dict "id" "grid" "t" "Grid" "d" "Discover inference providers across Kubernetes sites. Technical preview." "label" "Install Grid") }}
       {{- $p := index $products .id -}}
       {{- $href := .start -}}
-      {{- if not $href }}{{ with index (where (where (where site.Pages "Params.product" .id) "Params.version" $p.default) "Params.source_path" (index $nav .id).start) 0 }}{{ $href = .RelPermalink }}{{ end }}{{ end -}}
+      {{- if not $href }}{{ $start := partial "mx/doc-page.html" (dict "product" .id "source" (index $nav .id).start) }}{{ with $start }}{{ $href = .RelPermalink }}{{ end }}{{ end -}}
       <li class="mx-hub__other">
         <p class="mx-hub__other-top"><i class="mx-repo-dot mx-repo-dot--{{ .id }}" aria-hidden="true"></i><strong>{{ .t }}</strong><code>{{ $p.default }}</code></p>
         <p>{{ .d }}</p>

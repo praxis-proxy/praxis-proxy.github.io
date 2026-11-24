@@ -73,6 +73,7 @@
       "ai:docs/recipes/guardrails-token-usage.md|Screen requests and track tokens",
       "ai:docs/filters/token_rate_limit.md|Token rate limits",
       "ai:docs/filters/token_ceiling.md|Token ceilings",
+      "ai:docs/filters/token_quota.md|Token quotas",
       "ai:docs/filters/ai_guardrails.md|Guardrails",
       "ai:docs/filters/identity_header_guard.md|Identity headers",
       "praxis:docs/operating/security-hardening.md|Security hardening",
@@ -113,17 +114,22 @@
      "label": "Operate",
      "items": [
       "page:/gateway/operate|Operate the gateway",
-      "ai:docs/operations.md|Operations guide",
-      "page:/guides/operate|Configure and operate a proxy",
       "page:/guides/use-filters|Choose and configure filters",
       "praxis:docs/operating/configuration.md|Runtime configuration",
       "praxis:docs/operating/tls.md|TLS",
       "praxis:docs/operating/build-features.md|Build features",
-      "ai:docs/capacity-planning.md|Capacity planning",
-      "ai:docs/fips.md|FIPS 140-3",
+      {
+       "group": "Gateway operations",
+       "items": [
+        "ai:docs/operations.md|Operations guide",
+        "ai:docs/capacity-planning.md|Capacity planning",
+        "ai:docs/fips.md|FIPS 140-3"
+       ]
+      },
       {
        "group": "Proxy operations",
        "items": [
+        "page:/guides/operate|Operations guide",
         "praxis:docs/operating/capacity-planning.md|Capacity planning",
         "praxis:docs/operating/diagnostics.md|Diagnostics",
         "praxis:docs/operating/fips.md|FIPS 140-3"
@@ -175,9 +181,9 @@
      "id": "reference",
      "label": "Reference",
      "items": [
-      "ai:docs/features.md|Gateway capabilities",
-      "page:/praxis/capabilities|Proxy capabilities",
+      "ai:docs/features.md|Gateway features",
       "praxis:docs/features.md|Proxy features",
+      "page:/praxis/capabilities|Proxy support matrix",
       {
        "group": "Compatibility",
        "items": [
@@ -349,12 +355,19 @@
       {
        "group": "Testing and qualification",
        "items": [
-        "ai:docs/developing/gpu-nightly-suite.md",
         "ai:docs/developing/llmd-integration-testing.md",
         "ai:docs/developing/vllm-qualification.md",
         "ai:docs/developing/cli-vllm-through-praxis.md|Code harness through vLLM",
         "ai:docs/developing/openshell-cli-vllm-through-praxis.md|Code harness in OpenShell",
-        "ai:docs/developing/openai-anthropic-compatibility.md|Chat Completions to Messages compatibility",
+        "ai:docs/developing/openai-anthropic-compatibility.md|Chat Completions to Messages compatibility"
+       ]
+      },
+      {
+       "group": "Maintainer notes",
+       "items": [
+        "ai:docs/developing/gpu-nightly-suite.md|GPU nightly suite",
+        "ai:docs/developing/hosted-passthrough-nightly.md|Hosted passthrough nightly",
+        "ai:docs/developing/hosted-translation-nightly.md|Hosted translation nightly",
         "ai:docs/anthropic-messages-replay-test-plan.md|Messages replay test plan",
         "ai:docs/documentation-audit.md|Documentation audit"
        ]

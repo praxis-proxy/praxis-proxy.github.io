@@ -3,6 +3,8 @@ title = "Inside Praxis AI"
 description = "Where AI classification and translation fit in the Praxis proxy runtime."
 type = "guides"
 weight = 20
+# Describes diagrams from a pinned source commit; see check-authored-versions.py.
+pinned_source = true
 +++
 
 Praxis AI adds AI API and agent-protocol behavior to the Praxis proxy runtime. This guide answers where those project boundaries sit, then follows one configured translation and failover path. It describes an example configuration; the diagram does not execute requests or measure latency.

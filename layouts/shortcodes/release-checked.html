@@ -1,0 +1,12 @@
+{{- /* Marks hand-written, release-specific claims with the release they were
+  checked against. Renders nothing while that release is the catalog default;
+  once the default moves on, it tells readers the claims may be stale.
+  Usage: {{< release-checked product="praxis" release="v0.8.0" >}} */ -}}
+{{- $productID := .Get "product" -}}
+{{- $checked := .Get "release" -}}
+{{- $product := index hugo.Data.docs_build_versions.products $productID -}}
+{{- if not $product }}{{ errorf "release-checked: unknown product %q" $productID }}{{ end -}}
+{{- if not $checked }}{{ errorf "release-checked: missing release for %q" $productID }}{{ end -}}
+{{- if ne $checked $product.default -}}
+<div class="alert" role="note"><strong>Checked against {{ $product.name }} {{ $checked }}.</strong> These docs now follow {{ $product.default }}; some details below may have changed. See the <a href="{{ $product.repo }}/releases/tag/{{ $product.default }}">{{ $product.default }} release notes</a>.</div>
+{{- end -}}

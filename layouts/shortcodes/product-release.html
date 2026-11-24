@@ -11,6 +11,9 @@
   {{- $commands = replace $commands "@IMAGE@" $image -}}
   {{- $commands = replace $commands "@FIPS_IMAGE@" (printf "%s-fips" $image) -}}
   {{ highlight $commands "console" }}
+{{- else if .Get "path" -}}
+  {{- /* Link to a repository file at the default release tag. */ -}}
+  {{- printf "%s/blob/%s/%s" $product.repo $release.tag (strings.TrimPrefix "/" (.Get "path")) -}}
 {{- else -}}
   {{- $release.tag -}}
 {{- end -}}

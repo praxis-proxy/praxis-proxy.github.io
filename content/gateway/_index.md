@@ -8,4 +8,4 @@ body_class = "guides-page gateway-page gateway-anatomy-page"
 
 {{< gateway-anatomy >}}
 
-{{< gateway-journeys >}}
+To start from a task instead, such as sending a first request, connecting an application or deploying, use the [documentation hub]({{< relref "/docs" >}}).

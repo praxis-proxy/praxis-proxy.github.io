@@ -20,7 +20,7 @@
       </a>
       <label class="mx-version docs-version-control">
         <span class="visually-hidden">{{ $product.name }} documentation version</span>
-        {{- if eq $treeID "gateway" }}<span class="mx-version__name" aria-hidden="true">{{ cond (eq $productID "ai") "Gateway" "Proxy" }}</span>{{ end }}
+        {{- if eq $treeID "gateway" }}<span class="mx-version__name mx-proj mx-proj--{{ $productID }}" title="Showing {{ $product.name }} documentation" aria-hidden="true">{{ cond (eq $productID "ai") "AI" "Core" }}</span>{{ end }}
         {{- $sourcePath := $page.Params.source_path | default (printf "website/%s" (cond (ne $page.File nil) (printf "%s" $page.File.Path) "")) -}}
         <select data-source-path="{{ $sourcePath }}" onchange="const o=this.selectedOptions[0];const u=new window.URL(this.value,window.location.href);if(o.dataset.fallback==='true')u.searchParams.set('version_fallback',this.dataset.sourcePath);window.location.assign(u)">
           {{- range $product.versions }}
@@ -51,7 +51,7 @@
               <ul class="mx-nav__list mx-nav__list--nested">
                 {{- range .items }}
                 {{- $current := eq .href $page.RelPermalink }}
-                <li class="docs-sidebar-item{{ if $current }} active{{ end }}"><a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}</a></li>
+                <li class="docs-sidebar-item{{ if $current }} active{{ end }}"><a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}{{ partial "mx/nav-project.html" . }}</a></li>
                 {{- end }}
               </ul>
             </details>
@@ -60,7 +60,7 @@
             {{- $current := eq .href $page.RelPermalink -}}
             {{- $here := and (eq .kind "examples") $inExamples (eq .product $page.Params.product) (not $current) }}
           <li class="docs-sidebar-item{{ if $current }} active{{ else if $here }} active-path{{ end }}{{ if .tag }} mx-nav__out{{ end }}">
-            <a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}{{ with .tag }}<span class="mx-nav__tab"><span class="visually-hidden">, opens the </span>{{ . }}<span class="visually-hidden"> tab</span><span aria-hidden="true"> ↗</span></span>{{ end }}</a>
+            <a href="{{ .href }}"{{ if $current }} aria-current="page"{{ end }}>{{ .label }}{{ partial "mx/nav-project.html" . }}{{ with .tag }}<span class="mx-nav__tab"><span class="visually-hidden">, opens the </span>{{ . }}<span class="visually-hidden"> tab</span><span aria-hidden="true"> ↗</span></span>{{ end }}</a>
             {{- if and (eq .kind "examples") $inExamples (eq .product $page.Params.product) }}
             <ul class="mx-nav__list mx-nav__list--nested mx-nav__examples examples-sidebar">{{ partial "sidebar-examples.html" (dict "context" $page "inline" true) }}</ul>
             {{- end }}

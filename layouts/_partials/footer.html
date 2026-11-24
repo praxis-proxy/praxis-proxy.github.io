@@ -27,8 +27,8 @@
         <li><a href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Standalone proxy tutorial</a></li>
         {{- range $entry := slice (dict "id" "policy" "source" "docs/content/quickstart.md" "label" "Policy quickstart") (dict "id" "grid" "source" "docs/installation/existing-clusters.md" "label" "Grid Kubernetes installation") -}}
           {{- $project := index $products $entry.id -}}
-          {{- $pages := where (where (where site.RegularPages "Params.product" $entry.id) "Params.version" $project.default) "Params.source_path" $entry.source -}}
-          {{- with index $pages 0 -}}
+          {{- $page := partial "mx/doc-page.html" (dict "product" $entry.id "source" $entry.source) -}}
+          {{- with $page -}}
           <li><a href="{{ .RelPermalink }}">{{ $entry.label }}</a></li>
           {{- else -}}
             {{- errorf "footer: missing %s for %s default release %s" $entry.source $entry.id $project.default -}}

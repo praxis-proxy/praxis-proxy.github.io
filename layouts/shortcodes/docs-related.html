@@ -4,7 +4,9 @@
 {{- if $paths -}}
   {{- $targets := slice -}}
   {{- range $paths -}}
-    {{- $matches := where (where (where site.Pages "Params.product" $page.Params.product) "Params.version" $page.Params.version) "Params.source_path" . -}}
+    {{- $release := where (where site.Pages "Params.product" $page.Params.product) "Params.version" $page.Params.version -}}
+    {{- $matches := where $release "Params.source_path" . -}}
+    {{- if not $matches }}{{ with index (index hugo.Data.docs_moves $page.Params.product | default dict) . }}{{ $matches = where $release "Params.source_path" . }}{{ end }}{{ end -}}
     {{- if gt (len $matches) 0 -}}{{- $targets = $targets | append (index $matches 0) -}}{{- end -}}
   {{- end -}}
   {{- if $targets }}

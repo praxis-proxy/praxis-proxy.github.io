@@ -46,6 +46,33 @@ jobs:
       - name: Build and check the updated docs
         run: make check
 
+      # Hand-written pages marked release-checked show readers a "checked
+      # against" notice once their release is no longer the default; list them
+      # in the PR so a maintainer can re-check and bump the marker.
+      - name: Write pull request body
+        run: |
+          body="$RUNNER_TEMP/pr-body.md"
+          cat > "$body" <<'EOF'
+          Automated run of `update-doc-versions` + `update-dev-versions`.
+
+          - Promotes each project's docs default to the latest release eligible under each project's configured policy and moves the matching submodule pointer.
+          - Refreshes the development channel SHAs (`development` in `data/docs_versions.json`) from each tracked upstream ref so the unreleased "Development" docs stay current.
+
+          This PR is opened only after `make check` (build plus internal link/fragment and presentation checks) passes on the updated snapshots. Review the catalog and pointer changes before merging.
+          EOF
+          stale="$(python3 tools/check-authored-versions.py | grep '^warning:' || true)"
+          if [ -n "$stale" ]; then
+            cat >> "$body" <<'EOF'
+
+          ### Hand-written pages to re-check
+
+          These pages now show a "checked against" notice. Review their claims against the new release, then update their `release-checked` marker:
+
+          EOF
+            printf '%s\n' "$stale" | sed 's/^warning: /- /' >> "$body"
+          fi
+          printf '\n%s\n' '🤖 Generated with [Claude Code](https://claude.com/claude-code)' >> "$body"
+
       - name: Open pull request
         id: cpr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
@@ -54,19 +81,7 @@ jobs:
           branch: automation/update-doc-versions
           title: "chore(website): update docs versions to latest releases"
           commit-message: "chore(website): update docs versions to latest releases"
-          body: |
-            Automated run of `update-doc-versions` + `update-dev-versions`.
-
-            - Promotes each project's docs default to the latest release eligible under each project’s configured policy and moves the matching submodule pointer.
-            - Refreshes the development channel SHAs (`development` in
-              `data/docs_versions.json`) from each project's tracked upstream ref
-              so the unreleased "Development" docs stay current.
-
-            This PR is opened only after `make check` (build plus internal
-            link/fragment and presentation checks) passes on the updated
-            snapshots. Review the catalog and pointer changes before merging.
-
-            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          body-path: ${{ runner.temp }}/pr-body.md
           delete-branch: true
 
       # The pull request is opened with github.token, which fires no

@@ -28,6 +28,7 @@ DATA_OUT = CACHE / "docs-data"
 STATIC_OUT = CACHE / "docs-static"
 CATALOG = ROOT / "data" / "docs_versions.json"
 NAVIGATION = ROOT / "data" / "docs_navigation.json"
+MOVES = ROOT / "data" / "docs_moves.json"
 EXAMPLE_METADATA = ROOT / "data" / "example_metadata.json"
 ENHANCEMENTS_CATALOG = ROOT / "data" / "enhancements.json"
 ENHANCEMENTS_BUILD = DATA_OUT / "enhancements_build.json"
@@ -309,11 +310,7 @@ def update_doc_versions() -> None:
         if existing and existing["version"] != tag:
             raise RuntimeError(f"{product} catalog maps {tag} to version {existing['version']}; review that mapping manually")
         for required in config["required"]:
-            result = subprocess.run(
-                ["git", "-C", str(repo), "cat-file", "-e", f"{sha}:{required}"],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            )
-            if result.returncode:
+            if not has_required(repo, sha, product, required):
                 raise RuntimeError(f"{product} {tag} is missing required docs path {required}")
         updates[product] = (tag, sha, repo)
 
@@ -375,7 +372,7 @@ def excluded_path(rel: str, exclude: list[str]) -> bool:
     return False
 
 
-def selected_files(repo: Path, config: dict) -> list[Path]:
+def selected_files(repo: Path, config: dict, product: str) -> list[Path]:
     # Every Markdown file under the content root is published unless it is
     # listed in `exclude`, so new upstream pages appear with no catalog edit.
     content_root = repo / config["content_root"]
@@ -386,7 +383,7 @@ def selected_files(repo: Path, config: dict) -> list[Path]:
             if path.is_file() and not excluded_path(path.relative_to(repo).as_posix(), exclude):
                 chosen.add(path)
     for required in config["required"]:
-        if not (repo / required).is_file():
+        if not any((repo / path).is_file() for path in required_candidates(product, required)):
             raise RuntimeError(f"required {required} is missing from {repo.name} snapshot")
     return sorted(chosen)
 
@@ -1425,9 +1422,36 @@ def fallback_summary(product: str, source_path: str) -> str:
     return f"Documentation for {title} in the {product} project."
 
 
+def moved_from(product: str) -> dict[str, str]:
+    """New source path -> old source path for pages that moved upstream."""
+    moves = json.loads(MOVES.read_text(encoding="utf-8")) if MOVES.exists() else {}
+    return {new: old for old, new in moves.get(product, {}).items()}
+
+
+def required_candidates(product: str, required: str) -> list[str]:
+    """A required page may live at its old path or where it moved upstream."""
+    moved = {old: new for new, old in moved_from(product).items()}.get(required)
+    return [required, *([moved] if moved else [])]
+
+
+def has_required(repo: Path, sha: str, product: str, required: str) -> bool:
+    return any(
+        subprocess.run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}:{path}"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+        for path in required_candidates(product, required)
+    )
+
+
+def article_for(product: str, source_path: str, articles: dict) -> dict | None:
+    """Curated metadata for a page, inherited from its old path when it moved."""
+    if source_path in articles:
+        return articles[source_path]
+    return articles.get(moved_from(product).get(source_path, ""))
+
+
 def page_metadata(product: str, source_path: str, original: str, navigation: dict) -> dict:
     product_navigation = navigation.get("products", {}).get(product, {})
-    override = product_navigation.get("articles", {}).get(source_path, {})
+    override = article_for(product, source_path, product_navigation.get("articles", {})) or {}
     need = override.get("reader_need", fallback_need(product, source_path))
     if need not in (*ARTICLE_NEEDS, *OTHER_NEEDS):
         raise RuntimeError(f"invalid reader_need {need!r} for {product}:{source_path}")
@@ -1467,12 +1491,12 @@ def validate_navigation(source_catalog: dict, navigation: dict) -> None:
             raise RuntimeError(f"{product} docs navigation start path is not classified")
         selected = {
             path.relative_to(SOURCES / product).as_posix()
-            for path in selected_files(SOURCES / product, config)
+            for path in selected_files(SOURCES / product, config, product)
             if path.suffix.lower() == ".md"
         }
         fallbacks: list[str] = []
         for source_path in selected:
-            metadata = articles.get(source_path)
+            metadata = article_for(product, source_path, articles)
             if metadata is None:
                 # Pages without curated metadata are still published; they use
                 # derived reader need, topic, ordering, and summary.
@@ -1484,8 +1508,9 @@ def validate_navigation(source_catalog: dict, navigation: dict) -> None:
                 raise RuntimeError(f"{product}:{source_path} is missing its navigation topic")
             if not isinstance(metadata.get("order"), int):
                 raise RuntimeError(f"{product}:{source_path} is missing its navigation order")
+            moves = {old: new for new, old in moved_from(product).items()}
             for related_path in metadata.get("related", []):
-                if related_path not in selected:
+                if related_path not in selected and moves.get(related_path) not in selected:
                     raise RuntimeError(f"{product}:{source_path} points to an unpublished related source path: {related_path}")
             summary = metadata.get("summary") or summarize((SOURCES / product / source_path).read_text(encoding="utf-8"))
             if len(summary) < 20 or summary.endswith(":"):
@@ -2401,7 +2426,7 @@ def prepare(mode: str) -> None:
             extracted = CACHE / "source" / product / version
             shutil.rmtree(extracted, ignore_errors=True)
             archived_source(repo, sha, config, extracted)
-            selected_source = selected_files(extracted, config)
+            selected_source = selected_files(extracted, config, product)
             mapping: dict[str, str] = {}
             for source_file in selected_source:
                 source_rel = source_file.relative_to(extracted).as_posix()
@@ -2509,7 +2534,7 @@ def prepare(mode: str) -> None:
                                         text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
                 edit_branch = result.stdout.strip().removeprefix("origin/") if result.returncode == 0 else ""
         dev_label = f"Development ({dev_sha[:12]})"
-        source_files = selected_files(dev_source, config)
+        source_files = selected_files(dev_source, config, product)
         known_paths = repo_paths(repo, dev_sha, working=dev_working)
         mapping = {}
         for source_file in source_files:
@@ -2626,8 +2651,7 @@ def add_docs_version(product: str, ref: str) -> None:
     run(["git", "-C", str(repo), "fetch", "--no-tags", "--depth=1", "origin", f"refs/tags/{ref}:refs/tags/{ref}"])
     sha = git(repo, "rev-parse", f"{ref}^{{commit}}")
     for required in config["required"]:
-        result = subprocess.run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}:{required}"])
-        if result.returncode:
+        if not has_required(repo, sha, product, required):
             raise RuntimeError(f"{product} {ref} is missing required docs path {required}")
     config["releases"].append({"version": ref, "label": ref, "tag": ref, "sha": sha, "default": False})
     config["releases"].sort(key=lambda entry: tuple(int(n) for n in re.findall(r"\d+", entry["version"])), reverse=True)
