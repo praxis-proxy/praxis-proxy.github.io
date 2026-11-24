@@ -681,6 +681,29 @@
           "order": 45,
           "related": [],
           "navigation_section": "reference"
+        },
+        "docs/getting-started/route-requests.md": {
+          "source_path": "docs/getting-started/route-requests.md",
+          "reader_need": "Tutorial",
+          "topic": "First Proxy",
+          "order": 20,
+          "navigation_section": "start",
+          "related": [
+            "docs/getting-started/quickstart.md",
+            "docs/operating/load-balancing.md",
+            "docs/filters/http/traffic_management/router.md"
+          ]
+        },
+        "docs/operating/reload.md": {
+          "source_path": "docs/operating/reload.md",
+          "reader_need": "How-to",
+          "topic": "Operating",
+          "order": 35,
+          "navigation_section": "operate",
+          "related": [
+            "docs/operating/configuration.md",
+            "docs/operating/diagnostics.md"
+          ]
         }
       },
       "overview": "docs/README.md",

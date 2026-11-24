@@ -71,7 +71,9 @@ ownership decisions.
   reader-facing labels. An entry that no longer resolves, even through
   `docs_moves.json`, fails the build. In the shared Gateway tab, a label used
   by both the AI and core projects gets an automatic AI/Core tag; prefer a
-  group or a distinct label over relying on it. Pages it does not place stay
+  group or a distinct label over relying on it. Prefix an entry with `?` to
+  place a page that has merged upstream but not shipped: it stays hidden
+  until the default release publishes it. Drop the `?` once it ships. Pages it does not place stay
   reachable under "More". Archived and development releases keep the
   navigation derived from `docs_navigation.json`.
 - `data/example_metadata.json` holds curated task names, summaries,

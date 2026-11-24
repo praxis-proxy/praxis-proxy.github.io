@@ -1,5 +1,5 @@
 {
- "_comment": "Curated sidebar for each documentation tab at its default release. Items: '<product>:<source_path>[|label]' resolves against that product's default release; 'page:<path>[|label]'; 'examples:<product>|label'; 'link:<path>|label|tag' leaves the tab. {group,items} renders collapsible; {rest,label} lists published pages not placed elsewhere. Archived and development releases keep the derived navigation.",
+ "_comment": "Curated sidebar for each documentation tab at its default release. Items: '<product>:<source_path>[|label]' resolves against that product's default release, and a leading '?' skips it until that release publishes the page; 'page:<path>[|label]'; 'examples:<product>|label'; 'link:<path>|label|tag' leaves the tab. {group,items} renders collapsible; {rest,label} lists published pages not placed elsewhere. Archived and development releases keep the derived navigation.",
  "product_tree": {
   "ai": "gateway",
   "praxis": "gateway",
@@ -24,6 +24,7 @@
       "ai:docs/client-provider-paths.md|Choose a client and provider",
       "ai:docs/recipes/README.md|Recipes",
       "page:/guides/first-proxy|Run a standalone proxy",
+      "?praxis:docs/getting-started/route-requests.md|Route requests to two backends",
       "page:/guides/install|Install and run",
       "ai:docs/quickstart.md|Build from source",
       "examples:ai|Configuration examples"
@@ -116,6 +117,7 @@
       "page:/gateway/operate|Operate the gateway",
       "page:/guides/use-filters|Choose and configure filters",
       "praxis:docs/operating/configuration.md|Runtime configuration",
+      "?praxis:docs/operating/reload.md|Rehearse a reload",
       "praxis:docs/operating/tls.md|TLS",
       "praxis:docs/operating/build-features.md|Build features",
       {
