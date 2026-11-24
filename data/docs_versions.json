@@ -8,7 +8,7 @@
       "default": "v0.8.0",
       "development": {
         "ref": "main",
-        "sha": "569ea47c5b58b8b29df1e7c534a8ba626c613612"
+        "sha": "ee2844f745623b0b2c84a0413b536c21256371ac"
       },
       "exclude": [
         "docs/proposals/**"
@@ -67,7 +67,7 @@
       "default": "v0.12.1",
       "development": {
         "ref": "main",
-        "sha": "15232ac34291625fcdced929d70497012eb2c87e"
+        "sha": "7e069addf9042e0658bb2bf7e15fd8613f25a3fc"
       },
       "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
       "extra_assets": [
@@ -159,7 +159,7 @@
       "default": "v0.7.0",
       "development": {
         "ref": "main",
-        "sha": "156d253ef7d93a163c92493b40ff38aa743ffd96"
+        "sha": "b8383d5a56664fb38db4ed0eebacd9529122b5bb"
       },
       "status": "The public API is still evolving; breaking changes are documented in the changelog.",
       "exclude": [],
@@ -203,7 +203,7 @@
       "default": "v0.3.2",
       "development": {
         "ref": "main",
-        "sha": "984a989a3f315460d1c712627783bf1d3bd1205a"
+        "sha": "1fdcb74f198e981b7834ae5ea6d96e5a35490394"
       },
       "status": "Grid is a technical preview; review its release-scoped deployment requirements and limitations.",
       "exclude": [],

@@ -3,6 +3,8 @@ title = "Praxis request flow"
 description = "How filters, listener chains, backend selection, and reload fit together."
 type = "guides"
 weight = 10
+# Describes diagrams from a pinned source commit; see check-authored-versions.py.
+pinned_source = true
 +++
 
 Praxis is a configurable HTTP reverse proxy and TCP forwarding server. This guide answers three operator questions before opening the deeper Rust architecture: what can a filter do to a request, how does configuration connect a listener to a backend, and what changes during reload?

@@ -9,9 +9,16 @@
 {{- else -}}
   {{- $pages := where (where (where site.Pages "Params.product" .product) "Params.version" $version) "Params.source_path" $navigation.start -}}
   {{- with index $pages 0 }}{{ $href = .RelPermalink }}{{ end -}}
-  {{- /* A release where the start page moved uses its new path. */ -}}
+  {{- /* A release where the start page moved uses its new path: an explicit
+    start_fallbacks entry when the start role moved to a different page,
+    otherwise the rename map. */ -}}
   {{- range $navigation.start_fallbacks -}}
     {{- if not $href -}}
+      {{- with index (where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .) 0 }}{{ $href = .RelPermalink }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $href -}}
+    {{- with index (index hugo.Data.docs_moves .product | default dict) $navigation.start -}}
       {{- with index (where (where (where site.Pages "Params.product" $.product) "Params.version" $version) "Params.source_path" .) 0 }}{{ $href = .RelPermalink }}{{ end -}}
     {{- end -}}
   {{- end -}}

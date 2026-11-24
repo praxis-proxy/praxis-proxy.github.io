@@ -1,0 +1,13 @@
+{{- /* Returns the imported page for a source path on its project's default
+  release, or false. A path listed in data/docs_moves.json also resolves by its
+  new location, so a release that moves the page needs no template edit. */ -}}
+{{- $product := index hugo.Data.docs_build_versions.products .product -}}
+{{- $release := where (where site.Pages "Params.product" .product) "Params.version" $product.default -}}
+{{- $page := false -}}
+{{- with index (where $release "Params.source_path" .source) 0 }}{{ $page = . }}{{ end -}}
+{{- if not $page -}}
+  {{- with index (index hugo.Data.docs_moves .product | default dict) .source -}}
+    {{- with index (where $release "Params.source_path" .) 0 }}{{ $page = . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $page -}}

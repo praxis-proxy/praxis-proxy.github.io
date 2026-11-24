@@ -11,7 +11,7 @@ topic = "First run"
 
 Use Praxis to forward a request to a real HTTP backend. Configure its built-in `router` and `load_balancer` filters in YAML.
 
-You need Docker Engine with Linux AMD64 support (native or emulated), `curl`, and an internet connection to pull the two images. The published Praxis v0.7.2 image requires `linux/amd64`; the commands select that platform explicitly. The Praxis image listens on container port `8080`; the echo service listens on port `3000`.
+You need Docker Engine with Linux AMD64 support (native or emulated), `curl`, and an internet connection to pull the two images. The published Praxis {{< product-release product="praxis" />}} image requires `linux/amd64`; the commands select that platform explicitly. The Praxis image listens on container port `8080`; the echo service listens on port `3000`.
 
 ## Start the echo service
 

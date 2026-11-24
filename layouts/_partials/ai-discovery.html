@@ -7,18 +7,21 @@
     <p>{{ .summary }}</p>
     <ul class="ai-discovery__cards">
       {{- range .cards -}}
-        {{- $source := .source -}}
-        {{- if and (eq $version "dev") .dev_source }}{{ $source = .dev_source }}{{ end -}}
-        {{- $matches := where $pages "Params.source_path" $source -}}
-        {{- if and (not $matches) hugo.Data.docs_build_versions.preview }}{{ $matches = where $pages "Params.source_path" .source }}{{ end -}}
+        {{- /* Prefer the new-layout page (dev_source) in any release that
+          publishes it, then the original path, then where that path moved. */ -}}
+        {{- $matches := slice -}}
+        {{- $viaDev := false -}}
+        {{- with .dev_source }}{{ $matches = where $pages "Params.source_path" . }}{{ $viaDev = gt (len $matches) 0 }}{{ end -}}
+        {{- if not $matches }}{{ $matches = where $pages "Params.source_path" .source }}{{ end -}}
+        {{- if not $matches }}{{ with index hugo.Data.docs_moves.ai .source }}{{ $matches = where $pages "Params.source_path" . }}{{ end }}{{ end -}}
         {{- $card := . -}}
         {{- with index $matches 0 }}
           {{- $href := .RelPermalink -}}
-          {{- if and (eq $version "dev") (not hugo.Data.docs_build_versions.preview) $card.dev_fragment }}{{ $href = printf "%s#%s" $href $card.dev_fragment }}{{ end -}}
+          {{- if and $viaDev $card.dev_fragment }}{{ $href = printf "%s#%s" $href $card.dev_fragment }}{{ end -}}
       <li><h3><a href="{{ $href }}">{{ $card.title }}</a></h3><p>{{ $card.summary }}</p></li>
         {{- else -}}
           {{- if or (eq $version "dev") (eq $version (index hugo.Data.docs_build_versions.products "ai").default) -}}
-          {{- errorf "Missing AI discovery target %s in %s" $source $version -}}
+          {{- errorf "Missing AI discovery target %s in %s" $card.source $version -}}
           {{- end -}}
         {{- end -}}
       {{- end }}

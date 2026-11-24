@@ -90,10 +90,18 @@ def main():
         checked += 1
     assert checked > 0, 'Build the website first'
     navigation = json.loads((ROOT / 'data/docs_navigation.json').read_text())
+    moves = json.loads((ROOT / 'data/docs_moves.json').read_text())
     sources = json.loads((ROOT / '.cache/docs-data/docs_sources.json').read_text())
-    expected_tasks = {next(x['url'] for x in sources if x['product'] == product
-                           and x['version'] == default
-                           and x['source_path'] == navigation['products'][product]['start'])
+
+    def start_url(product, version):
+        # The start page, or where it moved: start_fallbacks, then the rename map.
+        start = navigation['products'][product]['start']
+        starts = [start, *navigation['products'][product].get('start_fallbacks', []),
+                  *([moves[product][start]] if start in moves.get(product, {}) else [])]
+        return next(x['url'] for path in starts for x in sources
+                    if x['product'] == product and x['version'] == version and x['source_path'] == path)
+
+    expected_tasks = {start_url(product, default)
                       for product, default in defaults.items() if product not in {'praxis', 'ai'}}
     expected_tasks.add('/guides/first-proxy/')
     expected_tasks.add('/ai/container-quickstart/')
@@ -122,11 +130,7 @@ def main():
     assert f'/ai/{defaults["ai"]}/examples/' in ai_guide.docs_links
     for product in ('praxis', 'ai'):
         for version in versions[product] - {defaults[product]}:
-            starts = [navigation['products'][product]['start'],
-                      *navigation['products'][product].get('start_fallbacks', [])]
-            archived_start = next(x['url'] for start in starts for x in sources
-                                  if x['product'] == product and x['version'] == version
-                                  and x['source_path'] == start)
+            archived_start = start_url(product, version)
             overview = Page((public / product / version / 'index.html').read_text())
             assert archived_start in overview.docs_links, f'{product}/{version}: missing version-specific start'
             assert '/ai/container-quickstart/' not in overview.docs_links

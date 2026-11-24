@@ -3,6 +3,8 @@ title = "Policy decisions and effects"
 description = "How the independent Policy Engine uses identity and policy to control agent operations."
 type = "guides"
 weight = 30
+# Describes diagrams from a pinned source commit; see check-authored-versions.py.
+pinned_source = true
 +++
 
 The Praxis Policy Engine (PPE) is an independent policy runtime. This guide answers why one operation can produce different results for different callers, then shows where identity and enforcement sit. It is optional to Praxis and Praxis AI deployments.

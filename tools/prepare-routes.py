@@ -12,6 +12,8 @@ def main():
     products = json.loads((ROOT / '.cache/docs-data/docs_build_versions.json').read_text())['products']
     sources = json.loads((ROOT / '.cache/docs-data/docs_sources.json').read_text())
     lookup = {(x['product'], x['version'], x['source_path']): x['url'] for x in sources}
+    # A page that moved upstream keeps its historical redirect at the new path.
+    moves = json.loads((ROOT / 'data/docs_moves.json').read_text())
     destination = ROOT / '.cache/docs'
     destination.mkdir(parents=True, exist_ok=True)
     assert len(routes) == 40 and len({r['source'] for r in routes}) == 40, 'Expected the complete original URL inventory'
@@ -23,7 +25,11 @@ def main():
         target = route['target']
         if route['action'] == 'versioned-page':
             product = route['product']
-            target = lookup[(product, products[product]['default'], route['source_path'])]
+            default = products[product]['default']
+            path = route['source_path']
+            if (product, default, path) not in lookup:
+                path = moves.get(product, {}).get(path, path)
+            target = lookup[(product, default, path)]
             if route.get('fragment'):
                 target += '#' + route['fragment']
         assert urlsplit(target).scheme in ('', 'https'), target

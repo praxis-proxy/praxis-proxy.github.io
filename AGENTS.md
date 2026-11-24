@@ -51,18 +51,29 @@ ownership decisions.
   back to a derived reader need, topic, order, and summary, and `prepare`
   prints a warning listing those pages so they can be curated. Use the
   [Diátaxis framework](https://diataxis.fr/) to classify a page by its
-  reader's need, not its filename. When an upstream page moves, keep the old
-  article key for releases that still publish it and add the new key, list the
-  new path in the journey step's `source_fallbacks` and the product's
-  `start_fallbacks` until every published release has it.
+  reader's need, not its filename.
+- `data/docs_moves.json` maps each upstream page that moved after a project's
+  default release from its old to its new source path. Keep curated metadata,
+  sidebar entries, `docs-link` targets, journey steps, and `required` paths
+  on the old path: a release that ships the move resolves them by the new
+  path, so the weekly update promotes it without edits. When an upstream
+  reorganization merges, regenerate the project's entries with
+  `git diff -M --name-status <default sha> <development sha> -- <content_root>`
+  and map deleted-and-rewritten pages by hand. Use `start_fallbacks` only when
+  the start role moves to a different page than the old start page's content.
+  Look up imported pages through `mx/doc-page.html` (or `docs-link`/
+  `mx/doc-href.html`), never by matching `source_path` directly. Drop entries
+  once no published release uses the old path.
 - `data/docs_sidebar.json` is the curated sidebar for each documentation tab
   (Gateway, which joins the AI and core projects, then Policy and Grid) at
   each project's default release. Order it as get started, task guides,
   concepts, reference, then extend and contribute, and give pages
-  reader-facing labels. An entry that no longer resolves fails the build, so
-  update it when a default release moves or renames a page. Pages it does not
-  place stay reachable under "More". Archived and development releases keep
-  the navigation derived from `docs_navigation.json`.
+  reader-facing labels. An entry that no longer resolves, even through
+  `docs_moves.json`, fails the build. In the shared Gateway tab, a label used
+  by both the AI and core projects gets an automatic AI/Core tag; prefer a
+  group or a distinct label over relying on it. Pages it does not place stay
+  reachable under "More". Archived and development releases keep the
+  navigation derived from `docs_navigation.json`.
 - `data/example_metadata.json` holds curated task names, summaries,
   prerequisites, outcomes, and featured examples. Keep it aligned with the
   original source path and actual example behavior. Derive lists from source
@@ -99,6 +110,13 @@ ownership decisions.
   validation/start commands, the expected result, and cleanup when relevant.
   Verify behavior against the selected binary/image when making a runtime
   claim; distinguish that result from syntax checks or source review.
+- Hand-written pages must not name a project release: use
+  `{{< product-release >}}` for the version and `path=` links to release
+  files. A page with release-specific claims carries
+  `{{< release-checked product=... release=... >}}`, which shows readers a
+  notice once the default moves on; re-check the claims and bump the marker.
+  `tools/check-authored-versions.py` (part of `make check`) enforces this, and
+  the weekly update PR lists pages to re-check.
 - Preserve release context in links and page controls. Identify default,
   archived, and development content accurately. Resolve each `latest` alias
   from that project's catalog default, and recheck it after promotion. Keep

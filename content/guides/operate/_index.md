@@ -14,7 +14,7 @@ Praxis routes HTTP requests through configurable filters and can forward opaque 
 
 - **Route a request and balance across endpoints:** {{< docs-link product="praxis" source="docs/operating/load-balancing.md" label="routing and load balancing" >}}.
 - **Configure one listener, chains, and the full YAML schema:** {{< docs-link product="praxis" source="docs/operating/configuration.md" label="the configuration guide" >}}.
-- **Forward an opaque TCP connection:** {{< docs-link product="praxis" source="docs/architecture/tcp-proxy.md" label="the TCP proxy guide" >}}. TCP forwarding uses a separate listener mode. Praxis v0.7.2 does not implement HTTP CONNECT tunneling.
+- **Forward an opaque TCP connection:** {{< docs-link product="praxis" source="docs/architecture/tcp-proxy.md" label="the TCP proxy guide" >}}. TCP forwarding uses a separate listener mode. HTTP CONNECT tunneling is not implemented; see the [capability matrix]({{< relref "../../praxis/capabilities.md" >}}).
 
 ## Protect connections and traffic
 
@@ -24,8 +24,8 @@ Praxis routes HTTP requests through configurable filters and can forward opaque 
 
 ## Observe and update a running proxy
 
-- **Inspect health endpoints, metrics, access logs, and tracing:** {{< docs-link product="praxis" source="docs/operating/observability.md" label="observability" >}}. The default build includes the admin API, but endpoint availability depends on the `admin.address` configuration; OpenTelemetry export requires the `otel` build feature.
+- **Inspect health endpoints, metrics, access logs, and tracing:** {{< docs-link product="praxis" source="docs/operating/observability.md" label="observability" >}}. The default build includes the admin API, but its listeners bind only when configured: `admin.metrics_address` serves health and metrics, and `admin.address` serves the management API; OpenTelemetry export requires the `otel` build feature.
 - **Validate a configuration and understand reload boundaries:** {{< docs-link product="praxis" source="docs/operating/configuration.md" label="configuration and reload behavior" >}}. Use `praxis --validate --config <file>` before a restart or rollout. Supported config-file changes reload in default builds; listener topology and protocol changes require a restart.
-- **Check which functionality your binary includes:** {{< docs-link product="praxis" source="docs/operating/build-features.md" label="the build-feature reference" >}} and the [Praxis v0.7.2 capability matrix]({{< relref "../../praxis/capabilities.md" >}}).
+- **Check which functionality your binary includes:** {{< docs-link product="praxis" source="docs/operating/build-features.md" label="the build-feature reference" >}} and the [Praxis capability matrix]({{< relref "../../praxis/capabilities.md" >}}).
 
 For a running first request, see the [first reverse-proxy tutorial]({{< relref "../first-proxy.md" >}}). To adapt examples to your own service, use the [example catalog]({{< relref "../../examples/_index.md" >}}).

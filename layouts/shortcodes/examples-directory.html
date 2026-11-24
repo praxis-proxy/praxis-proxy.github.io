@@ -26,7 +26,7 @@
     <p class="example-index__browse"><a href="{{ printf "%s/%s/examples/" $id $project.default | relURL }}">Browse all {{ $project.name }} examples <span aria-hidden="true">&rarr;</span></a></p>
     {{- else if eq $id "policy" -}}
     <p>Start with the policy quickstart and its included authorization and redaction scenario.</p>
-    {{- $start := index (where $pages "Params.source_path" "docs/content/quickstart.md") 0 -}}
+    {{- $start := partial "mx/doc-page.html" (dict "product" "policy" "source" "docs/content/quickstart.md") -}}
     {{- with $start }}<p class="example-index__browse"><a href="{{ .RelPermalink }}">Follow the Policy quickstart <span aria-hidden="true">&rarr;</span></a></p>{{ end -}}
     {{- else if eq $id "grid" -}}
     <p>Browse Grid's versioned Helm and gateway source examples.</p>

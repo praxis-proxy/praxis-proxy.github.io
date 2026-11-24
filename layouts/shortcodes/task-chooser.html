@@ -19,10 +19,7 @@
   {{- range $id := $order -}}
     {{- $product := index $products $id -}}
     {{- $nav := index $navigation $id -}}
-    {{- $productPages := where (where site.Pages "Params.product" $id) "Params.version" $product.default -}}
-    {{- $startPages := where $productPages "Params.source_path" $nav.start -}}
-    {{- $startHref := "" -}}
-    {{- with index $startPages 0 }}{{ $startHref = .RelPermalink }}{{ end -}}
+    {{- $startPage := partial "mx/doc-page.html" (dict "product" $id "source" $nav.start) -}}
     {{- $icon := resources.Get (printf "icons/product-%s.svg" $id) -}}
     <article class="task-card task-card--{{ $id }}">
       <div class="task-card__top">
@@ -37,7 +34,7 @@
       <a class="task-card__action" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy <span aria-hidden="true">→</span></a>
       {{- else if eq $id "ai" -}}
       <a class="task-card__action" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run Praxis AI <span aria-hidden="true">→</span></a>
-      {{- else -}}{{- with index $startPages 0 -}}
+      {{- else -}}{{- with $startPage -}}
       <a class="task-card__action" href="{{ .RelPermalink }}">Get started: {{ .Title }} <span aria-hidden="true">→</span></a>
       {{- end -}}{{- end -}}
       {{- if $nav.development_summary }}<p class="task-card__secondary"><a href="{{ partial "docs-start.html" (dict "product" $id "version" "dev") }}">New onboarding · Development (unreleased)</a></p>{{ end -}}

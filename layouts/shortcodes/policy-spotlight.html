@@ -1,6 +1,6 @@
 {{- $docs := index hugo.Data.docs_build_versions.products "policy" -}}
 {{- $pages := where (where site.RegularPages "Params.product" "policy") "Params.version" $docs.default -}}
-{{- $quickstart := index (where $pages "Params.source_path" "docs/content/quickstart.md") 0 -}}
+{{- $quickstart := partial "mx/doc-page.html" (dict "product" "policy" "source" "docs/content/quickstart.md") -}}
 <section class="home-section project-spotlight project-spotlight--policy" aria-labelledby="policy-spotlight-title" data-motion-scene>
   <div class="project-spotlight__inner">
     <div class="project-spotlight__copy">

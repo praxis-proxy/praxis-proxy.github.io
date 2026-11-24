@@ -72,6 +72,7 @@ check:
 # links such as /docs/page/ to the files directly under the build directory.
 check-in-container: build-in-container
 	python3 tools/test-release-policy.py
+	python3 tools/check-authored-versions.py
 	python3 tools/docs.py check-adapter
 	python3 tools/check-presentation.py --public "$(HUGO_DESTINATION)"
 	lychee --offline --include-fragments=anchor-only --index-files index.html \

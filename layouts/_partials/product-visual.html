@@ -3,8 +3,8 @@
 {{- $sourcePaths := dict "praxis" "docs/architecture/overview.md" "ai" "docs/architecture/ai-inference.md" "policy" "docs/content/index.md" -}}
 {{- $alt := dict "praxis" "Requests pass through a named listener and ordered Praxis filter pipeline to an upstream; response hooks run in reverse." "ai" "An inference request is classified, processed by AI filters, and routed to a model provider." "policy" "Agent operations pass through policy, effects, plugins, and enforcement, with identity and session state at the boundary." -}}
 {{- $captions := dict "praxis" "A listener assembles filters into a pipeline. Read the default-release architecture overview." "ai" "Praxis AI classifies and enriches inference requests before provider routing. Read the inference architecture." "policy" "PPE checks verified identity, evaluates policy, applies effects, and enforces the result. Read the default-release overview." -}}
-{{- $productPages := where (where site.RegularPages "Params.product" $id) "Params.version" $product.default -}}
-{{- $sourcePage := index (where $productPages "Params.source_path" (index $sourcePaths $id)) 0 -}}
+{{- $sourcePage := false -}}
+{{- with index $sourcePaths $id }}{{ $sourcePage = partial "mx/doc-page.html" (dict "product" $id "source" .) }}{{ end -}}
 {{- $image := "" -}}
 {{- if eq $id "policy" -}}
   {{- $image = printf "%s/%s/_assets/docs/images/ppe_overview.svg" $id $product.default | relURL -}}

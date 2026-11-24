@@ -2,10 +2,10 @@
 {{- $product := index hugo.Data.docs_build_versions.products $id -}}
 {{- $default := index (where $product.versions "slug" $product.default) 0 -}}
 {{- $nav := index hugo.Data.docs_navigation.products $id -}}
-{{- $productPages := where (where site.RegularPages "Params.product" $id) "Params.version" $product.default -}}
-{{- $startPages := where $productPages "Params.source_path" $nav.start -}}
+{{- $startPage := partial "mx/doc-page.html" (dict "product" $id "source" $nav.start) -}}
 {{- $architectureSources := dict "praxis" "docs/architecture/overview.md" "ai" "docs/architecture/ai-inference.md" "policy" "docs/content/index.md" -}}
-{{- $architecturePages := where $productPages "Params.source_path" (index $architectureSources $id) -}}
+{{- $architecturePage := false -}}
+{{- with index $architectureSources $id }}{{ $architecturePage = partial "mx/doc-page.html" (dict "product" $id "source" .) }}{{ end -}}
 {{- $icon := resources.Get (printf "icons/product-%s.svg" $id) -}}
 {{- $needs := slice "How-to" "Tutorial" "Reference" "Explanation" -}}
 <section class="product-overview" aria-label="{{ $product.name }} project overview">
@@ -16,7 +16,7 @@
       <p class="product-start-action"><a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "praxis") }}">Run your first proxy</a></p>
       {{- else if eq $id "ai" -}}
       <p class="product-start-action"><a class="btn btn-primary" href="{{ partial "docs-start.html" (dict "product" "ai") }}">Run Praxis AI</a></p>
-      {{- else -}}{{- with index $startPages 0 -}}
+      {{- else -}}{{- with $startPage -}}
       <p class="product-start-action"><a class="btn btn-primary" href="{{ .RelPermalink }}">Get started: {{ .Title }}</a></p>
       {{- end -}}{{- end -}}
       {{- with $product.status }}<p class="product-status">{{ . }}</p>{{ end -}}
@@ -31,9 +31,7 @@
     <a href="{{ "guides/operate/" | relURL }}">Operate your proxy</a>
     {{- end }}
     {{- if ne $id "policy" }}<a href="{{ printf "%s/%s/examples/" $id $product.default | relURL }}">Configuration examples</a>{{ end }}
-    {{- if $architecturePages -}}
-      {{- with index $architecturePages 0 }}<a href="{{ .RelPermalink }}">Understand the architecture</a>{{ end -}}
-    {{- end }}
+    {{- with $architecturePage }}<a href="{{ .RelPermalink }}">Understand the architecture</a>{{ end }}
   </nav>
   {{- if eq $id "praxis" }}
   <p><strong>For Rust developers:</strong> <a href="{{ "guides/extend/" | relURL }}">Extend Praxis with Rust</a></p>

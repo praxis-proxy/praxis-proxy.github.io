@@ -56,7 +56,7 @@
     </header>
     {{- if $entries }}
     <ol class="mx-log__entries">
-      {{- range first $limit $entries }}
+      {{- range $i, $_ := first $limit $entries }}
       {{- $tag := printf "v%s" (strings.TrimPrefix "v" .version) -}}
       {{- $docs := where $p.versions "tag" $tag -}}
       <li class="mx-log__entry">
@@ -67,10 +67,19 @@
         </div>
         <div class="mx-log__body">
           {{- $md := replaceRE `\]\(([^h#)][^)]*)\)` (printf "](%s/blob/%s/$1)" $repo $current.tag) .body -}}
+          {{- /* Reference-style link definitions ([x]: path) point into the repository too. */ -}}
+          {{- $md = replaceRE `(?m)^(\[[^\]]+\]:[ \t]*)([^h#\s]\S*)` (printf "${1}%s/blob/%s/${2}" $repo $current.tag) $md -}}
           {{- $html := $.Page.RenderString (dict "display" "block") $md -}}
           {{- $html = replaceRE `<a class="mx-anchor"[^>]*>.*?</a>` "" $html -}}
           {{- $html = replaceRE `<h([3-6]) id="[^"]*"[^>]*>` `<h$1 class="mx-log__kind">` $html -}}
+          {{- /* Keep the latest release open; older ones collapse so the page scans. */ -}}
+          {{- if eq $i 0 }}
           {{ $html | safeHTML }}
+          {{- else }}
+          <details class="mx-log__details"><summary>Show changes in {{ $tag }}</summary>
+          {{ $html | safeHTML }}
+          </details>
+          {{- end }}
           <p class="mx-log__foot"><a href="{{ $repo }}/releases/tag/{{ $tag }}">Release on GitHub{{ $ext }}</a>{{ with $docs }}<a href="{{ printf "%s/%s/" $id (index . 0).slug | relURL }}">{{ $tag }} docs</a>{{ end }}</p>
         </div>
       </li>

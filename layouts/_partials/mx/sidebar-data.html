@@ -50,7 +50,10 @@
         {{- with index (where (index $resolve $ref) "Params.example_catalog" true) 0 }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: missing %s example catalog" $treeID $ref }}{{ end -}}
       {{- else -}}
         {{- $product = $kind -}}
-        {{- with index (where (index $resolve $kind) "Params.source_path" $ref) 0 }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: %s %s is not published at its default release; update data/docs_sidebar.json" $treeID $kind $ref }}{{ end -}}
+        {{- $page := index (where (index $resolve $kind) "Params.source_path" $ref) 0 -}}
+        {{- /* A page that moved upstream resolves by its new path once a release ships it. */ -}}
+        {{- if not $page }}{{ with index (index hugo.Data.docs_moves $kind | default dict) $ref }}{{ $page = index (where (index $resolve $kind) "Params.source_path" .) 0 }}{{ end }}{{ end -}}
+        {{- with $page }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: %s %s is not published at its default release; update data/docs_sidebar.json or data/docs_moves.json" $treeID $kind $ref }}{{ end -}}
       {{- end -}}
       {{- $placed = $placed | append $href -}}
       {{- $link := dict "kind" $kind "href" $href "label" ($label | default $title) "tag" $tag "product" $product -}}
@@ -62,6 +65,13 @@
   {{- end -}}
   {{- $sections = $sections | append (dict "id" .id "label" .label "badge" (.badge | default "") "items" $items) -}}
 {{- end -}}
+{{- /* Labels that more than one project uses in this tree; those links show
+  their project so readers can tell the AI gateway and core proxy apart. */ -}}
+{{- $seen := dict -}}
+{{- range $sections }}{{ range .items }}{{ range (cond (eq .kind "group") .items (slice .)) -}}
+  {{- if .product }}{{ $seen = merge $seen (dict .label (union (index $seen .label | default slice) (slice .product))) }}{{ end -}}
+{{- end }}{{ end }}{{ end -}}
+{{- $projects := dict "ai" "AI" "praxis" "Core" -}}
 {{- /* Second pass: published pages that no entry placed, so new upstream pages stay reachable. */ -}}
 {{- $final := slice -}}
 {{- range $sections -}}
@@ -75,8 +85,16 @@
         {{- if not (in $placed .RelPermalink) }}{{ $rest = $rest | append (dict "kind" "doc" "href" .RelPermalink "label" .LinkTitle "tag" "" "product" .Params.product) }}{{ end -}}
       {{- end -}}
       {{- with $rest }}{{ $items = $items | append (dict "kind" "group" "label" $restLabel "items" .) }}{{ end -}}
+    {{- else if eq .kind "group" -}}
+      {{- $members := slice -}}
+      {{- range .items -}}
+        {{- $project := cond (gt (len (index $seen .label | default slice)) 1) (index $projects .product | default "") "" -}}
+        {{- $members = $members | append (merge . (dict "project" $project)) -}}
+      {{- end -}}
+      {{- $items = $items | append (merge . (dict "items" $members)) -}}
     {{- else -}}
-      {{- $items = $items | append . -}}
+      {{- $project := cond (gt (len (index $seen .label | default slice)) 1) (index $projects .product | default "") "" -}}
+      {{- $items = $items | append (merge . (dict "project" $project)) -}}
     {{- end -}}
   {{- end -}}
   {{- with $items }}{{ $final = $final | append (dict "id" $sec.id "label" $sec.label "badge" $sec.badge "items" .) }}{{ end -}}
