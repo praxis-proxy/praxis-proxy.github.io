@@ -8,7 +8,7 @@
       "default": "v0.8.0",
       "development": {
         "ref": "main",
-        "sha": "ee2844f745623b0b2c84a0413b536c21256371ac"
+        "sha": "b102332f8bdc3a931e73a28dca513044d46abb50"
       },
       "exclude": [
         "docs/proposals/**"
@@ -67,7 +67,7 @@
       "default": "v0.12.1",
       "development": {
         "ref": "main",
-        "sha": "7e069addf9042e0658bb2bf7e15fd8613f25a3fc"
+        "sha": "bcdcfdbcf9635ea1192b62088355fc98090da15e"
       },
       "status": "Praxis AI is alpha software; APIs and configuration may change before v1.0.0.",
       "extra_assets": [

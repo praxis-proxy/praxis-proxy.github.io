@@ -32,7 +32,10 @@
       {{- $members = slice $entry -}}
     {{- end -}}
     {{- range $members -}}
-      {{- $parts := split . "|" -}}
+      {{- /* A leading "?" marks an entry for a page that a coming release adds:
+        it is skipped until the default release publishes the page. */ -}}
+      {{- $optional := hasPrefix . "?" -}}
+      {{- $parts := split (strings.TrimPrefix "?" .) "|" -}}
       {{- $target := index $parts 0 -}}
       {{- $label := "" -}}{{- if gt (len $parts) 1 }}{{ $label = index $parts 1 }}{{ end -}}
       {{- $tag := "" -}}{{- if gt (len $parts) 2 }}{{ $tag = index $parts 2 }}{{ end -}}
@@ -53,11 +56,13 @@
         {{- $page := index (where (index $resolve $kind) "Params.source_path" $ref) 0 -}}
         {{- /* A page that moved upstream resolves by its new path once a release ships it. */ -}}
         {{- if not $page }}{{ with index (index hugo.Data.docs_moves $kind | default dict) $ref }}{{ $page = index (where (index $resolve $kind) "Params.source_path" .) 0 }}{{ end }}{{ end -}}
-        {{- with $page }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ errorf "docs_sidebar %s: %s %s is not published at its default release; update data/docs_sidebar.json or data/docs_moves.json" $treeID $kind $ref }}{{ end -}}
+        {{- with $page }}{{ $href = .RelPermalink }}{{ $title = .LinkTitle }}{{ else }}{{ if not $optional }}{{ errorf "docs_sidebar %s: %s %s is not published at its default release; update data/docs_sidebar.json or data/docs_moves.json" $treeID $kind $ref }}{{ end }}{{ end -}}
       {{- end -}}
-      {{- $placed = $placed | append $href -}}
-      {{- $link := dict "kind" $kind "href" $href "label" ($label | default $title) "tag" $tag "product" $product -}}
-      {{- if $isGroup }}{{ $groupItems = $groupItems | append $link }}{{ else }}{{ $items = $items | append $link }}{{ end -}}
+      {{- if $href -}}
+        {{- $placed = $placed | append $href -}}
+        {{- $link := dict "kind" $kind "href" $href "label" ($label | default $title) "tag" $tag "product" $product -}}
+        {{- if $isGroup }}{{ $groupItems = $groupItems | append $link }}{{ else }}{{ $items = $items | append $link }}{{ end -}}
+      {{- end -}}
     {{- end -}}
     {{- if $isGroup -}}
       {{- if $entry.rest }}{{ $items = $items | append (dict "kind" "rest" "product" $entry.rest "label" $entry.label) }}{{ else }}{{ $items = $items | append (dict "kind" "group" "label" $entry.group "items" $groupItems) }}{{ end -}}
