@@ -4,6 +4,7 @@ description = "Connect applications and agents to models and tools through a con
 +++
 
 {{< gateway-journeys >}}
+{{< release-checked product="ai" release="v0.12.1" >}}
 {{< gateway-spotlight >}}
 {{< praxis-spotlight >}}
 {{< community-cta >}}

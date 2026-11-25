@@ -143,5 +143,16 @@ python3 tools/check-onboarding.py --image ghcr.io/praxis-proxy/praxis:0.7.2
 ```
 
 
+### Homepage film
+
+The homepage film is rendered from `tools/video/intro.html`, a scene whose every frame is a pure function of time. Open it in a browser with `?play` to preview, or `?t=12.5` to inspect one moment. Its product claims are checked against the Praxis default release named in the `release-checked` marker on `content/_index.md`; when that marker goes stale, re-check the scene and the transcript in `layouts/_partials/mx/intro-film.html`, bump `$checked` there and the marker, and re-render with the QA Playwright install and `ffmpeg`:
+
+```sh
+NODE_PATH=/tmp/praxis-website-qa/node_modules node tools/video/render.cjs --stills 8,13,22,31,41
+NODE_PATH=/tmp/praxis-website-qa/node_modules node tools/video/render.cjs
+```
+
+Stills and the high-quality master go to ignored `output/video/`; the MP4, WebM, and poster go to `static/videos/`.
+
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fwebsite.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fwebsite?ref=badge_large)

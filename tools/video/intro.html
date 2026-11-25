@@ -1,0 +1,712 @@
+<!doctype html>
+<!--
+  Praxis introduction film. Every frame is a pure function of time:
+  seek(t) sets the whole scene, so tools/video/render.cjs can capture it
+  frame by frame. Open with ?t=12.5 to inspect a single moment.
+  Product claims are checked against the Praxis default release; re-check
+  them (and re-render) when the default moves on.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Praxis introduction</title>
+<style>
+@font-face { font-family: 'Plex'; src: url('../../static/fonts/IBMPlexSans-Regular.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Plex'; src: url('../../static/fonts/IBMPlexSans-SemiBold.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'PlexMono'; src: url('../../static/fonts/IBMPlexMono-Regular.woff2') format('woff2'); font-weight: 400; }
+:root {
+  --bg: #060a14; --panel: #0e1526; --panel2: #121b31; --line: #26304d; --text: #eef1ff; --muted: #97a1c6;
+  --lav: #bcb4ff; --violet: #6d4cff; --blue: #3e69f8; --cyan: #16a7ed; --teal: #08d8ba; --bad: #ff6b81; --warn: #ffb35c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+body { font-family: 'Plex', system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+#bg, #world, #ui { position: absolute; inset: 0; }
+.orb { position: absolute; width: 1400px; height: 1400px; border-radius: 50%; filter: blur(40px); will-change: transform; }
+#orb1 { background: radial-gradient(circle, #3b2a9a66 0%, #3b2a9a00 62%); }
+#orb2 { background: radial-gradient(circle, #0a8f9a40 0%, #0a8f9a00 60%); }
+#grid { position: absolute; inset: 0; background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 55%, #000 0%, transparent 100%); }
+#vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, #02040acc 100%); }
+svg { position: absolute; inset: 0; overflow: visible; }
+.card-label { font: 600 25px 'Plex'; fill: var(--text); }
+.card-sub { font: 400 16px 'PlexMono'; fill: var(--muted); }
+.chip-title { font: 600 15px 'Plex'; letter-spacing: .14em; fill: var(--muted); }
+.chip-val { font: 400 16px 'PlexMono'; fill: var(--text); }
+.pkt-label { font: 400 17px 'PlexMono'; fill: var(--text); }
+.core-title { font: 600 24px 'Plex'; fill: var(--text); letter-spacing: .02em; }
+.core-meta { font: 400 15px 'PlexMono'; fill: var(--muted); }
+.trace { font: 400 18px 'PlexMono'; fill: var(--lav); }
+.head { position: absolute; left: 0; right: 0; top: 92px; text-align: center; }
+.head h1 { font: 600 78px/1.06 'Plex'; letter-spacing: -.025em; }
+.head p { margin-top: 18px; font: 400 32px/1.3 'Plex'; color: var(--muted); }
+.w { display: inline-block; will-change: transform, opacity; white-space: pre; }
+.grad { background: linear-gradient(90deg, #8f73ff, #3e8bfa 45%, #16c3e0 75%, #08d8ba); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.beat { position: absolute; left: 0; right: 0; top: 956px; text-align: center; font: 400 27px 'Plex'; color: var(--text); }
+.beat b { font-weight: 600; color: var(--lav); }
+.foot { position: absolute; left: 0; right: 0; bottom: 26px; text-align: center; font: 400 17px 'Plex'; color: #7d87ad; }
+.panel { position: absolute; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(180deg, #111a2fee, #0b1222ee); box-shadow: 0 30px 80px #0008, inset 0 1px 0 #ffffff0d; overflow: hidden; }
+.panel header { display: flex; justify-content: space-between; align-items: center; height: 58px; padding: 0 26px; border-bottom: 1px solid var(--line); font: 600 17px 'Plex'; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.panel header span:last-child { font: 400 17px 'PlexMono'; letter-spacing: 0; text-transform: none; color: var(--lav); }
+.code { padding: 18px 26px; font: 400 22px/34px 'PlexMono'; white-space: pre; color: #c8cff0; }
+.code .ln { display: block; height: 34px; border-radius: 6px; padding: 0 8px; margin: 0 -8px; }
+.code.small { font-size: 19px; line-height: 30px; }
+.code.small .ln { height: 30px; }
+.k { color: #9fb4ff; } .s { color: #7fe3c9; } .n { color: #ffc27a; } .f { color: #d7b8ff; } .c { color: #6d779c; }
+.out { position: absolute; left: 26px; right: 26px; bottom: 22px; padding: 16px 20px; border-radius: 14px; background: #060b17; border: 1px solid var(--line); font: 400 24px 'PlexMono'; color: var(--text); }
+.out small { display: block; margin-bottom: 6px; font: 600 14px 'Plex'; letter-spacing: .14em; color: var(--muted); }
+.caret { display: inline-block; width: 12px; height: 26px; margin-left: 3px; vertical-align: -4px; background: var(--teal); }
+.pill { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 20px; border: 1px solid #343f63; border-radius: 99px; background: #0e1526cc; font: 400 19px 'Plex'; color: #d8ddf7; }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+.block { position: absolute; left: 0; width: 640px; height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border: 1px solid #34406a; border-radius: 14px; background: linear-gradient(90deg, #17213d, #111a30); font: 400 21px 'PlexMono'; color: var(--text); }
+.block em { font: 600 14px 'Plex'; font-style: normal; letter-spacing: .14em; color: var(--muted); }
+.block.yours { border: 2px dashed #08d8ba; background: #08d8ba12; }
+.block.yours em { color: var(--teal); }
+#end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#end img { width: 600px; }
+#end h2 { margin-top: 34px; font: 600 70px 'Plex'; letter-spacing: -.02em; }
+#end .row { display: flex; gap: 14px; margin-top: 40px; }
+#end .url { margin-top: 44px; font: 400 34px 'PlexMono'; color: var(--text); }
+#end .url u { text-decoration: none; background: linear-gradient(90deg, #8f73ff, #08d8ba) bottom / 100% 3px no-repeat; padding-bottom: 6px; }
+#flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 55%, #9d8cff55, transparent 55%); pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"><div class="orb" id="orb1"></div><div class="orb" id="orb2"></div><div id="grid"></div></div>
+  <div id="world">
+    <svg id="net" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <defs>
+        <linearGradient id="spec" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#6d4cff"/><stop offset=".45" stop-color="#3e69f8"/><stop offset=".72" stop-color="#16a7ed"/><stop offset="1" stop-color="#08d8ba"/></linearGradient>
+        <linearGradient id="coreFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1f45"/><stop offset="1" stop-color="#0d1328"/></linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="softglow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="22"/></filter>
+      </defs>
+      <g id="tangle"></g>
+      <g id="wires"></g>
+      <g id="cards"></g>
+      <g id="core"></g>
+      <g id="pkts"></g>
+    </svg>
+  </div>
+  <div id="ui"></div>
+  <div id="flash"></div>
+  <div id="vignette"></div>
+</div>
+<script>
+'use strict';
+const DURATION = 48.5;
+const NS = 'http://www.w3.org/2000/svg';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, x) => a + (b - a) * x;
+const E = {
+  out: x => 1 - Math.pow(1 - x, 3),
+  in: x => x * x * x,
+  io: x => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2),
+  expo: x => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x)),
+  back: x => { const c = 1.5, c3 = c + 1; return 1 + c3 * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); },
+};
+// Visible between [a,b] fade-in and [c,d] fade-out.
+const vis = (t, a, b, c, d) => Math.min(E.out(P(t, a, b)), 1 - E.in(P(t, c, d)));
+const $ = s => document.querySelector(s);
+function S(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function H(tag, cls, html, parent) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html != null) n.innerHTML = html;
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+const bez = (p0, p3, k = .5) => { const dx = (p3.x - p0.x) * k; return [p0, { x: p0.x + dx, y: p0.y }, { x: p3.x - dx, y: p3.y }, p3]; };
+const bezAt = (b, u) => { const v = 1 - u; return { x: v*v*v*b[0].x + 3*v*v*u*b[1].x + 3*v*u*u*b[2].x + u*u*u*b[3].x, y: v*v*v*b[0].y + 3*v*v*u*b[1].y + 3*v*u*u*b[2].y + u*u*u*b[3].y }; };
+const bezD = b => `M${b[0].x} ${b[0].y}C${b[1].x} ${b[1].y} ${b[2].x} ${b[2].y} ${b[3].x} ${b[3].y}`;
+
+/* ---------- Cast ---------- */
+const CY = 590;
+const CLIENTS = [
+  { name: 'Codex', sub: 'OpenAI Responses', color: '#16a7ed' },
+  { name: 'Claude Code', sub: 'Anthropic Messages', color: '#b49bff' },
+  { name: 'OpenCode', sub: 'Chat Completions', color: '#08d8ba' },
+  { name: 'Your app', sub: 'OpenAI · Anthropic SDKs', color: '#ffb35c' },
+  { name: 'Agents', sub: 'MCP · A2A', color: '#ff8fb3' },
+];
+const BACKENDS = [
+  { name: 'vLLM', sub: 'self-hosted models' },
+  { name: 'OpenAI', sub: 'native API' },
+  { name: 'Anthropic', sub: 'native API' },
+  { name: 'Azure OpenAI', sub: 'managed · Entra ID' },
+  { name: 'AWS Bedrock', sub: 'Converse · SigV4' },
+  { name: 'Vertex AI', sub: 'Gemini · Google ADC' },
+  { name: 'Tools & agents', sub: 'MCP servers · A2A' },
+];
+const CW = 300, CH = 84, BH = 72;
+CLIENTS.forEach((c, i) => { c.x = 110; c.y = CY + (i - 2) * 112; });
+BACKENDS.forEach((b, i) => { b.x = 1510; b.y = CY + (i - 3) * 88; });
+const cOut = c => ({ x: c.x + CW, y: c.y });
+const bIn = b => ({ x: b.x, y: b.y });
+
+function card(parent, item, h, left) {
+  const g = S('g', {}, parent);
+  const r = S('rect', { x: item.x, y: item.y - h / 2, width: CW, height: h, rx: 16, fill: '#0e1526', stroke: '#2a3456', 'stroke-width': 1.5 }, g);
+  const dot = S('circle', { cx: item.x + 28, cy: item.y, r: 6, fill: item.color || '#5b6690' }, g);
+  S('text', { x: item.x + 50, y: item.y - 4, class: 'card-label' }, g).textContent = item.name;
+  S('text', { x: item.x + 50, y: item.y + 22, class: 'card-sub' }, g).textContent = item.sub;
+  item.g = g; item.r = r; item.dot = dot; item.left = left; item.h = h;
+}
+const cardsG = $('#cards');
+CLIENTS.forEach(c => card(cardsG, c, CH, true));
+BACKENDS.forEach(b => card(cardsG, b, BH, false));
+
+/* Tangle: every client to every backend, the world without a gateway. */
+const tangleG = $('#tangle');
+const TANGLE = [];
+{
+  const r = rng(7);
+  CLIENTS.forEach((c, ci) => BACKENDS.forEach((b, bi) => {
+    const p0 = cOut(c), p3 = bIn(b);
+    const b4 = [p0, { x: lerp(p0.x, p3.x, .25 + r() * .3), y: p0.y + (r() - .5) * 520 }, { x: lerp(p0.x, p3.x, .45 + r() * .3), y: p3.y + (r() - .5) * 520 }, p3];
+    const path = S('path', { d: bezD(b4), fill: 'none', stroke: ['#ff6b81', '#ffb35c', '#b49bff'][(ci + bi) % 3], 'stroke-width': 1.6, 'stroke-opacity': .5 }, tangleG);
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    TANGLE.push({ path, len, b4, delay: r() * 1.4, speed: .5 + r() * .7, phase: r() });
+  }));
+}
+const tangleDots = TANGLE.filter((_, i) => i % 2 === 0).map(tw => ({ tw, n: S('circle', { r: 3.5, fill: '#ffd1d9' }, tangleG) }));
+
+/* Clean wires through the gateway. */
+const wiresG = $('#wires');
+const inWires = CLIENTS.map(() => S('path', { fill: 'none', stroke: 'url(#spec)', 'stroke-width': 2, 'stroke-opacity': .55 }, wiresG));
+const outWires = BACKENDS.map(() => S('path', { fill: 'none', stroke: 'url(#spec)', 'stroke-width': 2, 'stroke-opacity': .55 }, wiresG));
+
+/* Core gateway. */
+const coreG = $('#core');
+const coreHalo = S('rect', { rx: 40, fill: '#6d4cff', filter: 'url(#softglow)', opacity: .35 }, coreG);
+const coreBox = S('rect', { rx: 26, fill: 'url(#coreFill)', stroke: 'url(#spec)', 'stroke-width': 2.5 }, coreG);
+const coreIcon = S('image', { href: '../../static/images/branding/icon/white/praxis-icon-white.svg', width: 40, height: 44 }, coreG);
+const coreTitle = S('text', { class: 'core-title' }, coreG); coreTitle.textContent = 'praxis';
+const coreMeta = S('text', { class: 'core-meta', 'text-anchor': 'end' }, coreG); coreMeta.textContent = 'listener :8080';
+const chainLine = S('line', { stroke: '#3a4673', 'stroke-width': 2, 'stroke-dasharray': '4 8' }, coreG);
+const CHIPS = ['CLASSIFY', 'ROUTE', 'TRANSLATE', 'GUARD', 'BALANCE'].map((title, i) => {
+  const g = S('g', {}, coreG);
+  const glow = S('rect', { width: 148, height: 76, rx: 14, fill: '#6d4cff', filter: 'url(#softglow)', opacity: 0 }, g);
+  const r = S('rect', { width: 148, height: 76, rx: 14, fill: '#121a33', stroke: '#33406b', 'stroke-width': 1.5 }, g);
+  const tt = S('text', { class: 'chip-title', 'text-anchor': 'middle' }, g); tt.textContent = title;
+  const v = S('text', { class: 'chip-val', 'text-anchor': 'middle' }, g);
+  return { g, glow, r, tt, v, i };
+});
+const trace = S('text', { class: 'trace', 'text-anchor': 'middle' }, coreG);
+const meterG = S('g', {}, coreG);
+const meterBg = S('rect', { width: 420, height: 12, rx: 6, fill: '#1b2443' }, meterG);
+const meterFill = S('rect', { width: 0, height: 12, rx: 6, fill: 'url(#spec)' }, meterG);
+const meterLabel = S('text', { class: 'core-meta' }, meterG); meterLabel.textContent = 'token budget · per minute';
+const meterVal = S('text', { class: 'core-meta', 'text-anchor': 'end' }, meterG);
+
+/* Packets. */
+const pktG = $('#pkts');
+function makePkt() {
+  const g = S('g', {}, pktG);
+  const trail = [0, 1, 2, 3].map(k => S('circle', { r: 7 - k * 1.3, fill: '#bcb4ff', opacity: .5 - k * .1 }, g));
+  const halo = S('circle', { r: 18, fill: '#8f73ff', filter: 'url(#softglow)', opacity: .9 }, g);
+  const dot = S('circle', { r: 7, fill: '#fff' }, g);
+  const lg = S('g', {}, g);
+  const lr = S('rect', { height: 36, rx: 18, fill: '#0b1122', stroke: '#4a568a', 'stroke-width': 1.2 }, lg);
+  const lt = S('text', { class: 'pkt-label' }, lg);
+  return { g, trail, halo, dot, lg, lr, lt };
+}
+const PK = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(makePkt);
+const chunks = Array.from({ length: 14 }, () => S('rect', { width: 14, height: 5, rx: 2.5, fill: '#08d8ba' }, pktG));
+const ambient = Array.from({ length: 22 }, () => S('circle', { r: 3.4, fill: '#cfe9ff' }, pktG));
+
+/* ---------- Headlines ---------- */
+const ui = $('#ui');
+function headline(title, sub, gradSub) {
+  const d = H('div', 'head', null, ui);
+  const h1 = H('h1', null, null, d);
+  const words = title.split(' ').map((w, i, a) => H('span', 'w', w + (i < a.length - 1 ? ' ' : ''), h1));
+  const p = H('p', null, null, d);
+  const swords = sub.split(' ').map((w, i, a) => H('span', 'w' + (gradSub ? ' grad' : ''), w + (i < a.length - 1 ? ' ' : ''), p));
+  if (gradSub) { p.style.font = "600 78px/1.06 'Plex'"; p.style.marginTop = '4px'; p.style.letterSpacing = '-.025em'; }
+  return { d, words, swords };
+}
+const HEADS = [
+  { h: headline('Every client speaks its own API.', 'Every provider expects another.'), a: .45, s: 2.2, z: 5.0 },
+  { h: headline('One gateway in between.', 'Composable by design.', true), a: 6.25, s: 7.15, z: 10.35 },
+  { h: headline('Route by what a request contains.', 'API format, model and tool are classified before routing.'), a: 10.85, s: 11.5, z: 18.9 },
+  { h: headline('Keep your client’s API.', 'Translate when the backend speaks another, streaming included.'), a: 19.35, s: 19.95, z: 26.7 },
+  { h: headline('Policy in the path.', 'Credentials, guardrails and token budgets, enforced at the gateway.'), a: 27.05, s: 27.6, z: 35.2 },
+  { h: headline('Built in Rust. Composed in YAML.', 'Chain the filters you need, or write your own.'), a: 35.65, s: 36.25, z: 42.5 },
+];
+function words(list, t, start, out) {
+  list.forEach((w, i) => {
+    const pin = E.out(P(t, start + i * .055, start + i * .055 + .55));
+    const pout = E.in(P(t, out + i * .025, out + i * .025 + .35));
+    w.style.opacity = Math.min(pin, 1 - pout);
+    w.style.transform = `translateY(${(1 - pin) * 38 - pout * 24}px)`;
+    w.style.filter = pin < 1 ? `blur(${(1 - pin) * 8}px)` : 'none';
+  });
+}
+
+/* Beat captions & footnotes. */
+const beatEl = H('div', 'beat', '', ui);
+const footEl = H('div', 'foot', '', ui);
+const BEATS = [
+  { a: 11.5, z: 18.9, html: '' },
+  { a: 27.6, z: 30.2, html: 'Clients send no provider key. <b>The gateway signs upstream.</b>' },
+  { a: 30.4, z: 33.0, html: 'An external guardrail screens the prompt. <b>Blocked before inference.</b>' },
+  { a: 33.2, z: 35.2, html: 'Token budgets per key, model or team. <b>Over budget, 429.</b>' },
+];
+const FOOTS = [
+  { a: 1, z: 10.2, txt: 'Illustrative traffic.' },
+  { a: 11, z: 26.6, txt: 'Illustrative traffic. Supported paths and limits are listed in the Praxis documentation.' },
+  { a: 27.4, z: 35.2, txt: 'Guardrails call an external provider you configure. Token limits are an opt-in build feature.' },
+  { a: 36.4, z: 42.5, txt: 'Illustrative chain. Filter names from the Praxis filter reference.' },
+];
+
+/* ---------- Translate scene panels ---------- */
+const reqL = ['{', '  <span class="k">"model"</span>: <span class="s">"reviewer"</span>,', '  <span class="k">"system"</span>: <span class="s">"Be concise."</span>,', '  <span class="k">"max_tokens"</span>: <span class="n">1024</span>,', '  <span class="k">"stream"</span>: <span class="n">true</span>,', '  <span class="k">"messages"</span>: [', '    {<span class="k">"role"</span>: <span class="s">"user"</span>,', '     <span class="k">"content"</span>: <span class="s">"Review this diff"</span>}', '  ]', '}'];
+const reqR = ['{', '  <span class="k">"model"</span>: <span class="s">"reviewer"</span>,', '  <span class="k">"max_tokens"</span>: <span class="n">1024</span>,', '  <span class="k">"stream"</span>: <span class="n">true</span>,', '  <span class="k">"messages"</span>: [', '    {<span class="k">"role"</span>: <span class="s">"system"</span>,', '     <span class="k">"content"</span>: <span class="s">"Be concise."</span>},', '    {<span class="k">"role"</span>: <span class="s">"user"</span>,', '     <span class="k">"content"</span>: <span class="s">"Review this diff"</span>}', '  ]', '}'];
+const TOK = ['Looks', ' good,', ' one', ' nit.'];
+const sseR = TOK.map(x => `<span class="c">data:</span> {<span class="k">"choices"</span>:[{<span class="k">"delta"</span>:{<span class="k">"content"</span>:<span class="s">"${x}"</span>}}]}`);
+const sseL = TOK.flatMap(x => [`<span class="c">event:</span> <span class="f">content_block_delta</span>`, `<span class="c">data:</span> {<span class="k">"delta"</span>:{<span class="k">"type"</span>:<span class="s">"text_delta"</span>,<span class="k">"text"</span>:<span class="s">"${x}"</span>}}`]);
+function panel(x, y, w, h, title, tag) {
+  const p = H('div', 'panel', `<header><span>${title}</span><span>${tag}</span></header>`, ui);
+  Object.assign(p.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+  return p;
+}
+const pL = panel(110, 318, 760, 560, 'Claude Code sends', 'POST /v1/messages');
+const pR = panel(1050, 318, 760, 560, 'vLLM receives', 'POST /v1/chat/completions');
+const codeL = H('div', 'code', reqL.map(l => `<span class="ln">${l}</span>`).join(''), pL);
+const codeR = H('div', 'code', reqR.map(l => `<span class="ln">${l}</span>`).join(''), pR);
+const sL = H('div', 'code small', sseL.map(l => `<span class="ln">${l}</span>`).join(''), pL);
+const sR = H('div', 'code small', sseR.map(l => `<span class="ln">${l}</span>`).join(''), pR);
+[sL, sR].forEach(n => Object.assign(n.style, { position: 'absolute', left: 0, right: 0, top: '58px' }));
+const outL = H('div', 'out', '<small>CLAUDE CODE RENDERS</small><span id="outtxt"></span><span class="caret"></span>', pL);
+const linesL = [...codeL.children], linesR = [...codeR.children], sLL = [...sL.children], sRL = [...sR.children];
+const tSvg = S('svg', { width: 1920, height: 1080, viewBox: '0 0 1920 1080' }, ui);
+const tLink = S('path', { fill: 'none', stroke: 'url(#spec)', 'stroke-width': 3, 'stroke-linecap': 'round' }, tSvg);
+const hub = S('g', {}, tSvg);
+S('rect', { x: 902, y: 556, width: 116, height: 68, rx: 18, fill: '#151c3c', stroke: 'url(#spec)', 'stroke-width': 2.5 }, hub);
+S('image', { href: '../../static/images/branding/icon/white/praxis-icon-white.svg', x: 940, y: 568, width: 40, height: 44 }, hub);
+const hubLabel = S('text', { x: 960, y: 922, class: 'core-meta', 'text-anchor': 'middle' }, tSvg);
+const hubStem = S('line', { x1: 960, x2: 960, y1: 628, y2: 898, stroke: '#3a4673', 'stroke-width': 1.5, 'stroke-dasharray': '3 6' }, tSvg);
+const hubHalo = S('circle', { r: 16, fill: '#8f73ff', opacity: .45 }, tSvg);
+const hubDot = S('circle', { r: 7, fill: '#fff' }, tSvg);
+// gradient defs are in #net; clone into this svg so url(#spec) resolves locally too.
+tSvg.insertBefore($('#net defs').cloneNode(true), tSvg.firstChild);
+
+/* ---------- Build scene ---------- */
+const YAML = [
+  ['<span class="k">filter_chains</span>:', null],
+  ['  - <span class="k">name</span>: <span class="s">gateway</span>', null],
+  ['    <span class="k">filters</span>:', null],
+  ['      - <span class="k">filter</span>: <span class="f">ai_operation</span>', ['ai_operation', 'CLASSIFY']],
+  ['      - <span class="k">filter</span>: <span class="f">anthropic_messages_request</span>', ['anthropic_messages_request', 'VALIDATE']],
+  ['      - <span class="k">filter</span>: <span class="f">ai_guardrails</span>', ['ai_guardrails', 'GUARD']],
+  ['      - <span class="k">filter</span>: <span class="f">anthropic_messages_to_chat_completions</span>', ['anthropic_messages_to_chat…', 'TRANSLATE']],
+  ['      - <span class="k">filter</span>: <span class="f">router</span>', ['router', 'ROUTE']],
+  ['      - <span class="k">filter</span>: <span class="f">load_balancer</span>', ['load_balancer', 'BALANCE']],
+];
+const yP = panel(110, 300, 820, 420, 'praxis.yaml', 'filter chain');
+yP.querySelector('header span:last-child').style.color = 'var(--muted)';
+const yCode = H('div', 'code', YAML.map(([l]) => `<span class="ln">${l}</span>`).join(''), yP);
+yCode.style.fontSize = '20px';
+const yLines = [...yCode.children];
+const rsP = panel(110, 748, 820, 160, 'my_filter.rs', 'your extension');
+H('div', 'code', '<span class="ln"><span class="k">struct</span> <span class="f">MyFilter</span>;</span><span class="ln"><span class="k">impl</span> <span class="f">HttpFilter</span> <span class="k">for</span> <span class="f">MyFilter</span> { <span class="c">/* inspect, rewrite, route */</span> }</span>', rsP).style.fontSize = '20px';
+const stack = H('div', null, null, ui);
+Object.assign(stack.style, { position: 'absolute', left: '1060px', top: '300px', width: '640px', height: '620px' });
+const BLOCKS = YAML.filter(([, b]) => b).map(([, [name, tag]], i) => {
+  const b = H('div', 'block', `<span>${name}</span><em>${tag}</em>`, stack);
+  b.style.top = (i * 76) + 'px';
+  return b;
+});
+const yours = H('div', 'block yours', '<span>my_filter</span><em>YOUR RUST</em>', stack);
+yours.style.top = (6 * 76 + 12) + 'px';
+const stackLine = H('div', null, null, stack);
+Object.assign(stackLine.style, { position: 'absolute', left: '-30px', top: '30px', width: '3px', borderRadius: '2px', background: 'linear-gradient(#6d4cff,#08d8ba)' });
+const stackDot = H('div', null, null, stack);
+Object.assign(stackDot.style, { position: 'absolute', left: '-37px', width: '17px', height: '17px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 18px 6px #8f73ffaa' });
+const chipsRow = H('div', null, ['Rust', 'Streaming responses', 'TLS · HTTP/2', 'FIPS 140-3 build option', 'Apache-2.0'].map(x => `<span class="pill"><i></i>${x}</span>`).join(''), ui);
+Object.assign(chipsRow.style, { position: 'absolute', left: 0, right: 0, top: '944px', display: 'flex', justifyContent: 'center', gap: '14px' });
+const chipEls = [...chipsRow.children];
+
+/* ---------- End card ---------- */
+const end = H('div', null, null, ui); end.id = 'end';
+end.innerHTML = '<img src="../../static/images/branding/horizontal/white/praxis-horizontal-white.svg" alt=""><h2>The AI gateway, <span class="grad">composable by design.</span></h2><div class="row"><span class="pill"><i></i>Open source · Apache-2.0</span><span class="pill"><i style="background:#ffb35c"></i>Alpha</span><span class="pill"><i style="background:#8f73ff"></i>Built in Rust</span></div><div class="url"><u>praxis.fast</u></div>';
+const endParts = [...end.children];
+
+/* ---------- Request scripts ---------- */
+const REQS = [
+  { t: 11.6, c: 1, b: 0, label: 'POST /v1/messages', v: ['anthropic', 'reviewer', '→ chat', 'passed', 'vllm'], trace: 'anthropic_messages · model=reviewer · stream=true  →  vLLM' },
+  { t: 14.15, c: 0, b: 1, label: 'POST /v1/responses', v: ['responses', 'planner', 'native', 'passed', 'openai'], trace: 'openai_responses · model=planner  →  OpenAI (native)' },
+  { t: 16.7, c: 2, b: 4, label: 'POST /v1/chat/completions', v: ['chat', 'coder', '→ converse', 'passed', 'bedrock'], trace: 'openai_chat_completions · model=coder  →  Bedrock Converse, SigV4' },
+  { t: 27.75, c: 3, b: 4, label: 'no provider key', after: 'signed · SigV4', v: ['chat', 'coder', '→ converse', 'passed', '+ sigv4'], trace: 'credentials added upstream · client never holds the provider key' },
+  { t: 30.5, c: 1, b: null, block: 3, label: '"ignore previous instructions…"', after: 'blocked by guardrail', v: ['anthropic', 'reviewer', '→ chat', 'BLOCKED', '—'], trace: 'ai_guardrails · external provider verdict: blocked' },
+];
+const BURST = Array.from({ length: 8 }, (_, i) => ({ t: 33.3 + i * .2, c: 3, b: 0, fast: true, denied: i >= 5 }));
+const DUR = { a: .62, b: 1.25, c: .6 };
+
+/* ---------- seek(t) ---------- */
+let coreW = 380, coreH = 150;
+function coreGeom(t) {
+  const ex = E.io(P(t, 10.5, 11.4)) * (1 - E.io(P(t, 35.2, 35.9)));
+  coreW = lerp(380, 860, ex); coreH = lerp(150, 290, ex);
+  return ex;
+}
+const coreL = () => ({ x: 960 - coreW / 2, y: CY });
+const coreR = () => ({ x: 960 + coreW / 2, y: CY });
+
+function placePkt(pk, pos, label, o, color = '#bcb4ff', trailPts = null, labelO = 1) {
+  pk.g.style.opacity = o;
+  if (o <= 0) return;
+  pk.dot.setAttribute('cx', pos.x); pk.dot.setAttribute('cy', pos.y);
+  pk.halo.setAttribute('cx', pos.x); pk.halo.setAttribute('cy', pos.y);
+  pk.halo.setAttribute('fill', color);
+  pk.trail.forEach((c, k) => { const p = trailPts ? trailPts[k] : pos; c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('fill', color); });
+  if (label) {
+    pk.lt.textContent = label;
+    const w = label.length * 10.3 + 30;
+    pk.lr.setAttribute('width', w); pk.lr.setAttribute('x', pos.x - w / 2); pk.lr.setAttribute('y', pos.y - 62);
+    pk.lt.setAttribute('x', pos.x - w / 2 + 15); pk.lt.setAttribute('y', pos.y - 38);
+    pk.lr.setAttribute('stroke', color);
+    pk.lg.style.opacity = labelO;
+  } else pk.lg.style.opacity = 0;
+}
+
+// Position of a request at local time u (seconds since start).
+function reqPos(r, u) {
+  const c = CLIENTS[r.c];
+  const A = bez(cOut(c), coreL());
+  if (u < DUR.a) return { seg: 'a', p: bezAt(A, E.io(u / DUR.a)) };
+  u -= DUR.a;
+  if (u < DUR.b) return { seg: 'b', p: { x: lerp(coreL().x, coreR().x, u / DUR.b), y: CY }, f: u / DUR.b };
+  u -= DUR.b;
+  const B = bez(coreR(), bIn(BACKENDS[r.b ?? 0]));
+  return { seg: 'c', p: bezAt(B, E.io(clamp(u / DUR.c))), f: clamp(u / DUR.c) };
+}
+function chipX(i) { const w = 148, gap = 18, total = 5 * w + 4 * gap; return 960 - total / 2 + i * (w + gap); }
+
+function seek(t) {
+  /* Camera & background. */
+  const push = 1 + .035 * Math.sin(t / DURATION * Math.PI);
+  $('#world').style.transform = `scale(${push})`;
+  $('#orb1').style.transform = `translate(${900 + Math.sin(t * .13) * 160}px, ${-640 + Math.cos(t * .11) * 90}px)`;
+  $('#orb2').style.transform = `translate(${-520 + Math.cos(t * .09) * 140}px, ${180 + Math.sin(t * .12) * 110}px)`;
+  $('#grid').style.backgroundPosition = `0 ${-t * 6}px`;
+  $('#bg').style.opacity = 1 - E.in(P(t, 47.7, 48.5)) * .7;
+  $('#flash').style.opacity = Math.sin(Math.PI * P(t, 5.9, 6.9)) * .9;
+
+  /* Network visibility: off for the translate and build scenes. */
+  const netO = vis(t, .1, .9, 19.4, 19.9) + vis(t, 26.6, 27.3, 35.4, 35.9);
+  $('#net').style.opacity = clamp(netO);
+
+  /* Cards enter. */
+  CLIENTS.forEach((c, i) => {
+    const p = E.back(P(t, .3 + i * .09, 1.1 + i * .09));
+    c.g.style.transform = `translateX(${(1 - p) * -80}px)`; c.g.style.opacity = clamp(p);
+    c.r.setAttribute('stroke', '#2a3456');
+  });
+  BACKENDS.forEach((b, i) => {
+    const p = E.back(P(t, .45 + i * .08, 1.25 + i * .08));
+    b.g.style.transform = `translateX(${(1 - p) * 80}px)`; b.g.style.opacity = clamp(p);
+    b.r.setAttribute('stroke', '#2a3456');
+  });
+
+  /* Tangle. */
+  const tangleIn = P(t, 1.1, 3.4), tangleOut = E.in(P(t, 5.0, 6.0));
+  TANGLE.forEach(tw => {
+    const d = E.out(P(t, 1.1 + tw.delay, 2.4 + tw.delay));
+    tw.path.style.strokeDashoffset = tw.len * (1 - d) + tw.len * tangleOut;
+    tw.path.style.opacity = 1 - tangleOut;
+    const wob = Math.sin(t * 3 * tw.speed + tw.phase * 6) * 14 * (1 - tangleOut);
+    tw.path.setAttribute('transform', `translate(0 ${wob * .3})`);
+  });
+  tangleDots.forEach(({ tw, n }) => {
+    const u = ((t * tw.speed * .45 + tw.phase) % 1);
+    const p = bezAt(tw.b4, u);
+    n.setAttribute('cx', p.x); n.setAttribute('cy', p.y);
+    n.style.opacity = clamp(tangleIn * 2 - .4) * (1 - tangleOut) * Math.sin(Math.PI * u);
+  });
+
+  /* Core. */
+  const ex = coreGeom(t);
+  const coreP = E.back(P(t, 5.75, 6.75));
+  const cx0 = 960 - coreW / 2, cy0 = CY - coreH / 2;
+  coreG.style.opacity = clamp(coreP);
+  coreG.setAttribute('transform', `translate(960 ${CY}) scale(${lerp(.6, 1, clamp(coreP))}) translate(-960 ${-CY})`);
+  [coreBox, coreHalo].forEach(r => { r.setAttribute('x', cx0); r.setAttribute('y', cy0); r.setAttribute('width', coreW); r.setAttribute('height', coreH); });
+  coreHalo.setAttribute('opacity', .28 + .12 * Math.sin(t * 2.2));
+  const small = 1 - ex;
+  coreIcon.setAttribute('x', lerp(960 - 92, cx0 + 26, ex)); coreIcon.setAttribute('y', lerp(CY - 24, cy0 + 12, ex));
+  coreIcon.setAttribute('width', lerp(48, 30, ex)); coreIcon.setAttribute('height', lerp(53, 33, ex));
+  coreTitle.setAttribute('x', lerp(960 - 34, cx0 + 66, ex)); coreTitle.setAttribute('y', lerp(CY + 12, cy0 + 36, ex));
+  coreTitle.style.fontSize = lerp(38, 22, ex) + 'px';
+  coreMeta.setAttribute('x', cx0 + coreW - 26); coreMeta.setAttribute('y', cy0 + 34); coreMeta.style.opacity = ex;
+  chainLine.setAttribute('x1', cx0 + 20); chainLine.setAttribute('x2', cx0 + coreW - 20); chainLine.setAttribute('y1', CY); chainLine.setAttribute('y2', CY);
+  chainLine.style.opacity = ex;
+  CHIPS.forEach(ch => {
+    const p = E.back(P(t, 10.9 + ch.i * .07, 11.5 + ch.i * .07)) * (1 - E.in(P(t, 35.1, 35.5)));
+    const x = chipX(ch.i), y = CY - 86;
+    ch.g.setAttribute('transform', `translate(${x} ${y + (1 - p) * 20})`);
+    ch.g.style.opacity = clamp(p);
+    ch.tt.setAttribute('x', 74); ch.tt.setAttribute('y', 30);
+    ch.v.setAttribute('x', 74); ch.v.setAttribute('y', 56);
+    ch.r.setAttribute('stroke', '#33406b'); ch.r.setAttribute('fill', '#121a33');
+    ch.glow.setAttribute('opacity', 0); ch.glow.setAttribute('fill', '#6d4cff');
+    ch.v.textContent = ''; ch.v.style.fill = '';
+  });
+  trace.setAttribute('x', 960); trace.setAttribute('y', cy0 + coreH - 22); trace.textContent = '';
+
+  /* Wires. */
+  const wireIn = E.io(P(t, 6.3, 7.6)) * (1 - E.in(P(t, 35.3, 35.9)));
+  inWires.forEach((w, i) => {
+    const b = bez(cOut(CLIENTS[i]), coreL());
+    w.setAttribute('d', bezD(b));
+    const len = w.getTotalLength(); w.style.strokeDasharray = len; w.style.strokeDashoffset = len * (1 - wireIn);
+    w.setAttribute('stroke-opacity', .5);
+  });
+  outWires.forEach((w, i) => {
+    const b = bez(coreR(), bIn(BACKENDS[i]));
+    w.setAttribute('d', bezD(b));
+    const len = w.getTotalLength(); w.style.strokeDasharray = len; w.style.strokeDashoffset = len * (1 - wireIn);
+    w.setAttribute('stroke-opacity', .5);
+  });
+
+  /* Ambient flow while the gateway settles. */
+  const ambO = vis(t, 7.4, 8.2, 10.2, 10.8);
+  ambient.forEach((n, k) => {
+    const r = rng(k * 97 + 3); const ci = Math.floor(r() * 5); const bi = ci === 4 ? 6 : Math.floor(r() * 6);
+    const u = (t * .42 + r()) % 1;
+    let p;
+    if (u < .45) p = bezAt(bez(cOut(CLIENTS[ci]), coreL()), u / .45);
+    else if (u < .55) p = { x: lerp(coreL().x, coreR().x, (u - .45) / .1), y: CY };
+    else p = bezAt(bez(coreR(), bIn(BACKENDS[bi])), (u - .55) / .45);
+    n.setAttribute('cx', p.x); n.setAttribute('cy', p.y);
+    n.setAttribute('fill', CLIENTS[ci].color);
+    n.style.opacity = ambO * Math.min(1, Math.sin(Math.PI * u) * 3) * (u > .45 && u < .55 ? .3 : 1);
+  });
+
+  /* Requests. */
+  PK.forEach(pk => (pk.g.style.opacity = 0));
+  chunks.forEach(c => (c.style.opacity = 0));
+  let slot = 0;
+  REQS.forEach(r => {
+    const u = t - r.t;
+    const total = DUR.a + DUR.b + DUR.c;
+    const blockedAt = r.block != null ? DUR.a + DUR.b * ((chipX(r.block) + 74 - coreL().x) / coreW) : null;
+    if (u < -0.05 || u > total + 1.4) { slot++; return; }
+    const pk = PK[slot++];
+    const c = CLIENTS[r.c];
+    const active = u >= 0 && u <= total + .2;
+    if (active) c.r.setAttribute('stroke', c.color);
+    let pos, label = r.label, color = c.color, o = 1, labelO = 1;
+    if (blockedAt != null && u > blockedAt) {
+      // Bounce back to the client.
+      const k = E.io(clamp((u - blockedAt - .25) / .9));
+      const hit = reqPos(r, blockedAt).p;
+      const A = bez(cOut(c), coreL());
+      pos = u - blockedAt < .25 ? hit : (k < .35 ? { x: lerp(hit.x, coreL().x, k / .35), y: CY } : bezAt(A, 1 - (k - .35) / .65));
+      color = '#ff6b81'; label = r.after; o = 1 - P(u, total + .6, total + 1.2);
+      if (u - blockedAt < 1.3) c.r.setAttribute('stroke', '#ff6b81');
+    } else {
+      const rp = reqPos(r, Math.min(u, total));
+      pos = rp.p;
+      labelO = rp.seg === 'b' ? (rp.f < .5 ? 1 - Math.min(1, rp.f * 8) : 0) : rp.seg === 'c' ? clamp((rp.f - .2) * 4) : 1;
+      if (rp.seg === 'c' && r.after) label = r.after;
+      o = Math.min(E.out(P(u, -.05, .2)), 1 - P(u, total + .05, total + .35));
+      if (rp.seg === 'c' && rp.f >= 1) BACKENDS[r.b].r.setAttribute('stroke', '#08d8ba');
+    }
+    const trailPts = [.03, .06, .09, .12].map(d => (u - d > 0 && !(blockedAt != null && u > blockedAt) ? reqPos(r, Math.min(u - d, total)).p : pos));
+    placePkt(pk, pos, label, o, color, trailPts, labelO);
+    // Chips light as the packet passes.
+    if (u > DUR.a - .1) {
+      const travelled = blockedAt != null ? Math.min(u, blockedAt) : u;
+      CHIPS.forEach(ch => {
+        const when = DUR.a + DUR.b * ((chipX(ch.i) + 74 - coreL().x) / coreW);
+        if (travelled >= when - .05) {
+          const k = P(travelled, when - .05, when + .3);
+          ch.v.textContent = r.v[ch.i].slice(0, Math.ceil(r.v[ch.i].length * k));
+          const hot = Math.max(0, 1 - (u - when) / .9);
+          const bad = blockedAt != null && ch.i === r.block;
+          ch.glow.setAttribute('opacity', bad ? .7 : hot * .6);
+          ch.glow.setAttribute('fill', bad ? '#ff2d55' : '#6d4cff');
+          ch.r.setAttribute('stroke', bad ? '#ff6b81' : (hot > .05 ? '#bcb4ff' : '#45528a'));
+          if (bad) { ch.v.style.fill = '#ff8fa3'; ch.r.setAttribute('fill', '#2a1224'); }
+        }
+      });
+      const tk = P(u, DUR.a + .1, DUR.a + .9);
+      trace.textContent = r.trace.slice(0, Math.ceil(r.trace.length * tk));
+      trace.style.opacity = 1 - P(u, total + .9, total + 1.3);
+      trace.style.fill = blockedAt != null ? '#ff8fa3' : '';
+    }
+    // Streamed response back.
+    if (!r.block && u > total) {
+      const back = u - total;
+      const A = bez(cOut(c), coreL()), B = bez(coreR(), bIn(BACKENDS[r.b]));
+      chunks.slice(0, 6).forEach((ch, k) => {
+        const v = clamp((back - k * .08) / 1.1);
+        if (v <= 0 || v >= 1) return;
+        let p; const vv = E.io(v);
+        if (vv < .3) p = bezAt(B, 1 - vv / .3); else if (vv < .55) p = { x: lerp(coreR().x, coreL().x, (vv - .3) / .25), y: CY + 34 }; else p = bezAt(A, 1 - (vv - .55) / .45);
+        ch.setAttribute('x', p.x - 7); ch.setAttribute('y', p.y - 2.5 + (vv >= .3 && vv < .55 ? 0 : 0));
+        ch.style.opacity = Math.sin(Math.PI * v);
+      });
+    }
+  });
+  // Token budget burst.
+  const mO = vis(t, 33.0, 33.4, 35.0, 35.3);
+  meterG.style.opacity = mO;
+  meterG.setAttribute('transform', `translate(${960 - 210} ${CY - coreH / 2 - 52})`);
+  meterLabel.setAttribute('y', -12); meterVal.setAttribute('x', 420); meterVal.setAttribute('y', -12);
+  let used = 0;
+  BURST.forEach((r, i) => {
+    const u = t - r.t;
+    const pk = PK[slot + (i % 4)];
+    if (u < 0 || u > 1.6) return;
+    const c = CLIENTS[r.c];
+    c.r.setAttribute('stroke', c.color);
+    const A = bez(cOut(c), coreL());
+    let pos, color = c.color, label = null;
+    if (!r.denied) {
+      const v = clamp(u / 1.1);
+      if (v < .45) pos = bezAt(A, E.io(v / .45)); else if (v < .7) pos = { x: lerp(coreL().x, coreR().x, (v - .45) / .25), y: CY }; else pos = bezAt(bez(coreR(), bIn(BACKENDS[r.b])), (v - .7) / .3);
+      if (u > .45 * 1.1) used = Math.max(used, i + 1);
+      placePkt(pk, pos, null, 1 - P(u, 1.05, 1.2), color);
+    } else {
+      const v = clamp(u / .55);
+      if (u < .55) pos = bezAt(A, E.io(v));
+      else pos = bezAt(A, 1 - E.out(clamp((u - .55) / .7)) * .9);
+      color = u < .55 ? c.color : '#ff6b81';
+      if (u > .55) label = '429 · token budget';
+      placePkt(pk, pos, label, 1 - P(u, 1.3, 1.6), color, null, i === 5 ? 1 : 0);
+    }
+  });
+  BURST.forEach((r, i) => { if (!r.denied && t - r.t > .5) used = Math.max(used, i + 1); });
+  const budget = used / 5;
+  meterFill.setAttribute('width', 420 * budget);
+  meterFill.setAttribute('fill', budget >= 1 ? '#ff6b81' : 'url(#spec)');
+  meterVal.textContent = `${(used * 2400).toLocaleString('en-US')} / 12,000`;
+  if (mO > 0 && budget >= 1) { trace.textContent = 'token_rate_limit · budget exhausted → 429'; trace.style.fill = '#ff8fa3'; trace.style.opacity = mO; }
+
+  /* Headlines. */
+  HEADS.forEach(({ h, a, s, z }) => {
+    h.d.style.display = t > a - .1 && t < z + .9 ? 'block' : 'none';
+    words(h.words, t, a, z); words(h.swords, t, s, z + .08);
+  });
+  const beat = BEATS.find(b => t >= b.a - .2 && t <= b.z + .3);
+  beatEl.innerHTML = beat ? beat.html : '';
+  beatEl.style.opacity = beat ? vis(t, beat.a, beat.a + .35, beat.z - .1, beat.z + .25) : 0;
+  beatEl.style.transform = beat ? `translateY(${(1 - E.out(P(t, beat.a, beat.a + .5))) * 16}px)` : '';
+  const foot = FOOTS.find(f => t >= f.a - .2 && t <= f.z + .3);
+  footEl.textContent = foot ? foot.txt : '';
+  footEl.style.opacity = foot ? vis(t, foot.a, foot.a + .5, foot.z - .1, foot.z + .3) : 0;
+
+  /* Translate scene. */
+  const trO = vis(t, 19.7, 20.3, 26.3, 26.8);
+  [pL, pR, tSvg].forEach((n, i) => {
+    const k = E.out(P(t, 19.7 + i * .1, 20.4 + i * .1));
+    n.style.display = trO > 0 ? 'block' : 'none';
+    n.style.opacity = trO;
+    if (n !== tSvg) n.style.transform = `translateY(${(1 - k) * 40}px)`;
+  });
+  linesL.forEach((l, i) => { l.style.opacity = E.out(P(t, 20.3 + i * .06, 20.6 + i * .06)); l.style.background = ''; });
+  const conv = E.io(P(t, 21.5, 22.4));
+  linesR.forEach((l, i) => { const k = E.out(P(t, 21.6 + i * .07, 21.9 + i * .07)); l.style.opacity = k; l.style.transform = `translateX(${(1 - k) * -20}px)`; l.style.background = ''; });
+  const hl = vis(t, 22.2, 22.5, 23.2, 23.5);
+  linesL[2].style.background = `rgba(143,115,255,${.28 * hl})`;
+  [5, 6].forEach(i => (linesR[i].style.background = `rgba(8,216,186,${.22 * hl})`));
+  // Link from the moved "system" field to its new place.
+  const yL = 318 + 58 + 18 + 2 * 34 + 17, yR = 318 + 58 + 18 + 5.5 * 34 + 17;
+  const link = [{ x: 590, y: yL }, { x: 760, y: yL }, { x: 1180, y: yR }, { x: 1330, y: yR }];
+  tLink.setAttribute('d', `M${link[0].x} ${link[0].y}C${link[1].x} ${link[1].y} ${link[2].x} ${link[2].y} ${link[3].x} ${link[3].y}`);
+  const ll = tLink.getTotalLength(); tLink.style.strokeDasharray = ll; tLink.style.strokeDashoffset = ll * (1 - E.io(P(t, 22.25, 22.9)));
+  tLink.style.opacity = hl;
+  // Request dot through the hub, then stream view.
+  const req = P(t, 20.95, 21.65);
+  const strm = P(t, 23.45, 23.9);
+  hubLabel.textContent = t < 23.4 ? 'anthropic_messages_to_chat_completions' : 'anthropic_messages_to_chat_completions_stream';
+  hubLabel.style.opacity = hubStem.style.opacity = vis(t, 20.6, 21.0, 26.0, 26.3);
+  hubLabel.style.fontSize = '17px';
+  [codeL, codeR].forEach(n => (n.style.opacity = 1 - strm));
+  [sL, sR].forEach(n => (n.style.opacity = strm));
+  pL.querySelector('header span:first-child').textContent = t < 23.6 ? 'Claude Code sends' : 'Claude Code receives';
+  pL.querySelector('header span:last-child').textContent = t < 23.6 ? 'POST /v1/messages' : 'Anthropic event stream';
+  pR.querySelector('header span:first-child').textContent = t < 23.6 ? 'vLLM receives' : 'vLLM streams';
+  pR.querySelector('header span:last-child').textContent = t < 23.6 ? 'POST /v1/chat/completions' : 'chat.completion.chunk';
+  let dot = null;
+  if (req > 0 && req < 1) dot = { x: lerp(870, 1050, E.io(req)), y: 590 };
+  TOK.forEach((_, i) => {
+    const ta = 24.0 + i * .5;
+    sRL[i].style.opacity = E.out(P(t, ta, ta + .2));
+    const tb = ta + .3;
+    sLL[i * 2].style.opacity = sLL[i * 2 + 1].style.opacity = E.out(P(t, tb, tb + .2));
+    const m = P(t, ta + .05, tb);
+    if (m > 0 && m < 1) dot = { x: lerp(1050, 870, E.io(m)), y: 590 };
+  });
+  hubDot.style.opacity = hubHalo.style.opacity = dot ? 1 : 0;
+  if (dot) [hubDot, hubHalo].forEach(n => { n.setAttribute('cx', dot.x); n.setAttribute('cy', dot.y); });
+  const shown = TOK.filter((_, i) => t >= 24.3 + i * .5 + .2).join('');
+  $('#outtxt').textContent = shown;
+  outL.style.opacity = E.out(P(t, 24.0, 24.3));
+  outL.querySelector('.caret').style.opacity = Math.floor(t * 2.4) % 2 ? 0 : 1;
+
+  /* Build scene. */
+  const bO = vis(t, 35.9, 36.4, 42.3, 42.8);
+  [yP, rsP, stack, chipsRow].forEach(n => { n.style.display = bO > 0 ? 'block' : 'none'; n.style.opacity = bO; });
+  chipsRow.style.display = bO > 0 ? 'flex' : 'none';
+  yP.style.transform = `translateY(${(1 - E.out(P(t, 35.9, 36.6))) * 40}px)`;
+  let lastBlock = -1;
+  yLines.forEach((l, i) => {
+    const ta = 36.4 + i * .36;
+    const k = P(t, ta, ta + .3);
+    l.style.opacity = k > 0 ? 1 : 0;
+    l.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`;
+  });
+  let bi = 0;
+  YAML.forEach(([, b], i) => {
+    if (!b) return;
+    const el = BLOCKS[bi++];
+    const ta = 36.4 + i * .36 + .25;
+    const k = E.back(P(t, ta, ta + .45));
+    el.style.opacity = clamp(P(t, ta, ta + .2));
+    el.style.transform = `translateX(${(1 - k) * 120}px)`;
+    if (t >= ta) lastBlock = bi - 1;
+  });
+  const yk = E.back(P(t, 39.9, 40.5));
+  yours.style.opacity = clamp(P(t, 39.9, 40.1)); yours.style.transform = `translateY(${(1 - yk) * -30}px) scale(${lerp(1.06, 1, yk)})`;
+  rsP.style.transform = `translateY(${(1 - E.out(P(t, 39.6, 40.3))) * 40}px)`;
+  rsP.style.opacity = bO * E.out(P(t, 39.6, 40.1));
+  const lineH = lastBlock >= 0 ? (Math.max(lastBlock, yours.style.opacity > .5 ? 6 : lastBlock) * 76 + (yours.style.opacity > .5 ? 12 : 0)) : 0;
+  stackLine.style.height = lineH + 'px';
+  const flow = (t * .45) % 1;
+  stackDot.style.top = (30 - 8 + flow * Math.max(0, lineH)) + 'px';
+  stackDot.style.opacity = t > 40.6 ? 1 : 0;
+  BLOCKS.forEach((b, i) => { const near = Math.abs(flow * lineH - i * 76) < 30 && t > 40.6; b.style.borderColor = near ? '#bcb4ff' : ''; b.style.boxShadow = near ? '0 0 24px #8f73ff55' : ''; });
+  chipEls.forEach((c, i) => { const k = E.out(P(t, 40.4 + i * .1, 40.9 + i * .1)); c.style.opacity = k; c.style.transform = `translateY(${(1 - k) * 18}px)`; });
+
+  /* End card. */
+  const eO = vis(t, 42.9, 43.4, 47.7, 48.4);
+  end.style.display = eO > 0 ? 'flex' : 'none';
+  endParts.forEach((p, i) => {
+    const k = E.out(P(t, 42.9 + i * .28, 43.7 + i * .28));
+    p.style.opacity = Math.min(k, 1 - E.in(P(t, 47.6, 48.3)));
+    p.style.transform = `translateY(${(1 - k) * 30}px) scale(${i === 0 ? lerp(.92, 1, k) : 1})`;
+    p.style.filter = k < 1 ? `blur(${(1 - k) * 10}px)` : 'none';
+  });
+}
+window.DURATION = DURATION;
+window.seek = seek;
+const q = new URLSearchParams(location.search);
+if (q.has('t')) seek(parseFloat(q.get('t')));
+else if (q.has('play')) { const t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+else seek(7.6);
+</script>
+</body>
+</html>

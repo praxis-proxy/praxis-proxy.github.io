@@ -1,0 +1,40 @@
+{{- /* Homepage film. Source: tools/video/intro.html, rendered by
+  tools/video/render.cjs. $checked is the Praxis release its claims were
+  checked against; content/_index.md carries the matching release-checked
+  marker so the weekly update lists the film for review. */ -}}
+{{- $base := "videos/praxis-intro" -}}
+{{- $checked := "v0.12.1" -}}
+{{- $ai := index hugo.Data.docs_build_versions.products "ai" -}}
+<section class="mx-section intro-film" aria-labelledby="intro-film-title">
+  <header class="mx-section__header">
+    <p class="mx-eyebrow">The 48-second tour</p>
+    <h2 id="intro-film-title">See the gateway in motion</h2>
+    <p>One gateway between your clients and backends: it classifies each request, routes it, translates the API when needed, and enforces policy on the way.</p>
+  </header>
+  <figure class="intro-film__frame">
+    <video class="intro-film__video" controls muted loop playsinline preload="none" width="1920" height="1080"
+      poster="{{ printf "%s-poster.jpg" $base | relURL }}" aria-describedby="intro-film-transcript" data-motion-video>
+      <source src="{{ printf "%s.webm" $base | relURL }}" type="video/webm">
+      <source src="{{ printf "%s.mp4" $base | relURL }}" type="video/mp4">
+      <a href="{{ printf "%s.mp4" $base | relURL }}">Download the Praxis introduction (MP4)</a>
+    </video>
+    <figcaption>
+      <span>Silent animation with illustrative traffic. Capabilities depend on the filters, build features, and backends you configure.</span>
+      {{- if ne $checked $ai.default }}
+      <span class="intro-film__stale">Checked against {{ $ai.name }} {{ $checked }}; the docs now follow {{ $ai.default }}.</span>
+      {{- end }}
+      <details class="intro-film__transcript" id="intro-film-transcript">
+        <summary>Read the film as text</summary>
+        <ol>
+          <li><strong>Every client speaks its own API; every provider expects another.</strong> Codex uses OpenAI Responses, Claude Code uses Anthropic Messages, OpenCode uses Chat Completions, and agents use MCP and A2A. Backends include vLLM, OpenAI, Anthropic, Azure OpenAI, AWS Bedrock, Vertex AI, and MCP or A2A services.</li>
+          <li><strong>One gateway in between, composable by design.</strong> Praxis sits between clients and backends.</li>
+          <li><strong>Route by what a request contains.</strong> A filter chain classifies each request by API format and model, routes it, translates it when needed, applies guardrails, and load-balances it: Claude Code to vLLM, Codex natively to OpenAI, and OpenCode to Bedrock Converse with SigV4 signing.</li>
+          <li><strong>Keep your client’s API.</strong> An Anthropic Messages request becomes a Chat Completions request for vLLM (the system prompt moves into the messages list), and the streamed chunks are translated back into Anthropic events.</li>
+          <li><strong>Policy in the path.</strong> Clients send no provider key and the gateway signs upstream requests; an external guardrail provider blocks a prompt-injection attempt before inference; a token budget rejects requests over the limit with HTTP 429. Token limits are an opt-in build feature.</li>
+          <li><strong>Built in Rust, composed in YAML.</strong> A configuration chains filters such as <code>ai_operation</code>, <code>anthropic_messages_request</code>, <code>ai_guardrails</code>, <code>anthropic_messages_to_chat_completions</code>, <code>router</code>, and <code>load_balancer</code>, and you can add your own Rust filter through the <code>HttpFilter</code> interface.</li>
+          <li><strong>The AI gateway, composable by design.</strong> Open source under Apache-2.0, alpha, built in Rust.</li>
+        </ol>
+      </details>
+    </figcaption>
+  </figure>
+</section>

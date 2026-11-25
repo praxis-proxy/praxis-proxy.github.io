@@ -31,6 +31,30 @@
       scenes.forEach(scene => visibility.observe(scene));
       cleanups.push(() => visibility.disconnect());
 
+      // Muted films play while visible; a viewer's own pause is respected.
+      const films = [...document.querySelectorAll('video[data-motion-video]')];
+      const filmPaused = new WeakSet();
+      const filmView = new IntersectionObserver(entries => {
+        entries.forEach(({ target, isIntersecting }) => {
+          if (isIntersecting && !filmPaused.has(target) && !document.hidden) {
+            target.muted = true;
+            target.play().catch(() => {});
+          } else if (!target.paused) {
+            target.dataset.motionAutopause = '';
+            target.pause();
+          }
+        });
+      }, { threshold: 0.5 });
+      films.forEach(film => {
+        filmView.observe(film);
+        listen(film, 'pause', () => {
+          if ('motionAutopause' in film.dataset) delete film.dataset.motionAutopause;
+          else filmPaused.add(film);
+        });
+        listen(film, 'play', () => filmPaused.delete(film));
+      });
+      cleanups.push(() => { filmView.disconnect(); films.forEach(film => film.pause()); });
+
       const entrances = document.querySelectorAll(
         '.home-section__heading, .task-card, .gateway-spotlight__copy, ' +
         '.gateway-spotlight__protocols, .project-spotlight__copy, .project-spotlight__visual, ' +
