@@ -150,3 +150,14 @@
   .decision-board__outcomes li span { font-size: .62rem; }
   .decision-board__outcomes li strong { font-size: .95rem; }
 }
+
+/* Homepage film (layouts/_partials/mx/intro-film.html). */
+.intro-film__frame { margin: 0; }
+.intro-film__video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--mx-border); border-radius: .9rem; background: #060a14; box-shadow: var(--mx-shadow); }
+.intro-film__video:focus-visible { outline: 3px solid var(--mx-accent); outline-offset: 3px; }
+.intro-film figcaption { max-width: 60rem; margin: 1rem auto 0; color: var(--mx-muted); font-size: .9rem; line-height: 1.6; text-align: center; }
+.intro-film__stale { display: block; margin-top: .4rem; color: var(--mx-body); font-weight: 600; }
+.intro-film__transcript { margin-top: .5rem; text-align: left; }
+.intro-film__transcript summary { width: fit-content; min-height: 44px; margin-inline: auto; padding: .6rem .25rem; color: var(--mx-text); font-weight: 600; cursor: pointer; }
+.intro-film__transcript ol { margin: .5rem 0 0; padding-left: 1.25rem; color: var(--mx-body); }
+.intro-film__transcript li + li { margin-top: .5rem; }
