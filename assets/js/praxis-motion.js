@@ -56,9 +56,7 @@
       cleanups.push(() => { filmView.disconnect(); films.forEach(film => film.pause()); });
 
       const entrances = document.querySelectorAll(
-        '.home-section__heading, .task-card, .gateway-spotlight__copy, ' +
-        '.gateway-spotlight__protocols, .project-spotlight__copy, .project-spotlight__visual, ' +
-        '.docs-directory-card, .community-card, .product-journey-group, .praxis-blog-card'
+        '.home-section__heading, .task-card, .docs-directory-card, .community-card'
       );
       const seen = new WeakSet();
       const reveal = new IntersectionObserver(entries => {
@@ -106,7 +104,7 @@
 
     if (finePointer.matches) {
       const surfaces = document.querySelectorAll(
-        '[data-motion-tilt], .task-card, .gateway-spotlight__protocols, .project-spotlight__visual, .docs-directory-card'
+        '[data-motion-tilt], .task-card, .docs-directory-card'
       );
       surfaces.forEach(surface => {
         const tilt = surface.hasAttribute('data-motion-tilt');

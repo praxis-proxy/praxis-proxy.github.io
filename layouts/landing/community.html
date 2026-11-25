@@ -10,22 +10,16 @@
 {{- $arrow := `<svg class="mx-ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` | safeHTML -}}
 <div class="mx-comm">
   <header class="mx-comm__hero">
-    <div class="mx-comm__glow" aria-hidden="true"></div>
     <div class="mx-comm__hero-copy">
       <p class="mx-eyebrow">Community</p>
       <h1>Build Praxis<br><span>in the open.</span></h1>
-      <p class="mx-comm__lede">Ask questions, report what breaks, send code, and shape the roadmap. The gateway is built across a few open repositories, and design decisions happen in public proposals.</p>
+      <p class="mx-comm__lede">Ask questions, report what breaks, send code, and shape the roadmap. The gateway is built across {{ len $projects }} Apache-2.0 repositories, and design decisions happen in {{ with $build }}{{ .proposal_count }} {{ end }}<a href="{{ "enhancements/" | relURL }}">public proposals</a>.</p>
       <div class="mx-props__actions">
         <a class="mx-btn mx-btn--primary" href="https://github.com/praxis-proxy/praxis/discussions">Join the discussions</a>
         <a class="mx-btn mx-btn--ghost" href="https://cloud-native.slack.com/archives/C0BK0RSP5RC">#praxis on CNCF Slack <span aria-hidden="true">↗</span></a>
       </div>
       <p class="mx-comm__note">New to CNCF Slack? <a href="https://slack.cncf.io">Get an invite</a> first.</p>
     </div>
-    <ul class="mx-comm__stats" aria-label="At a glance">
-      <li><strong>{{ len $projects }}</strong><span>open repositories</span></li>
-      {{- with $build }}<li><strong>{{ .proposal_count }}</strong><span>design proposals</span></li>{{ end }}
-      <li><strong>Apache-2.0</strong><span>license</span></li>
-    </ul>
   </header>
 
   <section class="mx-section mx-comm__paths" aria-labelledby="mx-comm-paths">

@@ -71,7 +71,7 @@ const routes = [
           assert(result.titleTop>=result.navbarBottom,`${route} title overlaps the navbar at ${width}px`);
           assert(result.navbarHeight<=80,`${route} navbar wraps unexpectedly at ${width}px`);
           if (name === 'home') {
-            const buttons=await page.locator('.home-hero__actions .btn').evaluateAll(items=>items.map(x=>({left:x.getBoundingClientRect().left,right:x.getBoundingClientRect().right})));
+            const buttons=await page.locator('.mx-hero__actions .mx-btn').evaluateAll(items=>items.map(x=>({left:x.getBoundingClientRect().left,right:x.getBoundingClientRect().right})));
             assert(buttons.every(x=>x.left>=0 && x.right<=width+1), 'Hero actions must fit the viewport');
           }
           if (name==='how-to') {

@@ -48,7 +48,7 @@
       <div class="mx-pillars__panels">
         {{- /* ------------------------------------------------------------ ai */}}
         <div class="mx-pillar" role="tabpanel" id="mx-pillar-ai" aria-labelledby="mx-ptab-ai" tabindex="0" style="--c: var(--mx-c-ai)">
-          <div class="mx-stage mx-stage--ai">
+          <div class="mx-stage mx-stage--ai" role="group" aria-label="Diagram (scrolls sideways on narrow screens)" tabindex="0">
             <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-ai-title">
               <title id="mx-ai-title">The gateway classifies a client request, translates it when needed, and routes it in turn to vLLM, AWS Bedrock, Vertex AI and Azure OpenAI; the streamed answer flows back to the client.</title>
               {{- $prov := slice (dict "n" "vLLM" "y" 62 "t" "Messages → Chat Completions" "d" "0s") (dict "n" "AWS Bedrock" "y" 112 "t" "Chat Completions → Converse" "d" "-9s") (dict "n" "Vertex AI" "y" 162 "t" "Chat Completions → Gemini" "d" "-6s") (dict "n" "Azure OpenAI" "y" 212 "t" "Chat Completions → Azure" "d" "-3s") }}
@@ -102,7 +102,7 @@
         </div>
         {{- /* ------------------------------------------------------------ secure */}}
         <div class="mx-pillar" role="tabpanel" id="mx-pillar-secure" aria-labelledby="mx-ptab-secure" tabindex="0" style="--c: var(--mx-c-secure)">
-          <div class="mx-stage mx-stage--secure">
+          <div class="mx-stage mx-stage--secure" role="group" aria-label="Diagram (scrolls sideways on narrow screens)" tabindex="0">
             <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-se-title">
               <title id="mx-se-title">Requests pass through token_ceiling, token_rate_limit and ai_guardrails filters. An oversized request is rejected, a client over its token budget gets 429, a request the guardrail provider blocks stops there, and the rest reach the model provider over TLS.</title>
               <line class="mx-sc__wire" x1="92" y1="150" x2="508" y2="150"/>
@@ -144,7 +144,7 @@
 
         {{- /* ------------------------------------------------------------ payload */}}
         <div class="mx-pillar" role="tabpanel" id="mx-pillar-payload" aria-labelledby="mx-ptab-payload" tabindex="0" style="--c: var(--mx-c-payload)">
-          <div class="mx-stage mx-stage--payload">
+          <div class="mx-stage mx-stage--payload" role="group" aria-label="Diagram (scrolls sideways on narrow screens)" tabindex="0">
             <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-pl-title">
               <title id="mx-pl-title">StreamBuffer: a filter inspects each chunk of a large body as it arrives while Praxis holds the chunks back from the upstream, then releases the whole buffer once the filter approves.</title>
               <defs>
@@ -190,7 +190,7 @@
 
         {{- /* ------------------------------------------------------------ speed */}}
         <div class="mx-pillar" role="tabpanel" id="mx-pillar-speed" aria-labelledby="mx-ptab-speed" tabindex="0" style="--c: var(--mx-c-speed)">
-          <div class="mx-stage mx-stage--speed">
+          <div class="mx-stage mx-stage--speed" role="group" aria-label="Diagram (scrolls sideways on narrow screens)" tabindex="0">
             <svg viewBox="0 0 600 280" role="img" aria-labelledby="mx-sp-title">
               <title id="mx-sp-title">Request body chunks stream from the client through the Praxis filter chain to the upstream without waiting for the whole body.</title>
               <defs>
