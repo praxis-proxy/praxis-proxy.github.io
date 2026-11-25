@@ -46,7 +46,7 @@ class Page(HTMLParser):
                 self.docs_links.append(attrs.get('href'))
                 if attrs.get('aria-current') == 'page':
                     self.docs_current.append(attrs.get('href'))
-        if tag == 'a' and {'task-card__action', 'project-spotlight__secondary'} & set(attrs.get('class', '').split()):
+        if tag == 'a' and 'task-card__action' in attrs.get('class', '').split():
             self.task_links.append(attrs.get('href'))
         if tag == 'h1':
             self.h1 += 1

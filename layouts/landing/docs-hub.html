@@ -20,7 +20,6 @@
 {{- $journeyIcons := slice "connect" "configure" "operate" "extend" -}}
 <div class="mx-hub">
   <header class="mx-hub__hero">
-    <div class="mx-props__glow" aria-hidden="true"></div>
     <p class="mx-eyebrow">Documentation</p>
     <h1>{{ .Title }}</h1>
     <p class="mx-props__lede">{{ .Description }}</p>
@@ -51,8 +50,8 @@
       <p class="mx-hub__fine">This path demonstrates provider forwarding. Managed state, tools, guardrails and client authorization need their own configuration.</p>
     </div>
     <figure class="mx-hub__term" aria-labelledby="mx-hub-term-cap">
-      <div class="mx-hub__term-bar"><span class="mx-window__dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Terminal</span></div>
-      <pre><code><span class="mx-t-c"># 1 · start the gateway with praxis-ai.yaml from the quickstart</span>
+      <div class="mx-hub__term-bar"><span>Terminal</span></div>
+      <pre tabindex="0" role="region" aria-label="Terminal commands"><code><span class="mx-t-c"># 1 · start the gateway with praxis-ai.yaml from the quickstart</span>
 <span class="mx-t-p">$</span> docker run --rm --platform linux/amd64 \
     --publish 127.0.0.1:8080:8080 \
     --volume "$PWD/praxis-ai.yaml:/etc/praxis/praxis-ai.yaml:ro" \

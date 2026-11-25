@@ -6,7 +6,6 @@
 {{- $proxyHref := partial "docs-start.html" (dict "product" "praxis") -}}
 <div class="mx-home">
   <section class="mx-hero" aria-labelledby="home-title">
-    <div class="mx-hero__glow" aria-hidden="true"></div>
     <div class="mx-hero__inner">
       <a class="mx-pill" href="{{ printf "ai/%s/" $ai.default | relURL }}">
         <span class="mx-pill__tag">Alpha</span>
@@ -23,12 +22,11 @@
 
     <figure class="mx-window" aria-labelledby="mx-window-caption">
       <div class="mx-window__bar">
-        <span class="mx-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="mx-window__file">praxis.yaml</span>
         <a class="mx-window__link" href="{{ $startHref }}">Open tutorial →</a>
       </div>
       <div class="mx-window__body">
-        <pre><code><span class="k">listeners</span>:
+        <pre tabindex="0" role="region" aria-label="praxis.yaml"><code><span class="k">listeners</span>:
   - <span class="k">name</span>: <span class="s">ai</span>
     <span class="k">address</span>: <span class="s">"0.0.0.0:8080"</span>
     <span class="k">filter_chains</span>: [<span class="s">openai</span>]
