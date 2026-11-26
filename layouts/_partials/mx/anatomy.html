@@ -53,7 +53,7 @@
       <ul class="mx-block__points">{{ range .points }}<li>{{ . }}</li>{{ end }}</ul>
       {{ with .note }}<p class="mx-block__note">{{ . }}</p>{{ end }}
       <p class="mx-block__links">
-        {{- range .links }}<a href="{{ partial "mx/doc-href.html" (dict "product" .product "source" .source) }}">{{ .label }} <span aria-hidden="true">→</span></a>{{ end -}}
+        {{- range .links }}<a href="{{ with .path }}{{ . | relURL }}{{ else }}{{ partial "mx/doc-href.html" (dict "product" .product "source" .source) }}{{ end }}">{{ .label }} <span aria-hidden="true">→</span></a>{{ end -}}
         {{- with .proposal }}<a href="{{ .path | relURL }}">Read proposal #{{ .number }} <span aria-hidden="true">→</span></a>{{ end -}}
       </p>
       {{- with .next }}

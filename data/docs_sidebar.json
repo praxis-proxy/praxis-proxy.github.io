@@ -1,18 +1,20 @@
 {
- "_comment": "Curated sidebar for each documentation tab at its default release. Items: '<product>:<source_path>[|label]' resolves against that product's default release, and a leading '?' skips it until that release publishes the page; 'page:<path>[|label]'; 'examples:<product>|label'; 'link:<path>|label|tag' leaves the tab. {group,items} renders collapsible; {rest,label} lists published pages not placed elsewhere. Archived and development releases keep the derived navigation.",
+ "_comment": "Curated sidebar for the single gateway documentation tree at its default release. Items: '<product>:<source_path>[|label]' resolves against that product's default release, and a leading '?' skips it until that release publishes the page; 'page:<path>[|label]'; 'examples:<product>|label'; 'link:<path>|label|tag' leaves the tab. {group,items} renders collapsible; {rest,label} lists published pages not placed elsewhere. Archived and development releases keep the derived navigation.",
  "product_tree": {
   "ai": "gateway",
   "praxis": "gateway",
-  "policy": "policy",
-  "grid": "grid"
+  "policy": "gateway",
+  "grid": "gateway"
  },
  "trees": {
   "gateway": {
    "label": "Praxis",
-   "tag": "Gateway and proxy foundation",
+   "tag": "AI gateway",
    "products": [
     "ai",
-    "praxis"
+    "praxis",
+    "policy",
+    "grid"
    ],
    "sections": [
     {
@@ -78,7 +80,24 @@
       "ai:docs/filters/ai_guardrails.md|Guardrails",
       "ai:docs/filters/identity_header_guard.md|Identity headers",
       "praxis:docs/operating/security-hardening.md|Security hardening",
-      "policy:docs/content/index.md|Policy engine|Policy"
+      "page:/gateway/access-policy|Access policy",
+      {
+       "group": "Access policy guides",
+       "items": [
+        "policy:docs/content/quickstart.md|Write a first policy",
+        "praxis:docs/filters/http/security/policy.md|Enable the policy filter",
+        "policy:docs/content/http-routing.md|Authorize HTTP routes",
+        "policy:docs/content/llm-routes.md|Authorize model routes",
+        "policy:docs/content/rate-limiting.md|Policy-based rate limits",
+        "policy:docs/content/identity-delegation.md|Identity and token exchange",
+        "policy:docs/content/patterns.md|Policy patterns",
+        "policy:docs/content/use-cases.md|Use cases",
+        "policy:docs/content/testing.md|Test policies",
+        "policy:docs/content/auditing.md|Audit decisions",
+        "policy:docs/content/deployment.md|Deploy policies",
+        "policy:docs/content/upgrade-apl.md|Upgrade a policy configuration"
+       ]
+      }
      ]
     },
     {
@@ -148,6 +167,32 @@
      ]
     },
     {
+     "id": "scale",
+     "label": "Scale out",
+     "items": [
+      "page:/gateway/multi-region|Multi-region deployment",
+      "grid:docs/technical-preview-scope.md|Preview scope and limits",
+      "grid:docs/installation/README.md|Install the control plane",
+      "grid:docs/installation/existing-clusters.md|Install on existing clusters",
+      "grid:docs/installation/aws.md|Install on AWS",
+      "grid:docs/installation/enrollment.md|Enroll a cluster",
+      "grid:docs/adding-provider.md|Add an inference provider",
+      "grid:docs/routing.md|Route across clusters",
+      "grid:docs/site-selection.md|Cross-cluster selection",
+      {
+       "group": "Run a multi-cluster deployment",
+       "items": [
+        "grid:docs/architecture/operations.md|Operations",
+        "grid:docs/architecture/provider-draining.md|Drain a provider",
+        "grid:docs/architecture/opentelemetry.md|Control-plane telemetry",
+        "grid:docs/fips.md|FIPS support",
+        "grid:docs/installation/migration-0.3.x.md|Migrate CRD fields to 0.3"
+       ]
+      },
+      "examples:grid|Multi-cluster examples"
+     ]
+    },
+    {
      "id": "concepts",
      "label": "Concepts",
      "items": [
@@ -176,6 +221,31 @@
         "ai:docs/architecture/cryptographic-inventory.md",
         "ai:docs/architecture/responses-retained-payload.md"
        ]
+      },
+      {
+       "group": "Access policy model",
+       "items": [
+        "policy:docs/content/overview.md|How policy decisions work",
+        "policy:docs/content/pipeline.md|Policy plugins and pipeline",
+        "policy:docs/content/vision.md|A reference monitor for agents",
+        "policy:docs/content/threat-model.md|Threat model"
+       ]
+      },
+      {
+       "group": "Multi-cluster model",
+       "items": [
+        "grid:docs/architecture/overview.md|Multi-cluster architecture",
+        "grid:docs/architecture/routing.md|Routing and overlay",
+        "grid:docs/architecture/scoring.md|Provider scoring",
+        "grid:docs/architecture/prefix-affinity.md|Prefix affinity",
+        "grid:docs/architecture/enrollment.md|Cluster enrollment",
+        "grid:docs/architecture/external-ingress.md|External client ingress",
+        "grid:docs/architecture/auth.md|Authentication and access",
+        "grid:docs/architecture/signed-gossip-trust.md|Signed gossip trust",
+        "grid:docs/architecture/signals.md|Signal propagation",
+        "grid:docs/architecture/signals-scaling.md|Scaling the signals listener",
+        "grid:docs/architecture/polling-metrics.md|Polling load signals"
+       ]
       }
      ]
     },
@@ -199,6 +269,32 @@
       "examples:praxis|Proxy configuration examples",
       "ai:docs/README.md|Gateway project overview",
       "praxis:docs/README.md|Proxy foundation overview",
+      {
+       "group": "Policy language",
+       "items": [
+        "policy:docs/content/apl/index.md|Language overview",
+        "policy:docs/content/configuration.md|Policy configuration",
+        "policy:docs/content/apl/apl-grammar.md|Grammar",
+        "policy:docs/content/apl/attributes.md|Static attributes",
+        "policy:docs/content/apl/effects.md|Effects and sequencing",
+        "policy:docs/content/apl/identity.md|Identity and IdP integration",
+        "policy:docs/content/apl/delegation.md|Delegation and token exchange",
+        "policy:docs/content/apl/pdp.md|External decision points",
+        "policy:docs/content/apl/metadata.md|Fetched metadata",
+        "policy:docs/content/apl/restrict.md|Backend restriction",
+        "policy:docs/content/apl/tainting.md|Session taint",
+        "policy:docs/content/apl/elicitation.md|Human-in-the-loop elicitation",
+        "policy:docs/content/builtins.md|Builtins"
+       ]
+      },
+      {
+       "group": "Multi-cluster reference",
+       "items": [
+        "grid:docs/architecture/crds.md|Custom resources",
+        "grid:docs/architecture/consumer-config.md|Generated gateway config",
+        "grid:docs/metrics.md|Control-plane metrics"
+       ]
+      },
       "link:/changelog/|Changelog"
      ]
     },
@@ -373,6 +469,33 @@
         "ai:docs/anthropic-messages-replay-test-plan.md|Messages replay test plan",
         "ai:docs/documentation-audit.md|Documentation audit"
        ]
+      },
+      {
+       "group": "Policy contract",
+       "items": [
+        "policy:docs/content/cmf.md|Common Message Format",
+        "policy:docs/content/cmf-extensions.md|CMF extensions",
+        "policy:docs/content/assertions.md|Assertions wire contract",
+        "policy:docs/content/extensions.md|Extensions and capability gating",
+        "policy:docs/content/identity-claim-mapping.md|Add a claim mapper preset",
+        "policy:docs/content/crates.md|Policy crates",
+        "policy:docs/content/fips.md|FIPS builds",
+        "policy:docs/content/benchmarks.md|Policy benchmarks"
+       ]
+      },
+      {
+       "group": "Contribute to the multi-cluster control plane",
+       "items": [
+        "grid:docs/developing/README.md|Developing the control plane",
+        "grid:docs/development.md|Development",
+        "grid:docs/conventions.md|Conventions",
+        "grid:docs/developing/conventions.md|Development conventions",
+        "grid:docs/developing/forge.md|Forge tooling",
+        "grid:docs/developing/type-design.md|Type design",
+        "grid:docs/developing/unicode-audit.md|Unicode audit",
+        "grid:docs/architecture/ci-kind-e2e.md|CI kind end-to-end",
+        "grid:docs/release.md|Release process"
+       ]
       }
      ]
     },
@@ -387,183 +510,14 @@
       {
        "rest": "praxis",
        "label": "Other proxy pages"
-      }
-     ]
-    }
-   ]
-  },
-  "policy": {
-   "label": "Policy",
-   "tag": "Policy engine",
-   "products": [
-    "policy"
-   ],
-   "sections": [
-    {
-     "id": "start",
-     "label": "Get started",
-     "items": [
-      "policy:docs/content/index.md|Overview",
-      "policy:docs/content/quickstart.md|Quickstart",
-      "praxis:docs/filters/http/security/policy.md|Use with the gateway|Gateway",
-      "policy:docs/content/use-cases.md|Use cases",
-      "policy:docs/content/vision.md|A reference monitor for agents"
-     ]
-    },
-    {
-     "id": "guides",
-     "label": "Guides",
-     "items": [
-      "policy:docs/content/http-routing.md|HTTP routing",
-      "policy:docs/content/llm-routes.md|Authorize LLM routes",
-      "policy:docs/content/rate-limiting.md|Rate limiting",
-      "policy:docs/content/identity-claim-mapping.md|Add a claim mapper preset",
-      "policy:docs/content/identity-delegation.md|Identity and token exchange",
-      "policy:docs/content/patterns.md|Policy patterns",
-      "policy:docs/content/testing.md|Test policies",
-      "policy:docs/content/deployment.md|Deploy",
-      "policy:docs/content/auditing.md|Auditing",
-      "policy:docs/content/fips.md|FIPS builds",
-      "policy:docs/content/upgrade-apl.md|Upgrade an APL configuration"
-     ]
-    },
-    {
-     "id": "concepts",
-     "label": "Concepts",
-     "items": [
-      "policy:docs/content/overview.md|How the Policy Engine works",
-      "policy:docs/content/pipeline.md|Plugins and the pipeline",
-      "policy:docs/content/cmf.md|Common Message Format",
-      "policy:docs/content/cmf-extensions.md|CMF extensions",
-      "policy:docs/content/extensions.md|Extensions and capability gating",
-      "policy:docs/content/threat-model.md|Threat model"
-     ]
-    },
-    {
-     "id": "apl",
-     "label": "Policy language (APL)",
-     "items": [
-      "policy:docs/content/apl/index.md|APL overview",
-      "policy:docs/content/apl/apl-grammar.md|Grammar",
-      "policy:docs/content/apl/attributes.md|Static attributes",
-      "policy:docs/content/apl/effects.md|Effects and sequencing",
-      "policy:docs/content/apl/identity.md|Identity and IdP integration",
-      "policy:docs/content/apl/delegation.md|Delegation and token exchange",
-      "policy:docs/content/apl/pdp.md|PDP integration",
-      "policy:docs/content/apl/metadata.md|Fetched metadata",
-      "policy:docs/content/apl/restrict.md|Backend restriction",
-      "policy:docs/content/apl/tainting.md|Session taint",
-      "policy:docs/content/apl/elicitation.md|Human-in-the-loop elicitation"
-     ]
-    },
-    {
-     "id": "reference",
-     "label": "Reference",
-     "items": [
-      "policy:docs/content/configuration.md|Configuration",
-      "policy:docs/content/builtins.md|Builtins",
-      "policy:docs/content/assertions.md|Assertions wire contract",
-      "policy:docs/content/crates.md|Crates",
-      "policy:docs/content/benchmarks.md|Benchmarks",
-      "link:/changelog/#policy|Changelog"
-     ]
-    },
-    {
-     "id": "more",
-     "label": "More",
-     "items": [
+      },
       {
        "rest": "policy",
-       "label": "Other Policy pages"
-      }
-     ]
-    }
-   ]
-  },
-  "grid": {
-   "label": "Grid",
-   "tag": "Technical preview",
-   "products": [
-    "grid"
-   ],
-   "sections": [
-    {
-     "id": "start",
-     "label": "Get started",
-     "items": [
-      "page:/grid|Project page",
-      "grid:docs/README.md|Overview",
-      "grid:docs/technical-preview-scope.md|Preview scope and limits",
-      "grid:docs/installation/README.md|Install Grid",
-      "grid:docs/installation/existing-clusters.md|Install on existing clusters",
-      "grid:docs/installation/aws.md|Install on AWS",
-      "grid:docs/installation/enrollment.md|Enroll a site",
-      "examples:grid|Configuration examples"
-     ]
-    },
-    {
-     "id": "operate",
-     "label": "Operate",
-     "items": [
-      "grid:docs/adding-provider.md|Add an inference provider",
-      "grid:docs/routing.md|Routing guide",
-      "grid:docs/site-selection.md|Cross-site selection",
-      "grid:docs/architecture/operations.md|Operations",
-      "grid:docs/architecture/provider-draining.md|Drain a provider",
-      "grid:docs/architecture/opentelemetry.md|OpenTelemetry",
-      "grid:docs/fips.md|FIPS support",
-      "grid:docs/installation/migration-0.3.x.md|Migrate CRD fields to 0.3"
-     ]
-    },
-    {
-     "id": "concepts",
-     "label": "Concepts",
-     "items": [
-      "grid:docs/architecture/overview.md|Architecture",
-      "grid:docs/architecture/routing.md|Routing and overlay",
-      "grid:docs/architecture/scoring.md|Provider scoring",
-      "grid:docs/architecture/prefix-affinity.md|Prefix affinity",
-      "grid:docs/architecture/enrollment.md|Enrollment",
-      "grid:docs/architecture/external-ingress.md|External client ingress",
-      "grid:docs/architecture/auth.md|Authentication and access",
-      "grid:docs/architecture/signed-gossip-trust.md|Signed gossip trust",
-      "grid:docs/architecture/signals.md|Signal propagation",
-      "grid:docs/architecture/signals-scaling.md|Scaling the signals listener",
-      "grid:docs/architecture/polling-metrics.md|Polling load signals"
-     ]
-    },
-    {
-     "id": "reference",
-     "label": "Reference",
-     "items": [
-      "grid:docs/architecture/crds.md|Custom resources",
-      "grid:docs/architecture/consumer-config.md|Generated consumer config",
-      "grid:docs/metrics.md|Metrics",
-      "link:/changelog/#grid|Changelog"
-     ]
-    },
-    {
-     "id": "extend",
-     "label": "Contribute",
-     "items": [
-      "grid:docs/developing/README.md|Developing Grid",
-      "grid:docs/development.md|Development",
-      "grid:docs/conventions.md|Conventions",
-      "grid:docs/developing/conventions.md|Development conventions",
-      "grid:docs/developing/forge.md|Forge tooling",
-      "grid:docs/developing/type-design.md|Type design",
-      "grid:docs/developing/unicode-audit.md|Unicode audit",
-      "grid:docs/architecture/ci-kind-e2e.md|CI kind end-to-end",
-      "grid:docs/release.md|Release process"
-     ]
-    },
-    {
-     "id": "more",
-     "label": "More",
-     "items": [
+       "label": "Other access policy pages"
+      },
       {
        "rest": "grid",
-       "label": "Other Grid pages"
+       "label": "Other multi-cluster pages"
       }
      ]
     }

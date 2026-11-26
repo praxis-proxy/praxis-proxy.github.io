@@ -28,4 +28,4 @@ Use {{< docs-link product="ai" source="docs/architecture/opentelemetry.md" label
 
 Before rollout, exercise authentication failures, upstream errors, timeouts, cancellation, resource exhaustion and any stateful or tool flow your application uses. Check observable responses as well as gateway logs. Repeat those checks when changing providers, filters, build features or versions.
 
-For Kubernetes deployments spanning inference sites, [Praxis Grid]({{< relref "grid/_index.md" >}}) is a separate technical-preview project. It is not required for the basic gateway quickstart.
+To run gateways across several Kubernetes clusters or regions, add the [multi-region deployment]({{< relref "gateway/multi-region.md" >}}) control plane (technical preview). A single-cluster gateway does not need it.

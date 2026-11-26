@@ -14,7 +14,7 @@
 {{- if and (not $currentProduct) (eq .Section "guides") }}{{ $currentProduct = "praxis" }}{{ end -}}
 {{- if and (not $currentProduct) (in (slice "gateway" "docs" "start" "examples" "search") .Section) }}{{ $currentProduct = "ai" }}{{ end -}}
 {{- $examplesActive := or (eq .Params.topic "Examples") (eq .Section "examples") -}}
-{{- $showTabs := $docsActive -}}
+{{- $showTabs := false -}}
 <a class="visually-hidden-focusable praxis-skip-link" href="#main-content">Skip to content</a>
 {{- if partial "chrome-render.html" (dict "page" . "region" "navbar") -}}
 <nav class="td-navbar navbar navbar-expand-lg js-navbar-scroll mx-navbar{{ if $showTabs }} mx-navbar--tabs{{ end }}" aria-label="Main navigation">
