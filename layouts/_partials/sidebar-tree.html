@@ -20,7 +20,7 @@
       </a>
       <label class="mx-version docs-version-control">
         <span class="visually-hidden">{{ $product.name }} documentation version</span>
-        {{- if eq $treeID "gateway" }}<span class="mx-version__name mx-proj mx-proj--{{ $productID }}" title="Showing {{ $product.name }} documentation" aria-hidden="true">{{ cond (eq $productID "ai") "AI" "Core" }}</span>{{ end }}
+        {{- if eq $treeID "gateway" }}<span class="mx-version__name mx-proj mx-proj--{{ $productID }}" title="Showing {{ $product.name }} documentation" aria-hidden="true">{{ index (dict "ai" "AI" "praxis" "Core" "policy" "Policy" "grid" "Grid") $productID }}</span>{{ end }}
         {{- $sourcePath := $page.Params.source_path | default (printf "website/%s" (cond (ne $page.File nil) (printf "%s" $page.File.Path) "")) -}}
         <select data-source-path="{{ $sourcePath }}" onchange="const o=this.selectedOptions[0];const u=new window.URL(this.value,window.location.href);if(o.dataset.fallback==='true')u.searchParams.set('version_fallback',this.dataset.sourcePath);window.location.assign(u)">
           {{- range $product.versions }}

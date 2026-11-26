@@ -22,9 +22,9 @@ Read {{< docs-link product="ai" source="docs/architecture/response-store.md" lab
 
 A filter's presence does not establish complete inspection coverage or equal effectiveness across providers and streaming modes. Validate the composition you run.
 
-## Integrate Policy when needed
+## Authorize callers and operations
 
-[Praxis Policy Engine]({{< relref "policy/_index.md" >}}) remains a separate Rust library and project for authorization, identity, delegation and data controls. Follow the host gateway's integration documentation and dependency versions. The Policy quickstart demonstrates embedding the library; it is not a standalone gateway installation.
+Use [access policy]({{< relref "gateway/access-policy.md" >}}) to authorize callers by user, agent and workload identity, delegate upstream credentials, and control what data returns. The `policy` filter runs the engine in-process and is part of the default build.
 
 ## Select build features, then configure runtime behavior
 

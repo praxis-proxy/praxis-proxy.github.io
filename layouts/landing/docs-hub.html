@@ -103,12 +103,10 @@
   </section>
 
   <section class="mx-hub__section" aria-labelledby="mx-hub-more">
-    <header class="mx-hub__head"><h2 id="mx-hub-more">Other starting points</h2><p>Run the foundation on its own, embed the policy library, or route inference across Kubernetes sites.</p></header>
+    <header class="mx-hub__head"><h2 id="mx-hub-more">Other starting points</h2><p>Run the proxy foundation on its own, without the AI gateway filters.</p></header>
     <ul class="mx-hub__others">
       {{- range slice
-        (dict "id" "praxis" "t" "Standalone proxy" "d" "An HTTP reverse proxy and TCP forwarder with built-in filters." "start" ("guides/first-proxy/" | relURL) "label" "Run your first proxy")
-        (dict "id" "policy" "t" "Policy library" "d" "Embed identity, authorization and data controls in a Rust host." "label" "Policy quickstart")
-        (dict "id" "grid" "t" "Grid" "d" "Discover inference providers across Kubernetes sites. Technical preview." "label" "Install Grid") }}
+        (dict "id" "praxis" "t" "Standalone proxy" "d" "An HTTP reverse proxy and TCP forwarder with built-in filters." "start" ("guides/first-proxy/" | relURL) "label" "Run your first proxy") }}
       {{- $p := index $products .id -}}
       {{- $href := .start -}}
       {{- if not $href }}{{ $start := partial "mx/doc-page.html" (dict "product" .id "source" (index $nav .id).start) }}{{ with $start }}{{ $href = .RelPermalink }}{{ end }}{{ end -}}

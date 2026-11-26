@@ -2276,7 +2276,7 @@ a.mx-status:hover { border-color: var(--st); }
 .mx-proj { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.4rem; padding: 0.05rem 0.4rem; border: 1px solid color-mix(in srgb, var(--mx-dot, var(--mx-muted)) 55%, var(--mx-border)); border-radius: 999px; background: color-mix(in srgb, var(--mx-dot, var(--mx-muted)) 12%, transparent); color: var(--mx-text); font-size: 0.6875rem; font-weight: 600; line-height: 1.4; vertical-align: 0.1em; white-space: nowrap; }
 .mx-proj::before { content: ''; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--mx-dot, var(--mx-muted)); }
 .mx-version__name.mx-proj { margin-left: 0; padding: 0.2rem 0.55rem; font-size: 0.75rem; }
-@each $id in praxis, ai { .mx-proj--#{$id} { --mx-dot: var(--mx-dot-#{$id}); } }
+@each $id in praxis, ai, policy, grid { .mx-proj--#{$id} { --mx-dot: var(--mx-dot-#{$id}); } }
 
 // ---------------------------------------------------------------- AI discovery cards (project landing)
 html .ai-discovery { counter-reset: mx-disc; }
