@@ -85,7 +85,6 @@
        "group": "Access policy guides",
        "items": [
         "policy:docs/content/quickstart.md|Write a first policy",
-        "praxis:docs/filters/http/security/policy.md|Enable the policy filter",
         "policy:docs/content/http-routing.md|Authorize HTTP routes",
         "policy:docs/content/llm-routes.md|Authorize model routes",
         "policy:docs/content/rate-limiting.md|Policy-based rate limits",

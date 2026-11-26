@@ -5,6 +5,9 @@ type = "guides"
 body_class = "guides-page gateway-page"
 +++
 
+{{< release-checked product="praxis" release="v0.8.0" >}}
+{{< release-checked product="policy" release="v0.7.0" >}}
+
 Access policy is the gateway's authorization layer. The `policy` filter runs the policy engine in-process, on the request path: it verifies each caller's identity, evaluates your policy document against the operation, and applies the result before the request reaches an upstream.
 
 ## What it controls
@@ -12,7 +15,7 @@ Access policy is the gateway's authorization layer. The `policy` filter runs the
 - **Identity**: validate user, agent and workload tokens from separate headers and map their claims into attributes.
 - **Authorization**: gate tool, prompt, resource and model calls by role, attribute, or a decision from Cedar, CEL or OPA. Unknown or ambiguous models fail closed by default.
 - **Delegation**: mint audience-scoped upstream credentials with token exchange (RFC 8693).
-- **Data controls**: redact fields, apply session taint that outlives one call, request human approval, and emit an audit event per decision.
+- **Data controls**: apply session taint that outlives one call, request human approval, and emit an audit event per decision. Field mutators such as `redact()` only take effect with `body_access: read_write`; the default `read_only` discards them. Even with `read_write`, they rewrite JSON-RPC tool, prompt and resource bodies, not inference request or response bodies.
 
 ## Enable it
 

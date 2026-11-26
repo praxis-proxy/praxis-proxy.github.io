@@ -51,7 +51,7 @@
       "id": "identity", "tier": "control", "title": "Identity and authorization", "status": "available",
       "summary": "Decide who and which agent may call which model or tool.",
       "points": ["Validated user, agent and workload identity", "Access policy with Cedar, CEL or OPA decisions", "Per-upstream token delegation and an audit event per decision"],
-      "links": [{ "label": "Access policy", "path": "/gateway/access-policy/" }, { "label": "Identity headers", "product": "ai", "source": "docs/filters/identity_header_guard.md" }]
+      "links": [{ "label": "Access policy", "path": "gateway/access-policy/" }, { "label": "Identity headers", "product": "ai", "source": "docs/filters/identity_header_guard.md" }]
     },
     {
       "id": "routing", "tier": "traffic", "title": "Model routing", "status": "available",
@@ -64,7 +64,7 @@
       "summary": "Route to eligible providers across Kubernetes clusters and regions.",
       "points": ["Discover and score providers in every enrolled cluster", "Signed gossip between clusters; the routing decision stays local to each gateway", "Drain a provider without changing clients"],
       "note": "Technical preview with its own release line.",
-      "links": [{ "label": "Multi-region deployment", "path": "/gateway/multi-region/" }, { "label": "Architecture", "product": "grid", "source": "docs/architecture/overview.md" }]
+      "links": [{ "label": "Multi-region deployment", "path": "gateway/multi-region/" }, { "label": "Architecture", "product": "grid", "source": "docs/architecture/overview.md" }]
     },
     {
       "id": "providers", "tier": "traffic", "title": "Frontier and cloud providers", "status": "available",

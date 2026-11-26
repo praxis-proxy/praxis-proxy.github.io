@@ -5,6 +5,8 @@ type = "guides"
 body_class = "guides-page gateway-page"
 +++
 
+{{< release-checked product="grid" release="v0.3.2" >}}
+
 A single gateway routes to the providers in its own configuration. When inference capacity spans several Kubernetes clusters, often in different regions, the gateway's multi-cluster control plane tells every gateway which providers in which cluster are currently eligible. Each gateway then makes the routing decision locally, on the request path.
 
 This capability is a **technical preview** at {{< product-release product="grid" />}}. Read {{< docs-link product="grid" source="docs/technical-preview-scope.md" label="the preview scope and limits" >}} before you plan a deployment.

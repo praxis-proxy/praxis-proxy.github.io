@@ -32,7 +32,7 @@ const report = { pages: [], axe: [], journeys: [] };
             titleTop: document.querySelector('h1').getBoundingClientRect().top,
             project: document.querySelector('.docs-project-control select')?.id,
             projectTarget: document.querySelector('.docs-project-control select')?.value,
-            activeTab: document.querySelector('.mx-tab.is-active')?.textContent.trim(),
+            sidebarProject: document.querySelector('.mx-sidebar__project')?.textContent.trim(),
             globalLinks: [...document.querySelectorAll('#praxis-navbar-menu a')].map(a => a.textContent.trim()),
             navbarBottom: document.querySelector('.td-navbar').getBoundingClientRect().bottom,
             current: [...document.querySelectorAll('#td-section-nav a[aria-current="page"]')].map(a => a.pathname),
@@ -40,7 +40,7 @@ const report = { pages: [], axe: [], journeys: [] };
           assert.deepEqual(state.globalLinks, ['Docs', 'Blog', 'Community']);
           if (route !== 'docs/' && route !== '' && !route.startsWith('gateway/')) {
             // Default releases switch projects with the tabs; other releases keep the in-page selector.
-            assert(state.project || state.activeTab, `Project context ${route}`);
+            assert(state.project || state.sidebarProject, `Project context ${route}`);
             if (state.project) assert.equal(new URL(state.projectTarget, page.url()).pathname, routePath(route));
           }
           assert(!state.overflow, `Overflow ${route}/${theme}/${width}`);
@@ -89,7 +89,7 @@ const report = { pages: [], axe: [], journeys: [] };
       await page.goto(url('ai/dev/quickstart/'));
       await page.locator('.docs-project-control select').selectOption(routePath(`policy/${catalog.policy.default}/`));
       await page.waitForURL(url(`policy/${catalog.policy.default}/`));
-      await page.locator('.mx-tabs').getByRole('link', { name: 'Gateway' }).click();
+      await page.locator('.mx-sidebar__project').click();
       await page.waitForURL(url('gateway/'));
       await page.goto(url(`praxis/${catalog.praxis.default}/`));
       await page.locator('.docs-version-control select').selectOption(routePath('praxis/dev/'));

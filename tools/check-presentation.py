@@ -101,14 +101,11 @@ def main():
         return next(x['url'] for path in starts for x in sources
                     if x['product'] == product and x['version'] == version and x['source_path'] == path)
 
-    expected_tasks = {start_url(product, default)
-                      for product, default in defaults.items() if product not in {'praxis', 'ai'}}
-    expected_tasks.add('/guides/first-proxy/')
-    expected_tasks.add('/ai/container-quickstart/')
+    expected_tasks = {'/guides/first-proxy/', '/ai/container-quickstart/'}
     home = Page((public / 'index.html').read_text())
     assert not {f'/{product}/{default}/' for product, default in defaults.items()} & set(home.main_links), 'Project switching belongs inside documentation'
     grid_docs = Page((public / 'grid' / defaults['grid'] / 'index.html').read_text())
-    assert '/grid/' in grid_docs.docs_links, 'Grid documentation must link to its project page'
+    assert '/gateway/multi-region/' in grid_docs.docs_links, 'Grid documentation must link to the multi-region deployment overview'
     assert '/docs/' in home.main_links, 'Docs hub must be visible in global navigation'
     assert not {'/start/', '/examples/'} & set(home.main_links), 'Secondary discovery stays in the Docs hub'
     assert '/blog/' in home.main_links, 'Blog must be available in the main navigation'
