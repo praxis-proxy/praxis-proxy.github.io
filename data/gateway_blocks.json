@@ -1,5 +1,5 @@
 {
-  "_comment": "Building blocks of the AI gateway, top of the stack first. status: available | experimental | proposed. Links resolve with mx/doc-href against each project's default release; proposals link by path.",
+  "_comment": "Building blocks of the AI gateway, top of the stack first. status: available | experimental | proposed. Links resolve with mx/doc-href against each project's default release; a link with a path, and proposals, link by site path.",
   "tiers": [
     { "id": "agents", "label": "Agents", "hue": "#ec4899" },
     { "id": "insight", "label": "Insight", "hue": "#0ea5e9" },
@@ -50,14 +50,21 @@
     {
       "id": "identity", "tier": "control", "title": "Identity and authorization", "status": "available",
       "summary": "Decide who and which agent may call which model or tool.",
-      "points": ["Validated user, agent and workload identity", "Pluggable decisions with Cedar, CEL or OPA", "Per-upstream token delegation and an audit event per decision"],
-      "links": [{ "label": "Security features", "product": "praxis", "source": "docs/features.md" }, { "label": "Identity headers", "product": "ai", "source": "docs/filters/identity_header_guard.md" }]
+      "points": ["Validated user, agent and workload identity", "Access policy with Cedar, CEL or OPA decisions", "Per-upstream token delegation and an audit event per decision"],
+      "links": [{ "label": "Access policy", "path": "gateway/access-policy/" }, { "label": "Identity headers", "product": "ai", "source": "docs/filters/identity_header_guard.md" }]
     },
     {
       "id": "routing", "tier": "traffic", "title": "Model routing", "status": "available",
       "summary": "Send each request to the right model and backend.",
       "points": ["Classify by API format, model, streaming and tools", "Route by model or MCP tool name", "Rewrite client-facing model names"],
       "links": [{ "label": "Intelligent routing", "product": "ai", "source": "docs/filters/intelligent_route.md" }, { "label": "Provider routing", "product": "ai", "source": "docs/filters/provider_route.md" }]
+    },
+    {
+      "id": "multiregion", "tier": "traffic", "title": "Multi-region routing", "status": "experimental",
+      "summary": "Route to eligible providers across Kubernetes clusters and regions.",
+      "points": ["Discover and score providers in every enrolled cluster", "Signed gossip between clusters; the routing decision stays local to each gateway", "Drain a provider without changing clients"],
+      "note": "Technical preview with its own release line.",
+      "links": [{ "label": "Multi-region deployment", "path": "gateway/multi-region/" }, { "label": "Architecture", "product": "grid", "source": "docs/architecture/overview.md" }]
     },
     {
       "id": "providers", "tier": "traffic", "title": "Frontier and cloud providers", "status": "available",

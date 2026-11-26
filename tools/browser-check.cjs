@@ -9,13 +9,14 @@ const out = process.env.QA_OUTPUT || '/tmp/praxis-redesign-qa';
 fs.mkdirSync(out, { recursive: true });
 const root = path.resolve(__dirname, '..');
 const sources = JSON.parse(fs.readFileSync(path.join(root, '.cache/docs-data/docs_sources.json')));
+const catalog = JSON.parse(fs.readFileSync(path.join(root, 'data/docs_versions.json'))).products;
 const find = (product, version, file) => {
   const entry = sources.find(x => x.product === product && x.version === version && x.source_path === file);
   assert(entry, `No source mapping for ${product}/${version}/${file}`);
   return entry.url;
 };
 const routes = [
-  ['home', '/'], ['overview', '/praxis/'], ['ai-overview', '/ai/'], ['policy-overview', '/policy/'], ['start', '/start/'],
+  ['home', '/'], ['overview', '/praxis/'], ['ai-overview', '/ai/'], ['access-policy', '/gateway/access-policy/'], ['start', '/start/'],
   ['directory','/docs/'], ['policy-svg', find('policy','v0.4.0','docs/content/overview.md')],
   ['user-guide','/guides/use-filters/'], ['guides','/guides/'],
   ['examples','/praxis/v0.7.2/examples/'],
@@ -223,8 +224,11 @@ const routes = [
     await page.locator('#praxis-navbar-menu a').filter({hasText: /^Docs$/}).click();
     await page.waitForURL('**/docs/');
     await page.goto(base+'/praxis/v0.7.2/');
-    await page.locator('.mx-tabs a').filter({hasText:/Policy/}).click();
-    await page.waitForURL('**/policy/v0.4.0/');
+    await page.locator('.docs-project-control select').selectOption({label: catalog.policy.name});
+    await page.waitForURL(`**/policy/${catalog.policy.default}/`);
+    await page.locator('.td-sidebar__toggle').click();
+    await page.locator('.mx-sidebar__project').click();
+    await page.waitForURL('**/gateway/');
     await page.goto(base+find('praxis','v0.7.2','docs/quickstart.md'));
     await page.locator('.td-sidebar__toggle').click();
     await page.locator('#td-section-nav').waitFor({state:'visible'});
